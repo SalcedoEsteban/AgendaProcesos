@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://thymeleaf.org">
+<head>
+<head th:replace="layout/layout :: head">
+</head>
+<body>
+	<header th:replace="layout/layout :: header"></header>
+	<div class="container py-4">
+		<div class="card bg-light">
+			<div class="card-header" th:text="${titulo}"></div>
+			<div class="card-body">
+				<!-- <div class="card-title">
+					<a th:href="@{/formTermino}" class="btn btn-success btn-xs">Crear Termino</a>
+				</div>  -->
+				<table class="table table-striped table-bordered">
+					<thead class="thead-dark">
+						<tr>
+							<th>Id</th>
+							<th>Nombre</th>
+							<th>Numero d�as</th>
+							<th>Basico</th>
+							<!-- <th>Tipo Proceso</th>  -->
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="termino: ${terminos}">
+							<td th:text="${termino.id}"></td>
+							<td th:text="${termino.nombre}"></td>
+							<td th:text="${termino.numeroDias}"></td>
+							<td th:text="${termino.basico}"></td>
+							<!-- <td th:text="${termino.tipoProceso}"></td> -->
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>

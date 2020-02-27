@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.com">
+<head>
+<head th:replace="layout/layout :: head">
+</head>
+<body>
+	<header th:replace="layout/layout :: header"></header>
+	<div class="container py-4">
+		<div class="card bg-light">
+			<div class="card-header" th:text="${titulo}"></div>
+			<div class="card-body">
+				<h4 class="card-title">
+					<a th:href="@{/formTipoProceso}" class="btn btn-success btn-xs">Crear
+						Tipo Proceso</a>
+				</h4>
+				<table class="table table-striped table-bordered">
+					<thead class="thead-dark">
+						<tr>
+							<th>Id</th>
+							<th>Nombre</th>
+							<th>Asignar Termino</th>
+							<th>Editar</th>
+							<th>Eliminar</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="tipo: ${tiposProceso}">
+							<td th:text="${tipo.id}"></td>
+							<td th:text="${tipo.nombre}"></td>
+							<td><a th:href="@{'/formTermino/' + ${tipo.id}}"
+								class="btn btn-success">Asignar Termino</a></td>
+							<td><a th:href="@{/formTipoProceso/} + ${tipo.id}"
+								class="btn btn-primary btn-xs">Editar</a></td>
+							<td><a th:href="@{/eliminarTipoProceso/} + ${tipo.id}"
+								class="btn btn-danger btn-xs" id="botonEliminar"
+								onclick="return confirm('¿Eliminar elemento?')">Eliminar</a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>

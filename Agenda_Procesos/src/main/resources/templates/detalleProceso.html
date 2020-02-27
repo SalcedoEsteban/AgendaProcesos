@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head">
+</head>
+<body>
+	<header th:replace="layout/layout :: header"> </header>
+	<div class="container py-4">
+		<div class="card bg-light">
+			<div class="card-header" th:text="${titulo}"></div>
+			<div class="card-body">
+				<h4 class="card-title">
+					<a th:href="@{/formProceso}" class="btn btn-success btn-xs">Crear
+						Proceso</a>
+				</h4>
+				<div class="form-group row">
+						<label class="col-sm-4 col-form-label" th:text="'Radicado: '"></label>
+						<div class="col-sm-4">
+							<input th:value="${proceso.radicado}" disabled="disabled" class="form-control"/>
+						</div>
+				</div>
+				<div class="form-group row">
+						<label class="col-sm-4 col-form-label" th:text="'Demandante: '"></label>
+						<div class="col-sm-4">
+							<input th:value="${proceso.demandante}" disabled="disabled" class="form-control"/>
+						</div>
+				</div>
+				<div class="form-group row">
+						<label class="col-sm-4 col-form-label" th:text="'Demandandado: '"></label>
+						<div class="col-sm-4">
+							<input th:value="${proceso.demandado}" disabled="disabled" class="form-control"/>
+						</div>
+				</div>
+				<div class="form-group row">
+						<label class="col-sm-4 col-form-label" th:text="'Fecha Reparto: '"></label>
+						<div class="col-sm-4">
+							<input th:value="${proceso.fechaReparto}" disabled="disabled" class="form-control"/>
+						</div>
+				</div>
+				<div class="form-group row">
+						<label class="col-sm-4 col-form-label" th:text="'Ultima Actuación: '"></label>
+						<div class="col-sm-4">
+							<input th:value="${proceso.ultimaActuacion}" disabled="disabled" class="form-control"/>
+						</div>
+				</div>
+				<div class="form-group row">
+						<label class="col-sm-4 col-form-label" th:text="'Estado Actual: '"></label>
+						<div class="col-sm-4">
+							<input th:value="${proceso.estadoActual}" disabled="disabled" class="form-control"/>
+						</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>
