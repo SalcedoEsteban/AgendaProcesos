@@ -2,6 +2,7 @@ package com.usco.esteban.agenda_procesos.app.controllers;
 
 
 
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -22,8 +23,10 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.usco.esteban.agenda_procesos.app.models.dao.IJuzgadoDao;
 import com.usco.esteban.agenda_procesos.app.models.dao.IProcesoDao;
 import com.usco.esteban.agenda_procesos.app.models.dao.ITipoProcesoDao;
+import com.usco.esteban.agenda_procesos.app.models.entity.Juzgado;
 import com.usco.esteban.agenda_procesos.app.models.entity.Proceso;
 import com.usco.esteban.agenda_procesos.app.models.entity.TipoProceso;
 import com.usco.esteban.agenda_procesos.app.models.service.IProcesoService;
@@ -44,6 +47,9 @@ public class ProcesoController {
 	 * que implemente la interfaz ITipoProcesoDao */
 	@Autowired
 	private ITipoProcesoDao tipoProcesoDao;
+	
+	@Autowired
+	private IJuzgadoDao juzgadoDao;
 	
 	@GetMapping(value="/verDetalleProceso/{id}")
 	public String verDetalleProceso(@PathVariable(name = "id") Long id, Map<String, Object> model)
@@ -75,6 +81,16 @@ public class ProcesoController {
 		return "verTerminos";
 	}
 	
+	@RequestMapping(value="/buscarProceso")
+	public String buscarProceso(@RequestParam(value="radicado") String radicado, Map<String, Object> model)
+	{
+		List<Proceso> proceso = procesoService.findByRadicado(radicado);
+		
+		model.put("procesos", proceso);
+		
+		return "listarProcesos";
+	}
+	
 	@RequestMapping(value = "/listarProcesos", method = RequestMethod.GET)
 	public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model)
 	{
@@ -98,6 +114,7 @@ public class ProcesoController {
 		
 		model.put("proceso", proceso);
 		model.put("tipoProcesos", tipoProcesoDao.findAll());
+		model.put("juzgados", juzgadoDao.findAll());
 		model.put("titulo", "Crear Proceso");
 		return "formProceso";
 	}
@@ -128,6 +145,7 @@ public class ProcesoController {
 		model.put("proceso", proceso);
 		model.put("titulo", "Editar Proceso");
 		model.put("tipoProcesos", tipoProcesoDao.findAll());
+		model.put("juzgados", juzgadoDao.findAll());
 		
 		return "formProceso";
 	}
@@ -161,6 +179,14 @@ public class ProcesoController {
 		
 		/* y se establece la relacion guradando el tipo de proceso*/
 		proceso.setTipoProceso(tipoProceso);
+		
+		
+		/*obtenemos el id tipo string del juzgado */
+		Long juz = Long.parseLong(proceso.getJuz());
+		Juzgado juzgado = juzgadoDao.findOne(juz);
+		
+		proceso.setJuzgado(juzgado);
+		
 		
 		procesoService.save(proceso);
 		

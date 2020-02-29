@@ -56,5 +56,11 @@ public class ProcesoServiceImpl implements IProcesoService{
 		return procesoDao.findAll(pageable);
 	}
 
+	@Override
+	public List<Proceso> findByRadicado(String radicado) {
+		
+		return procesoDao.findByRadicado(radicado);
+	}
+
 
 }

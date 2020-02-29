@@ -15,10 +15,26 @@
 					<a th:href="@{/formProceso}" class="btn btn-success btn-xs">Crear
 						Proceso</a>
 				</h4>
+				<form th:action="@{/buscarProceso}" method="get">
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label"
+							th:text="'Buscar Proceso'"></label> <input type="text"
+							placeholder="Buscar por radicado" name="radicado"
+							id="radicado" class="form-control col-sm-6">
+						<button class="btn btn-success col-sm-2" type="submit">Buscar</button>
+
+					</div>
+				</form>
+				<!-- <div class="form-group row">
+					<label for="buscar_proceso" class="col-sm-2 col-form-label"
+						th:text="'Buscar Proceso'"></label>
+					<input type="text" name="buscar_proceso" id="buscar_proceso" class="form-control col-sm-6">
+					<h3><a th:href="@{'/buscarProceso/' + ${radicado}}"></a></h3>  
+				</div>  -->
 				<table class="table table-striped table-bordered">
 					<thead class="thead-dark">
 						<tr>
-							
+
 							<th>Radicado</th>
 							<th>Demandante</th>
 							<th>Demandado</th>
@@ -31,7 +47,7 @@
 							<th>Crear<br>Termino</th>
 							<th>Editar</th>
 							<th>Eliminar</th> -->
-							<th>Det.</th> 
+							<th>Det.</th>
 							<th colspan="4"></th>
 							<!--  <th></th>
 							<th></th>
@@ -40,12 +56,13 @@
 					</thead>
 					<tbody>
 						<tr th:each="proceso: ${procesos}">
-							
+
 							<td th:text="${proceso.radicado}"></td>
 							<td th:text="${proceso.demandante}"></td>
 							<td th:text="${proceso.demandado}"></td>
 							<td th:text="${proceso.fechaReparto}"></td>
-							<td><a th:href="@{'/verDetalleProceso/' + ${proceso.id}}" th:text="${proceso.id}" class="btn btn-primary btn-xs"></a></td>
+							<td><a th:href="@{'/verDetalleProceso/' + ${proceso.id}}"
+								th:text="${proceso.id}" class="btn btn-primary btn-xs"></a></td>
 							<!-- <td th:text="${proceso.ultimaActuacion}"></td>  -->
 							<!-- <td th:text="${proceso.estadoActual}"></td>  -->
 							<!-- <td th:text="${proceso.estado}"></td>  -->

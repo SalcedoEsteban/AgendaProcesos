@@ -24,4 +24,6 @@ public interface IProcesoService {
 	
 	public void delete(Long id);
 	
+	public List<Proceso> findByRadicado(String radicado);
+	
 }

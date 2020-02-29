@@ -76,6 +76,12 @@ public class Proceso implements Serializable{
 	terminos y un término tiene un proceso */
 	private List<DetalleTermino> detalleTerminos;
 	
+	@Column(name="pro_juzgado")
+	private String juz; 
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name ="juz_id_pro", nullable = false, updatable = false)
+	private Juzgado juzgado;
 	
 
 	public Proceso() {
@@ -183,6 +189,22 @@ public class Proceso implements Serializable{
 
 	public void setTipoProceso(TipoProceso tipoProceso) {
 		this.tipoProceso = tipoProceso;
+	}
+
+	public String getJuz() {
+		return juz;
+	}
+
+	public void setJuz(String juz) {
+		this.juz = juz;
+	}
+
+	public Juzgado getJuzgado() {
+		return juzgado;
+	}
+
+	public void setJuzgado(Juzgado juzgado) {
+		this.juzgado = juzgado;
 	}
 	
 	
