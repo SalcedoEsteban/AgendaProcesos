@@ -26,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.usco.esteban.agenda_procesos.app.models.dao.IJuzgadoDao;
 import com.usco.esteban.agenda_procesos.app.models.dao.IProcesoDao;
 import com.usco.esteban.agenda_procesos.app.models.dao.ITipoProcesoDao;
+import com.usco.esteban.agenda_procesos.app.models.dao.JuzgadoDaoImpl;
 import com.usco.esteban.agenda_procesos.app.models.entity.Juzgado;
 import com.usco.esteban.agenda_procesos.app.models.entity.Proceso;
 import com.usco.esteban.agenda_procesos.app.models.entity.TipoProceso;
@@ -58,7 +59,18 @@ public class ProcesoController {
 		
 		String radicado = proceso.getRadicado();
 		
+		Long tProceso = Long.parseLong(proceso.gettProceso());
+		TipoProceso tipo = tipoProcesoDao.findOne(tProceso);
+		String tipoProceso = tipo.getNombre();
+		
+		Long juz = Long.parseLong(proceso.getJuz());
+		Juzgado juzgado = juzgadoDao.findOne(juz);
+		String sJuz = juzgado.getNombre();
+		
+		
 		model.put("proceso", proceso);
+		model.put("tipoProceso", tipoProceso);
+		model.put("juzgado", sJuz);
 		model.put("titulo", "Detalle de proceso con el Radicado: " + radicado);
 		
 		return "detalleProceso";

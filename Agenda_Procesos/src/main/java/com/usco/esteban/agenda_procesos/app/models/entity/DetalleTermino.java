@@ -47,7 +47,7 @@ public class DetalleTermino implements Serializable {
 	@DateTimeFormat(pattern = "dd-MM-yyyy")
 	private Date fechaFinal;
 	
-	@Column(name="det_ter_ter")
+	@Column(name="det_ter_termino")
 	private String ter;
 	
 	@ManyToOne(fetch = FetchType.LAZY)

@@ -83,7 +83,9 @@ public class Proceso implements Serializable{
 	@JoinColumn(name ="juz_id_pro", nullable = false, updatable = false)
 	private Juzgado juzgado;
 	
-
+	@OneToMany(mappedBy = "proceso", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<Alarma> alarma;
+	
 	public Proceso() {
 		detalleTerminos = new ArrayList<DetalleTermino>();
 	}
@@ -205,6 +207,14 @@ public class Proceso implements Serializable{
 
 	public void setJuzgado(Juzgado juzgado) {
 		this.juzgado = juzgado;
+	}
+
+	public List<Alarma> getAlarma() {
+		return alarma;
+	}
+
+	public void setAlarma(List<Alarma> alarma) {
+		this.alarma = alarma;
 	}
 	
 	

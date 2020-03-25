@@ -7,13 +7,17 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.usco.esteban.agenda_procesos.app.models.dao.IEspecialidadDao;
 import com.usco.esteban.agenda_procesos.app.models.dao.ITerminoDao;
 import com.usco.esteban.agenda_procesos.app.models.dao.ITipoProcesoDao;
+import com.usco.esteban.agenda_procesos.app.models.entity.Especialidad;
 import com.usco.esteban.agenda_procesos.app.models.entity.Termino;
 import com.usco.esteban.agenda_procesos.app.models.entity.TipoProceso;
 
@@ -26,6 +30,9 @@ public class TerminoController
 	
 	@Autowired
 	private ITipoProcesoDao tipoProcesoDao;
+	
+	@Autowired
+	private IEspecialidadDao especialidadDao;
 	
 	@GetMapping("/formTermino/{tipoProcesoId}")
 	public String crear(@PathVariable(value="tipoProcesoId") Long tipoProcesoId,
@@ -47,6 +54,7 @@ public class TerminoController
 		termino.setTipoProceso(tipoProceso);
 		
 		model.put("termino", termino);
+		model.put("especialidades", especialidadDao.findAll());
 		model.put("titulo", "Formulario de terminos");
 		
 		return "formTermino";
@@ -73,10 +81,14 @@ public class TerminoController
 		return "formTermino";
 	}*/
 	
-	@RequestMapping(value ="/guardarTermino", method = RequestMethod.POST)
-	public String guardar(Termino termino)
+	@PostMapping(value ="/guardarTermino")
+	public String guardar(@RequestParam(name="especialidad") String especialidad,Termino termino)
 	{
+		Long id = Long.parseLong(especialidad);
 		
+		Especialidad esp = especialidadDao.findOne(id);
+		
+		termino.setEspecialidad(esp);
 		
 		
 		terminoDao.save(termino);

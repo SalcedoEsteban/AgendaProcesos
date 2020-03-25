@@ -46,10 +46,12 @@ public class Termino implements Serializable {
 	
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name ="tipPro_id_pro", nullable = false, updatable = false)
+	@JoinColumn(name ="tip_pro_id_ter", nullable = false, updatable = false)
 	private TipoProceso tipoProceso;
 
-	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name ="esp_id_ter", nullable = false, updatable = false)
+	private Especialidad especialidad;
 
 	public Termino() {
 		
@@ -111,6 +113,14 @@ public class Termino implements Serializable {
 
 	public void setDetalleTerminos(List<DetalleTermino> detalleTerminos) {
 		this.detalleTerminos = detalleTerminos;
+	}
+
+	public Especialidad getEspecialidad() {
+		return especialidad;
+	}
+
+	public void setEspecialidad(Especialidad especialidad) {
+		this.especialidad = especialidad;
 	}
 
 	

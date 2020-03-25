@@ -28,6 +28,12 @@ public class Especialidad implements Serializable{
 	
 	@OneToMany(mappedBy = "especialidad", fetch = FetchType.LAZY)
 	private List<Juzgado> juzgados;
+	
+	@OneToMany(mappedBy ="especialidad", fetch = FetchType.LAZY)
+	private List<Termino> terminos;
+	
+	@OneToMany(mappedBy = "especialidad", fetch = FetchType.LAZY)
+	private List<HistorialUsuario> historialUsuarios;
 
 	public Long getId() {
 		return id;
@@ -51,6 +57,14 @@ public class Especialidad implements Serializable{
 
 	public void setJuzgados(List<Juzgado> juzgados) {
 		this.juzgados = juzgados;
+	}
+
+	public List<Termino> getTerminos() {
+		return terminos;
+	}
+
+	public void setTerminos(List<Termino> terminos) {
+		this.terminos = terminos;
 	}
 	
 	
