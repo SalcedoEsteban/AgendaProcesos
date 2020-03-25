@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head">
+</head>
+<body>
+	<div class="alert alert-success" th:if="${success != null}" th:text="${success}"></div>
+	<div class="alert alert-danger" th:if="${error != null}" th:text="${error}"></div>
+	<div class="alert alert-warning" th:if="${warning != null}" th:text="${warning}"></div>
+	<div class="alert alert-info" th:if="${info != null}" th:text="${info}"><h2></h2></div>
+	<div class="container py-4">
+		<div class="card bg-light text-center">
+			<div class="card-header"><h1>Agenda de Procesos</h1></div>
+			<div class="card-body">
+				<a th:href="@{/listarProcesos}" class="btn btn-primary btn-lg">Tablero de Control</a>
+				<a th:href="@{/formProceso}" class="btn btn-success btn-lg">Crear Proceso</a>
+				<a th:href="@{/}" class="btn btn-info btn-lg">Procesos prioritarios</a>
+				<a th:href="@{/}" class="btn btn-warning btn-lg">Ver Alarmas de proceso</a>
+			</div>
+		</div>
+	</div>
+	<footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>
