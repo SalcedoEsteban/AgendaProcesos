@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="layout/layout :: head"></head>
 <body>
 	<header th:replace="layout/layout :: header"></header>
@@ -9,7 +9,7 @@
 			<div class="card-header" th:text="${titulo}"></div>
 			<div class="card-body">
 				<h4 class="card-title">
-					<a th:href="@{/formProceso}" class="btn btn-success btn-xs">Crear
+					<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/formProceso}" class="btn btn-success btn-xs">Crear
 						Proceso</a>
 				</h4>
 				<form th:action="@{/buscarProceso}" method="get">
@@ -47,8 +47,8 @@
 							<th>Det.</th>
 							<th colspan="4"></th>
 							<!--  <th></th>
-							<th></th>
-							<th></th> -->
+							<th sec:authorize="hasRole('ROLE_ADMIN')"></th>
+							<th sec:authorize="hasRole('ROLE_ADMIN')"></th> -->
 						</tr>
 					</thead>
 					<tbody>
@@ -69,10 +69,10 @@
 							<td><a th:href="@{'/crearDetalleTermino/' + ${proceso.id}}"
 								class="btn btn-primary btn-xs"><img alt=""
 									src="/icons/bell-fill.svg" width="20" height="20"></a></td>
-							<td><a th:href="@{/formProceso/} + ${proceso.id}"
+							<td sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/formProceso/} + ${proceso.id}"
 								class="btn btn-primary btn-xs"><img alt=""
 									src="/icons/pencil.svg" width="20" height="20"></a></td>
-							<td><a th:href="@{/eliminarProceso/} + ${proceso.id}"
+							<td sec:authorize="hasRole('ROLE_ADMIN')"><a  th:href="@{/eliminarProceso/} + ${proceso.id}"
 								class="btn btn-danger btn-xs" id="botonEliminar"
 								onclick="return confirm('¿Eliminar elemento?')"><img alt=""
 									src="/icons/x-square-fill.svg" width="20" height="20"></a></td>

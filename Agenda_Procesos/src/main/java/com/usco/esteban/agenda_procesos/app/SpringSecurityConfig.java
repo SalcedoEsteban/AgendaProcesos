@@ -11,9 +11,16 @@ import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import com.usco.esteban.agenda_procesos.app.auth.handler.LoginSuccessHandler;
+
 @Configuration
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 {
+	/* inyeccion de dependencias*/
+	@Autowired
+	private LoginSuccessHandler successHandler;
+	
+	
 	/* se registra el password encoder 'BCrypt' como un componente de spring */
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder()
@@ -35,8 +42,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 		
 		builder.inMemoryAuthentication()
 		.withUser(users.username("admin").password("12345").roles("ADMIN", "USER"))
-		.withUser(users.username("esteban").password("12345").roles("USER"))
-		;
+		.withUser(users.username("esteban").password("12345").roles("USER"));
 	}
 
 
@@ -54,7 +60,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 		.antMatchers("/eliminarProceso/**").hasAnyRole("ADMIN")	
 		.anyRequest().authenticated()
 		.and()
-			.formLogin().loginPage("/login")
+			.formLogin()
+				.loginPage("/login")
+				.successHandler(successHandler)
 			.permitAll()
 		.and()
 		.logout().permitAll()
