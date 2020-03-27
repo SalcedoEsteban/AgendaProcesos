@@ -27,7 +27,17 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler
 		 * flash */
 		FlashMap flashMap = new FlashMap();
 		
-		flashMap.put("success", "Ha iniciado sesión con éxito");
+		
+		flashMap.put("success", "Hola, "+ authentication.getName()  +", Has iniciado sesión con éxito.");
+		
+		/* validamos que no sea nulo el objeto (es decir, que se haya iniciado sesión.
+		 * es poco problable ya que estamos en el success del login, pero de igual 
+		 * forma se valida */
+		if(authentication != null)
+		{
+			/* de esta forma se registra en nuestra 'bitacora' los usuarios que se vayan logeando */
+			logger.info("El usuario '"+ authentication.getName() +"' ha iniciado sesión");
+		}
 		
 		/* despues de crear el falshMap se tiene que registrar mediante el flashMapManager*/
 		flashMapManager.saveOutputFlashMap(flashMap, request, response);

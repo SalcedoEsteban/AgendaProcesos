@@ -27,8 +27,8 @@ public class LoginController {
 		if(principal != null)
 		{
 			flash.addFlashAttribute("info", "Ya ha iniciado sesion anteriormente");
-			return "redirect:/"; /* se redirige a la pagina de incio para evitar que haga doble inicio de sesion 
-			ACA SE DEBE CAMBIAR LA PAGINA DE INICIO, NO DEBE SER "/listarProcesos" */
+			return "redirect:/"; /* se redirige a la pagina de incio para evitar que haga 
+			doble inicio de sesion */
 		}
 		
 		//error es el parametro de que envia spring cuando ocurre un error en el login.
