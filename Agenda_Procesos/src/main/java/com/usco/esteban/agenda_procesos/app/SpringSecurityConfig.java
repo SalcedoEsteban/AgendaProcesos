@@ -1,7 +1,8 @@
 package com.usco.esteban.agenda_procesos.app;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -20,14 +21,14 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 	@Autowired
 	private LoginSuccessHandler successHandler;
 	
+	/* como el metodo de BCcrypt está en un componente, lo podemos inyectar a la clase con @Autowired*/
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
 	
-	/* se registra el password encoder 'BCrypt' como un componente de spring */
-	@Bean
-	public BCryptPasswordEncoder passwordEncoder()
-	{
-		return new BCryptPasswordEncoder();
-	}
-
+	/* inyectamos el data source para la conexion a la base de datos mediante JDBC*/
+	@Autowired
+	private DataSource dataSource;
+	
 	/*se debe implementar un metodo para poder registrar y configurar los usuarios se guardaran
 	 *  los usuarios en memoria*/
 	/* se anota con @autowired para poder inyectar el objeto de srping AuthenticationManagerBuilder*/
@@ -35,14 +36,23 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 	public void configurerGlobal(AuthenticationManagerBuilder builder) throws Exception
 	{
 		/* se usa el componente invocando al metodo */
-		PasswordEncoder encoder = passwordEncoder();
+		//PasswordEncoder encoder = this.passwordEncoder;
 		
 		/* se configura la forma en la que se va a encriptar la contraseña*/
-		UserBuilder users = User.builder().passwordEncoder(encoder::encode);
+		//UserBuilder users = User.builder().passwordEncoder(encoder::encode);
 		
-		builder.inMemoryAuthentication()
+		/* builder.inMemoryAuthentication()
 		.withUser(users.username("admin").password("12345").roles("ADMIN", "USER"))
-		.withUser(users.username("esteban").password("12345").roles("USER"));
+		.withUser(users.username("esteban").password("12345").roles("USER")); */
+		
+		/* ===================================================================
+		 *  Ahora vamos a implementar y configurar la autenticacion mediante JDBC */
+		builder.jdbcAuthentication()
+		.dataSource(dataSource)
+		.passwordEncoder(passwordEncoder)
+		.usersByUsernameQuery("select usu_username, usu_password, usu_enabled from usuario where usu_username = ?")
+		.authoritiesByUsernameQuery("select u.usu_username, r.rol_nombre from rol r inner join usuario u on (r.usu_id_rol = u.usu_id) where u.usu_username = ?");
+		
 	}
 
 
