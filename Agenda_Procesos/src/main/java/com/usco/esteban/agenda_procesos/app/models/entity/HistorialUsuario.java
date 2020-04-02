@@ -24,7 +24,7 @@ public class HistorialUsuario implements Serializable{
 
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="his_usu_id")
 	private Long id;
 	

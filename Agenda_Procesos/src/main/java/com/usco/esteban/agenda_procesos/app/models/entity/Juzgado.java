@@ -25,7 +25,7 @@ public class Juzgado implements Serializable
 	
 	@Id
 	@Column(name="juz_id")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@Column(name ="juz_nombre")

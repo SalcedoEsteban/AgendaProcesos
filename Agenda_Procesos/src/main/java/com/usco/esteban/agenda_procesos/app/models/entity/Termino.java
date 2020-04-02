@@ -25,7 +25,7 @@ public class Termino implements Serializable {
 	
 	@Id
 	@Column(name = "ter_id")
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@Column(name ="ter_nombre")
