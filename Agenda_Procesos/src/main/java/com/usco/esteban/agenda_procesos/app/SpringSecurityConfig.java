@@ -1,18 +1,19 @@
 package com.usco.esteban.agenda_procesos.app;
 
-import javax.sql.DataSource;
+//import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.User.UserBuilder;
+//import org.springframework.security.core.userdetails.User;
+//import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.usco.esteban.agenda_procesos.app.auth.handler.LoginSuccessHandler;
+import com.usco.esteban.agenda_procesos.app.models.service.JpaUsuarioDetailsService;
 
 @Configuration
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
@@ -26,8 +27,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 	private BCryptPasswordEncoder passwordEncoder;
 	
 	/* inyectamos el data source para la conexion a la base de datos mediante JDBC*/
+	/* @Autowired
+	private DataSource dataSource; */
+	
 	@Autowired
-	private DataSource dataSource;
+	private JpaUsuarioDetailsService userDetailsService;
 	
 	/*se debe implementar un metodo para poder registrar y configurar los usuarios se guardaran
 	 *  los usuarios en memoria*/
@@ -47,11 +51,17 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 		
 		/* ===================================================================
 		 *  Ahora vamos a implementar y configurar la autenticacion mediante JDBC */
-		builder.jdbcAuthentication()
+		/*builder.jdbcAuthentication()
 		.dataSource(dataSource)
 		.passwordEncoder(passwordEncoder)
 		.usersByUsernameQuery("select usu_username, usu_password, usu_enabled from usuario where usu_username = ?")
 		.authoritiesByUsernameQuery("select u.usu_username, r.rol_nombre from rol r inner join usuario u on (r.usu_id_rol = u.usu_id) where u.usu_username = ?");
+		*/
+		
+		//===========================================================================
+		/* Implementamos la autenticacion con JPA Y Spring security*/
+		builder.userDetailsService(userDetailsService)
+		.passwordEncoder(passwordEncoder);
 		
 	}
 

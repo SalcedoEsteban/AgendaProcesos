@@ -35,3 +35,11 @@ insert into detalle_termino (det_ter_id, det_ter_dias_habiles, det_ter_fecha_inc
 insert into detalle_termino (det_ter_id, det_ter_dias_habiles, det_ter_fecha_incial, det_ter_fecha_final, ter_id_det_ter, pro_id_det_ter) values (3, true, '02-03-2019', '02-03-2020', 3, 1);
 insert into detalle_termino (det_ter_id, det_ter_dias_habiles, det_ter_fecha_incial, det_ter_fecha_final, ter_id_det_ter, pro_id_det_ter) values (4, true, '02-03-2019', '02-03-2020', 1, 2);
 insert into detalle_termino (det_ter_id, det_ter_dias_habiles, det_ter_fecha_incial, det_ter_fecha_final, ter_id_det_ter, pro_id_det_ter) values (5, true, '02-03-2019', '02-03-2020', 2, 2);
+
+
+insert into usuario (usu_username, usu_password, usu_enabled) values ('esteban', '$2a$10$H.1m8ANlFM3y.BojAvJ8oe9KA52MF.FCuaDKKE3F9O2YEs.XZ2qlO', true);
+insert into usuario (usu_username, usu_password, usu_enabled) values ('admin', '$2a$10$aAJMf3apCrhKeK04wo2LHuMAXWGXMzc95y.DZkQPYFfp1XXikKDIC', true);
+
+insert into rol (rol_nombre, usu_id_rol) values ('ROLE_USER', 1);
+insert into rol (rol_nombre, usu_id_rol) values ('ROLE_USER', 2);
+insert into rol (rol_nombre, usu_id_rol) values ('ROLE_ADMIN', 2);
