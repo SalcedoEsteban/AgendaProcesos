@@ -37,9 +37,9 @@ public class Termino implements Serializable {
 	@Column(name = "ter_basico")
 	private boolean basico;
 	
-	/*@Column(name ="ter_tipo_proceso")
+	@Column(name ="ter_esp")
 	@NotEmpty
-	private String tipoProceso;*/
+	private String esp;
 	
 	@OneToMany(mappedBy = "termino", fetch = FetchType.LAZY, cascade=CascadeType.ALL)
 	private List<DetalleTermino> detalleTerminos;
@@ -99,13 +99,14 @@ public class Termino implements Serializable {
 		this.tipoProceso = tipoProceso;
 	}
 
-	/*public String getTipoProceso() {
-		return tipoProceso;
+
+	public String getEsp() {
+		return esp;
 	}
 
-	public void setTipoProceso(String tipoProceso) {
-		this.tipoProceso = tipoProceso;
-	}*/
+	public void setEsp(String esp) {
+		this.esp = esp;
+	}
 
 	public List<DetalleTermino> getDetalleTerminos() {
 		return detalleTerminos;

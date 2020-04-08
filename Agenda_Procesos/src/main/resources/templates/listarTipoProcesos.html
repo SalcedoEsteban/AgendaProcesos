@@ -19,6 +19,7 @@
 							<th>Id</th>
 							<th>Nombre</th>
 							<th>Asignar Termino</th>
+							<th>Ver Terminos</th>
 							<th>Editar</th>
 							<th>Eliminar</th>
 						</tr>
@@ -29,6 +30,8 @@
 							<td th:text="${tipo.nombre}"></td>
 							<td><a th:href="@{'/formTermino/' + ${tipo.id}}"
 								class="btn btn-success">Asignar Termino</a></td>
+							<td><a th:href="@{'/verTerminosTipoProceso/' + ${tipo.id}}"
+								class="btn btn-success">Ver Terminos</a></td>
 							<td><a th:href="@{/formTipoProceso/} + ${tipo.id}"
 								class="btn btn-primary btn-xs">Editar</a></td>
 							<td><a th:href="@{/eliminarTipoProceso/} + ${tipo.id}"

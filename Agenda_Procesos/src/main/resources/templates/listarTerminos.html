@@ -16,15 +16,19 @@
 					<thead class="thead-dark">
 						<tr>
 							<th>Id</th>
+							<!-- <th>Tipo proceso</th>  -->
 							<th>Nombre</th>
-							<th>Numero d�as</th>
+							<th>Numero días</th>
 							<th>Basico</th>
+							<th>Editar</th>
+							<th>
 							<!-- <th>Tipo Proceso</th>  -->
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="termino: ${terminos}">
+						<tr th:each="termino: ${tipoProceso.terminos}">
 							<td th:text="${termino.id}"></td>
+							<!-- <td th:tex="${termino.tipoProceso}"></td>  -->
 							<td th:text="${termino.nombre}"></td>
 							<td th:text="${termino.numeroDias}"></td>
 							<td th:text="${termino.basico}"></td>

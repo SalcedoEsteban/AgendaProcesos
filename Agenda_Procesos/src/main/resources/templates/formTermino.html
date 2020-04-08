@@ -50,7 +50,7 @@
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Especialidad</label>
 						<div class="col-sm-6">
-							<select name="especialidad" class="form-control" id="especialidad"
+							<select class="form-control" th:field="*{esp}"
 								th:errorclass="'form-control alert-danger'">
 								<option th:each="especialidad: ${especialidades}"
 									th:value="${especialidad.id}" th:text="${especialidad.nombre}"></option>

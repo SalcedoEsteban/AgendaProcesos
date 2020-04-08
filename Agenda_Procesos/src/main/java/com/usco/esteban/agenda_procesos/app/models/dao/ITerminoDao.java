@@ -12,4 +12,6 @@ public interface ITerminoDao {
 	public void save(Termino termino);
 	
 	public Termino findOne(Long id);
+	
+	public void delete(Long id);
 }

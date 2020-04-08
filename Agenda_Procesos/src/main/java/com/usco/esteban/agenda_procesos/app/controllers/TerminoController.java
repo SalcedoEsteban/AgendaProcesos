@@ -82,19 +82,30 @@ public class TerminoController
 	}*/
 	
 	@PostMapping(value ="/guardarTermino")
-	public String guardar(@RequestParam(name="especialidad") String especialidad,Termino termino)
+	public String guardar(Termino termino)
 	{
-		Long id = Long.parseLong(especialidad);
+		Long esp = Long.parseLong(termino.getEsp());
 		
-		Especialidad esp = especialidadDao.findOne(id);
+		Especialidad especialidad = especialidadDao.findOne(esp);
 		
-		termino.setEspecialidad(esp);
+		termino.setEspecialidad(especialidad);
 		
 		
 		terminoDao.save(termino);
 		
-		return "redirect:listarTerminos";
+		return "redirect:/listarTiposProceso";
 	}
+	
+	@GetMapping(value="/eliminarTermino/{id}")
+	public String eliminar(@RequestParam(name = "id") Long id)
+	{
+		if(id > 0)
+		{
+			terminoDao.delete(id);
+		}
 		
+		return "redirect:/listarTerminos";
+	}
+	
 	
 }

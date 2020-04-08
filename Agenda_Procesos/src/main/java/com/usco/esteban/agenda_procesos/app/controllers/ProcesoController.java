@@ -77,7 +77,7 @@ public class ProcesoController {
 	}
 	
 	
-	@GetMapping(value = "/verTerminos/{id}")
+	@GetMapping(value = "/verTerminosProceso/{id}")
 	public String verTerminos(@PathVariable(name ="id") Long id, Map<String, Object> model, RedirectAttributes flash)
 	{
 		Proceso proceso = procesoService.findOne(id);

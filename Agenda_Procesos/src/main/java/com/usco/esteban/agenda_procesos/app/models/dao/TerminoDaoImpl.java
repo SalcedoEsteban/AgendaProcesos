@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.usco.esteban.agenda_procesos.app.models.entity.Termino;
 
 @Repository
-public class TerminoDaoImpl implements ITerminoDao {
-
+public class TerminoDaoImpl implements ITerminoDao
+{
 	@PersistenceContext
 	private EntityManager em;
 	
@@ -23,7 +23,14 @@ public class TerminoDaoImpl implements ITerminoDao {
 		
 		return em.createQuery("from Termino").getResultList();
 	}
-
+	
+	@Override
+	@Transactional(readOnly = true)
+	public Termino findOne(Long id) {
+		
+		return em.find(Termino.class, id);
+	}
+	
 	@Override
 	@Transactional
 	public void save(Termino termino) {
@@ -31,9 +38,10 @@ public class TerminoDaoImpl implements ITerminoDao {
 	}
 
 	@Override
-	public Termino findOne(Long id) {
-		
-		return em.find(Termino.class, id);
+	@Transactional
+	public void delete(Long id)
+	{	
+		Termino termino = findOne(id);	
+		em.remove(termino);	
 	}
-
 }

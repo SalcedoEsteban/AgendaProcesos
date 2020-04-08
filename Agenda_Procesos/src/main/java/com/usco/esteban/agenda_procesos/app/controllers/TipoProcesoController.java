@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.usco.esteban.agenda_procesos.app.models.entity.TipoProceso;
 import com.usco.esteban.agenda_procesos.app.models.service.ITipoProcesoService;
@@ -91,6 +92,22 @@ public class TipoProcesoController {
 			tipoProcesoService.delete(id);
 		}
 		return "redirect:/listarTiposProceso";
+	}
+	
+	@RequestMapping(value="/verTerminosTipoProceso/{id}")
+	public String verTerminos(@PathVariable(name="id") Long id, Map<String, Object> model, RedirectAttributes flash)
+	{
+		TipoProceso tipoProceso = tipoProcesoService.findOne(id);
+		
+		if (tipoProceso == null)
+		{
+			flash.addFlashAttribute("error", "El tipo Proceso no existe en la base de datos");
+		}
+		
+		model.put("tipoProceso", tipoProceso);
+		model.put("titulo","Terminos para el tipo de proceso: ".concat(tipoProceso.getNombre()));
+		
+		return "listarTerminos";
 	}
 
 }
