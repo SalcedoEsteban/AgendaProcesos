@@ -9,20 +9,19 @@
 		<div class="card bg-light">
 			<div class="card-header" th:text="${titulo}"></div>
 			<div class="card-body">
-				<!-- <div class="card-title">
+				<div class="card-title">
 					<a th:href="@{/formTermino}" class="btn btn-success btn-xs">Crear Termino</a>
-				</div>  -->
+				</div>
 				<table class="table table-striped table-bordered">
 					<thead class="thead-dark">
 						<tr>
 							<th>Id</th>
-							<!-- <th>Tipo proceso</th>  -->
 							<th>Nombre</th>
 							<th>Numero días</th>
 							<th>Basico</th>
 							<th>Editar</th>
-							<th>
-							<!-- <th>Tipo Proceso</th>  -->
+							<th>Eliminar</th>
+
 						</tr>
 					</thead>
 					<tbody>
@@ -31,8 +30,11 @@
 							<!-- <td th:tex="${termino.tipoProceso}"></td>  -->
 							<td th:text="${termino.nombre}"></td>
 							<td th:text="${termino.numeroDias}"></td>
-							<td th:text="${termino.basico}"></td>
-							<!-- <td th:text="${termino.tipoProceso}"></td> -->
+							<td th:if="${termino.basico} == true" th:text="Sí"></td>
+							<td><a th:href="@{/editarTermino/} + ${termino.id}"
+								class="btn btn-primary btn-xs">Editar</a></td>
+							<td><a th:href="@{/eliminarTermino/} + ${termino.id}" 
+								class="btn btn-danger btn-xs" th:text="Eliminar"></a></td>
 						</tr>
 					</tbody>
 				</table>
