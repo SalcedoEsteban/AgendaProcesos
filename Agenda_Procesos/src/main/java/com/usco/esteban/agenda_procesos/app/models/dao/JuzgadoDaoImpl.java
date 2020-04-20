@@ -18,7 +18,6 @@ public class JuzgadoDaoImpl implements IJuzgadoDao {
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	@Transactional(readOnly = true)
 	public List<Juzgado> findAll()
 	{	
 		return em.createQuery("from Juzgado").getResultList();
@@ -26,8 +25,16 @@ public class JuzgadoDaoImpl implements IJuzgadoDao {
 
 	@Override
 	public void save(Juzgado juzgado) {
-		// TODO Auto-generated method stub
-
+		
+		if(juzgado.getId() != null && juzgado.getId() >0 )
+		{
+			em.merge(juzgado);
+		}
+		else
+		{
+			em.persist(juzgado);
+		}
+		
 	}
 
 	@Override

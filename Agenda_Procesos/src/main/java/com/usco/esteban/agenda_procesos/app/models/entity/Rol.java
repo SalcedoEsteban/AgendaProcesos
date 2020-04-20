@@ -4,9 +4,12 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -23,6 +26,10 @@ public class Rol implements Serializable
 	
 	@Column(name = "rol_nombre")
 	private String rol;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "usu_id_rol", nullable = false, updatable = false)
+	private Usuario usuario;
 
 	public Long getId() {
 		return id;
@@ -40,5 +47,11 @@ public class Rol implements Serializable
 		this.rol = rol;
 	}
 
-	
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
+	}
 }

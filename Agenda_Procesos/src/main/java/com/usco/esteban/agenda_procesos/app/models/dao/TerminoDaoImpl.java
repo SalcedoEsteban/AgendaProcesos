@@ -34,7 +34,15 @@ public class TerminoDaoImpl implements ITerminoDao
 	@Override
 	@Transactional
 	public void save(Termino termino) {
-		 em.persist(termino);
+		
+		if(termino.getId() != null && termino.getId() > 0)
+		{
+			em.merge(termino);
+		}
+		else
+		{
+			em.persist(termino);
+		}
 	}
 
 	@Override

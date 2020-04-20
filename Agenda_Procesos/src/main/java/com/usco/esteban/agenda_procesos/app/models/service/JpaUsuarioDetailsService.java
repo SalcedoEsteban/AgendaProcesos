@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -64,4 +65,27 @@ public class JpaUsuarioDetailsService implements UserDetailsService
 		return new User(username, usuario.getPassword(), usuario.isEnabled(), true, true, true, roles);
 	}
 	
+	@Transactional(readOnly = true)
+	public List<Usuario> findAll()
+	{
+		return (List<Usuario>) usuarioDao.findAll();
+	}
+	
+	@Transactional
+	public void save(Usuario usuario)
+	{
+		usuarioDao.save(usuario);
+	}
+	
+	@Transactional(readOnly = true)
+	public Usuario findOne(Long id)
+	{
+		return usuarioDao.findById(id).orElse(null);
+	}
+	
+	@Transactional
+	public void delete(Long id)
+	{
+		usuarioDao.deleteById(id);
+	}
 }

@@ -42,6 +42,9 @@ public class Juzgado implements Serializable
 	@JoinColumn(name ="esp_id_juz", nullable = false, updatable = false)
 	private Especialidad especialidad;
 	
+	@OneToMany(mappedBy = "juzgado", fetch = FetchType.LAZY)
+	private List<Usuario> usuarios;
+	
 	
 	public Long getId() {
 		return id;
@@ -81,5 +84,15 @@ public class Juzgado implements Serializable
 
 	public void setEspecialidad(Especialidad especialidad) {
 		this.especialidad = especialidad;
-	} 
+	}
+
+	public List<Usuario> getUsuarios() {
+		return usuarios;
+	}
+
+	public void setUsuarios(List<Usuario> usuarios) {
+		this.usuarios = usuarios;
+	}
+	
+	
 }

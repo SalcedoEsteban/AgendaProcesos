@@ -11,8 +11,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name ="usuario")
@@ -32,10 +34,21 @@ public class Usuario implements Serializable
 	@Column(name = "usu_enabled")
 	private boolean enabled;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@Column(name ="usu_nombre")
+	private String nombre;
+	
+	@Column(name ="usu_apellido")
+	private String apellido;
+	
+	@OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	/* llave foranea de la tabla rol*/
-	@JoinColumn(name = "usu_id_rol")
+	//@JoinColumn(name = "usu_id_rol")
 	private List<Rol> roles;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name ="juz_id_usu", nullable = false, updatable = false)
+	@NotNull
+	private Juzgado juzgado;
 	
 	private static final long serialVersionUID = 1L;
 
@@ -71,6 +84,22 @@ public class Usuario implements Serializable
 		this.enabled = enabled;
 	}
 
+	public String getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+	
+	public String getApellido() {
+		return apellido;
+	}
+
+	public void setApellido(String apellido) {
+		this.apellido = apellido;
+	}
+
 	public List<Rol> getRoles() {
 		return roles;
 	}
@@ -78,7 +107,12 @@ public class Usuario implements Serializable
 	public void setRoles(List<Rol> roles) {
 		this.roles = roles;
 	}
-	
-	
 
+	public Juzgado getJuzgado() {
+		return juzgado;
+	}
+
+	public void setJuzgado(Juzgado juzgado) {
+		this.juzgado = juzgado;
+	}
 }
