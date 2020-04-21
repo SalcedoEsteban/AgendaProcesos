@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -34,6 +35,7 @@ public class Usuario implements Serializable
 	@Column(name = "usu_enabled")
 	private boolean enabled;
 	
+	
 	@Column(name ="usu_nombre")
 	private String nombre;
 	
@@ -52,6 +54,19 @@ public class Usuario implements Serializable
 	
 	private static final long serialVersionUID = 1L;
 
+	/*este metodo se invoca justo antes de insertar en la base de datos*/
+	@PrePersist
+	public void prePersistEnabled()
+	{
+		this.enabled = true;
+	}
+	
+	/*@PrePersist
+	public void prePersistFecha()
+	{
+		//createAt = new Date();
+	}*/
+	
 	public Long getId() {
 		return id;
 	}
