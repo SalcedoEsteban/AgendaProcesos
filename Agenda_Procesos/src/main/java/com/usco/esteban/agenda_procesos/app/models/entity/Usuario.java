@@ -1,6 +1,7 @@
 package com.usco.esteban.agenda_procesos.app.models.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -11,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
@@ -34,7 +37,6 @@ public class Usuario implements Serializable
 	
 	@Column(name = "usu_enabled")
 	private boolean enabled;
-	
 	
 	@Column(name ="usu_nombre")
 	private String nombre;
@@ -61,11 +63,19 @@ public class Usuario implements Serializable
 		this.enabled = true;
 	}
 	
+	//de esta forma se puede guardar la fecha en el sistema
 	/*@PrePersist
 	public void prePersistFecha()
 	{
 		//createAt = new Date();
 	}*/
+	
+	@OneToMany
+	(
+		mappedBy = "usuario",
+		orphanRemoval = true
+	)
+	private List<ProcesoUsuario> listProcesosUsuarios = new ArrayList<>();
 	
 	public Long getId() {
 		return id;
@@ -130,4 +140,81 @@ public class Usuario implements Serializable
 	public void setJuzgado(Juzgado juzgado) {
 		this.juzgado = juzgado;
 	}
+
+	public List<ProcesoUsuario> getListProcesosUsuarios() {
+		return listProcesosUsuarios;
+	}
+
+	public void setListProcesosUsuarios(List<ProcesoUsuario> listProcesosUsuarios) {
+		this.listProcesosUsuarios = listProcesosUsuarios;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((apellido == null) ? 0 : apellido.hashCode());
+		result = prime * result + (enabled ? 1231 : 1237);
+		result = prime * result + ((juzgado == null) ? 0 : juzgado.hashCode());
+		result = prime * result + ((nombre == null) ? 0 : nombre.hashCode());
+		result = prime * result + ((password == null) ? 0 : password.hashCode());
+		result = prime * result + ((roles == null) ? 0 : roles.hashCode());
+		result = prime * result + ((username == null) ? 0 : username.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Usuario other = (Usuario) obj;
+		if (apellido == null) {
+			if (other.apellido != null)
+				return false;
+		} else if (!apellido.equals(other.apellido))
+			return false;
+		if (enabled != other.enabled)
+			return false;
+		if (juzgado == null) {
+			if (other.juzgado != null)
+				return false;
+		} else if (!juzgado.equals(other.juzgado))
+			return false;
+		if (nombre == null) {
+			if (other.nombre != null)
+				return false;
+		} else if (!nombre.equals(other.nombre))
+			return false;
+		if (password == null) {
+			if (other.password != null)
+				return false;
+		} else if (!password.equals(other.password))
+			return false;
+		if (roles == null) {
+			if (other.roles != null)
+				return false;
+		} else if (!roles.equals(other.roles))
+			return false;
+		if (username == null) {
+			if (other.username != null)
+				return false;
+		} else if (!username.equals(other.username))
+			return false;
+		return true;
+	}
+
+	/* public List<Proceso> getProcesos() {
+		return procesos;
+	}
+
+	public void setProcesos(List<Proceso> procesos) {
+		this.procesos = procesos;
+	}*/
+	
+	
 }
+
