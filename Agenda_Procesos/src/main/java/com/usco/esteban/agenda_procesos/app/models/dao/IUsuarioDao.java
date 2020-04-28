@@ -1,10 +1,18 @@
 package com.usco.esteban.agenda_procesos.app.models.dao;
 
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
+import com.usco.esteban.agenda_procesos.app.models.entity.Juzgado;
 import com.usco.esteban.agenda_procesos.app.models.entity.Usuario;
 
-public interface IUsuarioDao extends CrudRepository<Usuario, Long>
+public interface IUsuarioDao extends  JpaRepository<Usuario, Long>
 {
 	public Usuario findByUsername(String username);
+	
+	@Query("select u from Usuario u where u.juzgado = ?1 ")
+	public List<Usuario> findByJuzgado(Juzgado juzgado);
 }

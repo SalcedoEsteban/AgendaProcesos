@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.usco.esteban.agenda_procesos.app.models.dao.IUsuarioDao;
+import com.usco.esteban.agenda_procesos.app.models.entity.Juzgado;
 import com.usco.esteban.agenda_procesos.app.models.entity.Rol;
 import com.usco.esteban.agenda_procesos.app.models.entity.Usuario;
 
@@ -87,5 +88,11 @@ public class JpaUsuarioDetailsService implements UserDetailsService
 	public void delete(Long id)
 	{
 		usuarioDao.deleteById(id);
+	}
+	
+	@Transactional(readOnly = true)
+	public List<Usuario> findByJuzgado(Juzgado juzgado)
+	{
+		return usuarioDao.findByJuzgado(juzgado);
 	}
 }

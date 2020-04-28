@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,11 +29,15 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.usco.esteban.agenda_procesos.app.models.dao.IJuzgadoDao;
 import com.usco.esteban.agenda_procesos.app.models.dao.IProcesoDao;
 import com.usco.esteban.agenda_procesos.app.models.dao.ITipoProcesoDao;
+import com.usco.esteban.agenda_procesos.app.models.dao.IUsuarioDao;
 import com.usco.esteban.agenda_procesos.app.models.dao.JuzgadoDaoImpl;
 import com.usco.esteban.agenda_procesos.app.models.entity.Juzgado;
 import com.usco.esteban.agenda_procesos.app.models.entity.Proceso;
+import com.usco.esteban.agenda_procesos.app.models.entity.ProcesoUsuario;
 import com.usco.esteban.agenda_procesos.app.models.entity.TipoProceso;
+import com.usco.esteban.agenda_procesos.app.models.entity.Usuario;
 import com.usco.esteban.agenda_procesos.app.models.service.IProcesoService;
+import com.usco.esteban.agenda_procesos.app.models.service.JpaUsuarioDetailsService;
 
 @Controller
 /* con este atributo se pasa el objeto (y sus datos) mapeado al formulario a la sesion
@@ -51,6 +58,27 @@ public class ProcesoController {
 	
 	@Autowired
 	private IJuzgadoDao juzgadoDao;
+	
+	//@Autowired
+	//private IProcesoUsuarioService procesoUsuarioService;
+	
+	@Autowired
+	private IUsuarioDao usuarioDao;
+	
+	private Usuario usuario;
+	
+	
+	public Long getUserId()
+	{
+		Long id;
+		
+				
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetail = (UserDetails) auth.getPrincipal();
+		usuario = this.usuarioDao.findByUsername(userDetail.getUsername());
+		id = usuario.getId();
+		return id;
+	}
 	
 	@GetMapping(value="/verDetalleProceso/{id}")
 	public String verDetalleProceso(@PathVariable(name = "id") Long id, Map<String, Object> model)
@@ -110,6 +138,8 @@ public class ProcesoController {
 		
 		Page<Proceso> procesos = procesoService.findAll(pageRequest);
 		
+		//Page<ProcesoUsuario> procesos = procesoUsuarioService.findAllById(getUserId(), pageRequest);
+		
 		model.addAttribute("titulo", "Listado de procesos");
 		//model.addAttribute("procesos", procesoService.findAll());
 		model.addAttribute("procesos", procesos);
@@ -119,12 +149,27 @@ public class ProcesoController {
 	@RequestMapping(value ="/formProceso")
 	public String crear(Map<String, Object> model)
 	{
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetail = (UserDetails) auth.getPrincipal();
+		usuario = this.usuarioDao.findByUsername(userDetail.getUsername());
+		
+		Long id = usuario.getJuzgado().getId();
+		System.out.println("id del jusgado: " + id);
+		
+		String nombre = usuario.getNombre();
+		System.out.println("nombre usuario: " + nombre);
+		
+		Juzgado juzgado = usuario.getJuzgado();
+		System.out.println("el juzgado es: " + juzgado);
+		
+		List<Usuario> usuarios = usuarioDao.findByJuzgado(juzgado);
 		/* esta es una primera fase en la que se muestra el formulario al ususario, se hace
 		 * una instancia de un proceso y se envia a la vista*/
-		
 		Proceso proceso = new Proceso();
 		
 		model.put("proceso", proceso);
+		model.put("usuarios", usuarios);
 		model.put("tipoProcesos", tipoProcesoDao.findAll());
 		model.put("juzgados", juzgadoDao.findAll());
 		model.put("titulo", "Crear Proceso");
