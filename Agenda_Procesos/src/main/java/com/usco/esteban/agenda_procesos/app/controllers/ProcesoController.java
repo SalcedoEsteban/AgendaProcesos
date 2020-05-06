@@ -37,7 +37,9 @@ import com.usco.esteban.agenda_procesos.app.models.entity.ProcesoUsuario;
 import com.usco.esteban.agenda_procesos.app.models.entity.TipoProceso;
 import com.usco.esteban.agenda_procesos.app.models.entity.Usuario;
 import com.usco.esteban.agenda_procesos.app.models.service.IProcesoService;
+import com.usco.esteban.agenda_procesos.app.models.service.IProcesoUsuarioService;
 import com.usco.esteban.agenda_procesos.app.models.service.JpaUsuarioDetailsService;
+import com.usco.esteban.agenda_procesos.app.util.paginator.PageRender;
 
 @Controller
 /* con este atributo se pasa el objeto (y sus datos) mapeado al formulario a la sesion
@@ -59,11 +61,13 @@ public class ProcesoController {
 	@Autowired
 	private IJuzgadoDao juzgadoDao;
 	
-	//@Autowired
-	//private IProcesoUsuarioService procesoUsuarioService;
+	@Autowired
+	private IProcesoUsuarioService procesoUsuarioService;
 	
 	@Autowired
 	private IUsuarioDao usuarioDao;
+	
+	private JpaUsuarioDetailsService usuarioService;
 	
 	private Usuario usuario;
 	
@@ -134,15 +138,28 @@ public class ProcesoController {
 	@RequestMapping(value = "/listarProcesos", method = RequestMethod.GET)
 	public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model)
 	{
-		Pageable pageRequest = PageRequest.of(page, 4);
+		Pageable pageRequest = PageRequest.of(page, 1);
 		
-		Page<Proceso> procesos = procesoService.findAll(pageRequest);
+		Long id = getUserId();
+		//Page<Proceso> procesos = procesoService.findAll(pageRequest);
 		
-		//Page<ProcesoUsuario> procesos = procesoUsuarioService.findAllById(getUserId(), pageRequest);
+		Page<ProcesoUsuario> procesosUsuario = procesoUsuarioService.findAllById(id, pageRequest);
+		
+		PageRender<ProcesoUsuario> pageRender = new PageRender<>("/listarProcesos", procesosUsuario); 
+		
+		System.out.println(procesosUsuario.isEmpty());
+		System.out.println(procesosUsuario.getNumberOfElements());
+		
+		for (ProcesoUsuario procesoUsuario : procesosUsuario) {
+			System.out.println(procesoUsuario.getProceso().getRadicado());
+		}
+		
+		
 		
 		model.addAttribute("titulo", "Listado de procesos");
 		//model.addAttribute("procesos", procesoService.findAll());
-		model.addAttribute("procesos", procesos);
+		model.addAttribute("procesos", procesosUsuario);
+		model.addAttribute("page", pageRender);
 		return "listarProcesos";
 	}
 	
@@ -208,7 +225,7 @@ public class ProcesoController {
 	}
 	
 	@RequestMapping(value = "/guardarProceso")
-	public String guardar(@Valid Proceso proceso, BindingResult result, Model model, RedirectAttributes flash, SessionStatus status)
+	public String guardar(@RequestParam(value = "usuario") String usuario, @Valid Proceso proceso, BindingResult result, Model model, RedirectAttributes flash, SessionStatus status)
 	{
 		/* si al validar los campos, estos contienen errores se envia al formulario de
 		 * crear proceso de nuevo para que se corrijan los errores*/
@@ -230,10 +247,8 @@ public class ProcesoController {
 		
 		/* obtenemos el id de tipo string y lo se parsea a Long */
 		Long tProceso = Long.parseLong(proceso.gettProceso());
-		
 		/* luego de parseado se busca el objeto y se asigna*/
 		TipoProceso tipoProceso = tipoProcesoDao.findOne(tProceso);
-		
 		/* y se establece la relacion guradando el tipo de proceso*/
 		proceso.setTipoProceso(tipoProceso);
 		
@@ -241,11 +256,20 @@ public class ProcesoController {
 		/*obtenemos el id tipo string del juzgado */
 		Long juz = Long.parseLong(proceso.getJuz());
 		Juzgado juzgado = juzgadoDao.findOne(juz);
-		
 		proceso.setJuzgado(juzgado);
 		
+		Long id = Long.parseLong(usuario);
+		//Usuario usu = usuarioService.findOne(id);
+		System.out.println("el id del usuario es " + id);
 		
-		procesoService.save(proceso);
+		/*ProcesoUsuario procesoUsuario = new ProcesoUsuario();
+		procesoUsuario.setProceso(proceso);
+		procesoUsuario.setUsuario(usu);*/
+		
+		//procesoUsuarioService.save(procesoUsuario);
+		
+		
+		procesoService.save(proceso);	
 		
 		
 		/* despues de guardar el objeto, se termina la sesion */

@@ -54,31 +54,32 @@
 					<tbody>
 						<tr th:each="proceso: ${procesos}">
 
-							<td th:text="${proceso.radicado}"></td>
-							<td th:text="${proceso.demandante}"></td>
-							<td th:text="${proceso.demandado}"></td>
-							<td th:text="${proceso.fechaReparto}"></td>
-							<td><a th:href="@{'/verDetalleProceso/' + ${proceso.id}}"
-								th:text="${proceso.id}" class="btn btn-primary btn-xs"></a></td>
+							<td th:text="${proceso.proceso.radicado}"></td>
+							<td th:text="${proceso.proceso.demandante}"></td>
+							<td th:text="${proceso.proceso.demandado}"></td>
+							<td th:text="${proceso.proceso.fechaReparto}"></td>
+							<td><a th:href="@{'/verDetalleProceso/' + ${proceso.proceso.id}}"
+								th:text="${proceso.proceso.id}" class="btn btn-primary btn-xs"></a></td>
 							<!-- <td th:text="${proceso.ultimaActuacion}"></td>  -->
 							<!-- <td th:text="${proceso.estadoActual}"></td>  -->
 							<!-- <td th:text="${proceso.estado}"></td>  -->
-							<td><a th:href="@{/verTerminosProceso/} + ${proceso.id}"
+							<td><a th:href="@{/verTerminosProceso/} + ${proceso.proceso.id}"
 								class="btn btn-primary btn-xs"><img alt=""
 									src="/icons/search.svg" width="20" height="20"></a></td>
-							<td><a th:href="@{'/crearDetalleTermino/' + ${proceso.id}}"
+							<td><a th:href="@{'/crearDetalleTermino/' + ${proceso.proceso.id}}"
 								class="btn btn-primary btn-xs"><img alt=""
 									src="/icons/bell-fill.svg" width="20" height="20"></a></td>
-							<td sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/formProceso/} + ${proceso.id}"
+							<td sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/formProceso/} + ${proceso.proceso.id}"
 								class="btn btn-primary btn-xs"><img alt=""
 									src="/icons/pencil.svg" width="20" height="20"></a></td>
-							<td sec:authorize="hasRole('ROLE_ADMIN')"><a  th:href="@{/eliminarProceso/} + ${proceso.id}"
+							<td sec:authorize="hasRole('ROLE_ADMIN')"><a  th:href="@{/eliminarProceso/} + ${proceso.proceso.id}"
 								class="btn btn-danger btn-xs" id="botonEliminar"
 								onclick="return confirm('¿Eliminar elemento?')"><img alt=""
 									src="/icons/x-square-fill.svg" width="20" height="20"></a></td>
 						</tr>
 					</tbody>
 				</table>
+				<nav th:replace="paginator-nav"></nav>
 			</div>
 		</div>
 	</div>

@@ -67,7 +67,7 @@ public class Proceso implements Serializable {
 
 	//CAMBIAR POR TIPO BOOLEAN Y NOMBRE CAMPO 'ENABLED'
 	@Column(name = "pro_estado")
-	private int estado;
+	private boolean estado;
 
 	@Column(name = "pro_tipo_proceso")
 	@NotEmpty
@@ -182,11 +182,11 @@ public class Proceso implements Serializable {
 		this.estadoActual = estadoActual;
 	}
 
-	public int getEstado() {
+	public boolean getEstado() {
 		return estado;
 	}
 
-	public void setEstado(int estado) {
+	public void setEstado(boolean estado) {
 		this.estado = estado;
 	}
 
@@ -288,14 +288,16 @@ public class Proceso implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((alarma == null) ? 0 : alarma.hashCode());
+		result = prime * result + ((createAt == null) ? 0 : createAt.hashCode());
 		result = prime * result + ((demandado == null) ? 0 : demandado.hashCode());
 		result = prime * result + ((demandante == null) ? 0 : demandante.hashCode());
 		result = prime * result + ((detalleTerminos == null) ? 0 : detalleTerminos.hashCode());
-		result = prime * result + estado;
+		result = prime * result + (estado ? 1231 : 1237);
 		result = prime * result + ((estadoActual == null) ? 0 : estadoActual.hashCode());
 		result = prime * result + ((fechaReparto == null) ? 0 : fechaReparto.hashCode());
 		result = prime * result + ((juz == null) ? 0 : juz.hashCode());
 		result = prime * result + ((juzgado == null) ? 0 : juzgado.hashCode());
+		result = prime * result + ((procesosUsuarios == null) ? 0 : procesosUsuarios.hashCode());
 		result = prime * result + ((radicado == null) ? 0 : radicado.hashCode());
 		result = prime * result + ((tProceso == null) ? 0 : tProceso.hashCode());
 		result = prime * result + ((tipoProceso == null) ? 0 : tipoProceso.hashCode());
@@ -304,8 +306,7 @@ public class Proceso implements Serializable {
 	}
 
 	@Override
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -317,6 +318,11 @@ public class Proceso implements Serializable {
 			if (other.alarma != null)
 				return false;
 		} else if (!alarma.equals(other.alarma))
+			return false;
+		if (createAt == null) {
+			if (other.createAt != null)
+				return false;
+		} else if (!createAt.equals(other.createAt))
 			return false;
 		if (demandado == null) {
 			if (other.demandado != null)
@@ -355,6 +361,11 @@ public class Proceso implements Serializable {
 				return false;
 		} else if (!juzgado.equals(other.juzgado))
 			return false;
+		if (procesosUsuarios == null) {
+			if (other.procesosUsuarios != null)
+				return false;
+		} else if (!procesosUsuarios.equals(other.procesosUsuarios))
+			return false;
 		if (radicado == null) {
 			if (other.radicado != null)
 				return false;
@@ -377,6 +388,8 @@ public class Proceso implements Serializable {
 			return false;
 		return true;
 	}
+
+	
 
 	
 	

@@ -6,7 +6,10 @@ import java.util.Objects;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
@@ -22,13 +25,16 @@ public class ProcesoUsuario implements Serializable
 	private static final long serialVersionUID = 1L;
 	
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name ="pro_usu_id")
+	private Long id;
+ 
 	@ManyToOne
-	//@Column(name ="pro_id_pro_usu")
+	@JoinColumn(name ="pro_id_pro_usu")
 	private Proceso proceso;
-	
-	@Id
+ 
 	@ManyToOne
-	//@Column(name ="usu_id_pro_usu")
+	@JoinColumn(name ="usu_id_pro_usu")
 	private Usuario usuario;
 	
 	@Temporal(TemporalType.DATE)
@@ -47,15 +53,19 @@ public class ProcesoUsuario implements Serializable
 		this.proceso = proceso;
 		this.usuario = usuario;
 	}
-
+	
+	public ProcesoUsuario() {
+		
+	}
+ 
 	public Proceso getProceso() {
 		return proceso;
 	}
-
+ 
 	public void setProceso(Proceso proceso) {
 		this.proceso = proceso;
 	}
-
+ 
 	public Usuario getUsuario() {
 		return usuario;
 	}
@@ -63,15 +73,15 @@ public class ProcesoUsuario implements Serializable
 	public Date getCreatAt() {
 		return creatAt;
 	}
-
+ 
 	public void setCreatAt(Date creatAt) {
 		this.creatAt = creatAt;
 	}
-
+ 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
-
+ 
 	@Override
 	public boolean equals(Object obj) {
 		
@@ -90,7 +100,7 @@ public class ProcesoUsuario implements Serializable
 				Objects.equals(usuario, that.usuario);
 		
 	}
-
+ 
 	@Override
 	public int hashCode()
 	{

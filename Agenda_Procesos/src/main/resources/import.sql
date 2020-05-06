@@ -18,9 +18,9 @@ insert into tipo_proceso (tip_pro_nombre) values ('CUSTODIA');
 
 
 
-insert into proceso ( pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, pro_tipo_proceso, tip_pro_id_pro, pro_juzgado, juz_id_pro) values ( '2019-00200-01', ' Esteban Salcedo Alvarez', 'Alejandra Lozano', '02-03-2019', 'ADMISION', 'ESPERA DE NOT PER', 1, 1, 1, 1, 1);
-insert into proceso ( pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, pro_tipo_proceso, tip_pro_id_pro, pro_juzgado, juz_id_pro) values ( '2018-00300-02', ' Angel Roberto', 'Julian Castillo', '04-03-2019', 'ADMISION', 'ESPERA DE NOT PER', 0, 2, 2, 1, 1);
-insert into proceso ( pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, pro_tipo_proceso, tip_pro_id_pro, pro_juzgado, juz_id_pro) values ( '2018-00300-03', ' Angel Roberto', 'Julian Castillo', '04-03-2019', 'ADMISION', 'ESPERA DE NOT PER', 0, 2, 2, 2, 2);
+insert into proceso ( pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, pro_tipo_proceso, tip_pro_id_pro, pro_juzgado, juz_id_pro) values ( '2019-00200-01', ' Esteban Salcedo Alvarez', 'Alejandra Lozano', '02-03-2019', 'ADMISION', 'ESPERA DE NOT PER', true, 1, 1, 1, 1);
+insert into proceso ( pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, pro_tipo_proceso, tip_pro_id_pro, pro_juzgado, juz_id_pro) values ( '2018-00300-02', ' Angel Roberto', 'Julian Castillo', '04-03-2019', 'ADMISION', 'ESPERA DE NOT PER', true, 2, 2, 1, 1);
+insert into proceso ( pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, pro_tipo_proceso, tip_pro_id_pro, pro_juzgado, juz_id_pro) values ( '2018-00300-03', ' Angel Roberto', 'Julian Castillo', '04-03-2019', 'ADMISION', 'ESPERA DE NOT PER', false, 2, 2, 2, 2);
 
 
 
@@ -46,3 +46,6 @@ insert into usuario (usu_username, usu_password, usu_enabled, usu_nombre, juz_id
 insert into rol (rol_nombre, usu_id_rol) values ('ROLE_USER', 1);
 insert into rol (rol_nombre, usu_id_rol) values ('ROLE_USER', 2);
 insert into rol (rol_nombre, usu_id_rol) values ('ROLE_ADMIN', 2);
+
+insert into proceso_usuario (pro_id_pro_usu, usu_id_pro_usu) values (1, 2);
+insert into proceso_usuario (pro_id_pro_usu, usu_id_pro_usu) values (2, 2);
