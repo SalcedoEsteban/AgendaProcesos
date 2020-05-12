@@ -56,7 +56,7 @@ public class Proceso implements Serializable {
 	@Column(name = "pro_fecha_reparto")
 	@Temporal(TemporalType.DATE)
 	@NotNull
-	@DateTimeFormat(pattern = "dd-MM-yyyy")
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date fechaReparto;
 
 	@Column(name = "pro_ultima_actuacion")
@@ -105,8 +105,11 @@ public class Proceso implements Serializable {
 	 * @ManyToMany(cascade = CascadeType.ALL) private List<Usuario> usuarios;
 	 */
 
-	@OneToMany(mappedBy = "proceso", orphanRemoval = true)
+	@OneToMany(mappedBy = "proceso", cascade = CascadeType.ALL)
 	private List<ProcesoUsuario> procesosUsuarios = new ArrayList<>();
+	
+	/*@OneToMany(mappedBy = "proceso", orphanRemoval = true, cascade = CascadeType.ALL)
+	private List<ProcesoUsuario> procesosUsuarios = new ArrayList<>();*/
 
 	@PrePersist
 	public void prePersist()

@@ -5,6 +5,7 @@
 <meta charset="utf-8" />
 <title th:text="${titulo}"></title>
 <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/css/jquery-ui.css}" />
 </head>
 <body>
 	<header th:fragment="header">
@@ -75,9 +76,14 @@
 			(STS spring Tool Suite), Estudiante Eseban Salcedo Álvarez</p>
 
 		<!-- Scripts -->
+		
+		
 		<script th:src="@{/js/jquery-3.4.1.min.js}"></script>
+		<script th:src="@{/js/jquery-ui.js}"></script>
+		<script th:src="@{/js/script-ui.js}"></script>
 		<script th:src="@{/js/popper.min.js}"></script>
 		<script th:src="@{/js/bootstrap.min.js}"></script>
+		
 	</footer>
 
 </body>

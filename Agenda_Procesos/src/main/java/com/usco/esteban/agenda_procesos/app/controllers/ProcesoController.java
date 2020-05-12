@@ -38,6 +38,7 @@ import com.usco.esteban.agenda_procesos.app.models.entity.TipoProceso;
 import com.usco.esteban.agenda_procesos.app.models.entity.Usuario;
 import com.usco.esteban.agenda_procesos.app.models.service.IProcesoService;
 import com.usco.esteban.agenda_procesos.app.models.service.IProcesoUsuarioService;
+import com.usco.esteban.agenda_procesos.app.models.service.IUsuarioService;
 import com.usco.esteban.agenda_procesos.app.models.service.JpaUsuarioDetailsService;
 import com.usco.esteban.agenda_procesos.app.util.paginator.PageRender;
 
@@ -67,7 +68,11 @@ public class ProcesoController {
 	@Autowired
 	private IUsuarioDao usuarioDao;
 	
-	private JpaUsuarioDetailsService usuarioService;
+	@Autowired
+	private IUsuarioService usuarioService;
+	
+	
+	//private JpaUsuarioDetailsService usuarioService;
 	
 	private Usuario usuario;
 	
@@ -79,7 +84,7 @@ public class ProcesoController {
 				
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		UserDetails userDetail = (UserDetails) auth.getPrincipal();
-		usuario = this.usuarioDao.findByUsername(userDetail.getUsername());
+		usuario = this.usuarioService.findByUsername(userDetail.getUsername());
 		id = usuario.getId();
 		return id;
 	}
@@ -259,14 +264,20 @@ public class ProcesoController {
 		proceso.setJuzgado(juzgado);
 		
 		Long id = Long.parseLong(usuario);
-		//Usuario usu = usuarioService.findOne(id);
-		System.out.println("el id del usuario es " + id);
+		//Usuario usu = new Usuario(); 
+		//String username = usuarioService.findOne(id).getUsername();
+		//usu = usuarioDao.findByUsername(usuario);
+		Usuario usu = usuarioService.findOne(id);
 		
-		/*ProcesoUsuario procesoUsuario = new ProcesoUsuario();
+		/*System.out.println("el id del usuario es " + id);
+		System.out.println("el nombre del usuario es" + usu.getNombre());
+		System.out.println("el radicado del proceso es: " + proceso.getRadicado());
+		
+		ProcesoUsuario procesoUsuario = new ProcesoUsuario();
 		procesoUsuario.setProceso(proceso);
-		procesoUsuario.setUsuario(usu);*/
+		procesoUsuario.setUsuario(usu);
 		
-		//procesoUsuarioService.save(procesoUsuario);
+		procesoUsuarioService.save(procesoUsuario);*/
 		
 		
 		procesoService.save(proceso);	

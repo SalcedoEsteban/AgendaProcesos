@@ -70,12 +70,16 @@ public class Usuario implements Serializable
 		//createAt = new Date();
 	}*/
 	
-	@OneToMany
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+	private List<ProcesoUsuario> listProcesosUsuarios = new ArrayList<>();
+	
+	/*@OneToMany
 	(
 		mappedBy = "usuario",
-		orphanRemoval = true
+		orphanRemoval = true,
+		cascade = CascadeType.ALL
 	)
-	private List<ProcesoUsuario> listProcesosUsuarios = new ArrayList<>();
+	private List<ProcesoUsuario> listProcesosUsuarios = new ArrayList<>();*/
 	
 	public Long getId() {
 		return id;
