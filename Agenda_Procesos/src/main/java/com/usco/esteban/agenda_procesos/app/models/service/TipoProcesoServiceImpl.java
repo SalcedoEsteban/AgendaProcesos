@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.usco.esteban.agenda_procesos.app.models.dao.ITipoProcesoDao;
+import com.usco.esteban.agenda_procesos.app.models.entity.Especialidad;
 import com.usco.esteban.agenda_procesos.app.models.entity.TipoProceso;
 
 /* una clase service es un unico punto de acceso a distintos DAO o repositorios
@@ -38,15 +39,22 @@ public class TipoProcesoServiceImpl implements ITipoProcesoService {
 	@Transactional(readOnly = true)
 	public TipoProceso findOne(Long id) {
 		
-		return tipoProcesoDao.findOne(id);
+		return tipoProcesoDao.findById(id).orElse(null);
 	}
 
 	@Override
 	@Transactional
 	public void delete(Long id) {
 		
-		tipoProcesoDao.delete(id);
+		tipoProcesoDao.deleteById(id);
 		
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<TipoProceso> findByEspecialidad(Especialidad especialidad) {
+		
+		return tipoProcesoDao.findByEspecialidad(especialidad);
 	}
 
 }

@@ -50,7 +50,7 @@
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Especialidad</label>
 						<div class="col-sm-6">
-							<select class="form-control" th:field="*{esp}"
+							<select class="form-control" th:field="*{especialidad}"
 								th:errorclass="'form-control alert-danger'">
 								<option th:each="especialidad: ${especialidades}"
 									th:value="${especialidad.id}" th:text="${especialidad.nombre}"></option>
@@ -62,7 +62,7 @@
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Tipo Proceso</label>
 						<div class="col-sm-6">
-							<select class="form-control" th:field="*{tipPro}">
+							<select class="form-control" th:field="*{tipoProceso}">
 								<option th:each="tipoProceso : ${tiposProceso}"
 									th:value="${tipoProceso.id}" th:text="${tipoProceso.nombre}"></option>
 							</select>

@@ -17,7 +17,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,20 +28,18 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.usco.esteban.agenda_procesos.app.models.dao.IJuzgadoDao;
-import com.usco.esteban.agenda_procesos.app.models.dao.IProcesoDao;
-import com.usco.esteban.agenda_procesos.app.models.dao.ITipoProcesoDao;
+import com.usco.esteban.agenda_procesos.app.editors.TipoProcesoPropertyEditor;
 import com.usco.esteban.agenda_procesos.app.models.dao.IUsuarioDao;
-import com.usco.esteban.agenda_procesos.app.models.dao.JuzgadoDaoImpl;
 import com.usco.esteban.agenda_procesos.app.models.entity.Juzgado;
 import com.usco.esteban.agenda_procesos.app.models.entity.Proceso;
 import com.usco.esteban.agenda_procesos.app.models.entity.ProcesoUsuario;
 import com.usco.esteban.agenda_procesos.app.models.entity.TipoProceso;
 import com.usco.esteban.agenda_procesos.app.models.entity.Usuario;
+import com.usco.esteban.agenda_procesos.app.models.service.IJuzgadoService;
 import com.usco.esteban.agenda_procesos.app.models.service.IProcesoService;
 import com.usco.esteban.agenda_procesos.app.models.service.IProcesoUsuarioService;
+import com.usco.esteban.agenda_procesos.app.models.service.ITipoProcesoService;
 import com.usco.esteban.agenda_procesos.app.models.service.IUsuarioService;
-import com.usco.esteban.agenda_procesos.app.models.service.JpaUsuarioDetailsService;
 import com.usco.esteban.agenda_procesos.app.util.paginator.PageRender;
 
 @Controller
@@ -57,10 +57,10 @@ public class ProcesoController {
 	 * (el cual es TipoProcesoDaoImpl que esta anotado con @Repository)
 	 * que implemente la interfaz ITipoProcesoDao */
 	@Autowired
-	private ITipoProcesoDao tipoProcesoDao;
+	private ITipoProcesoService tipoProcesoDao;
 	
 	@Autowired
-	private IJuzgadoDao juzgadoDao;
+	private IJuzgadoService juzgadoService;
 	
 	@Autowired
 	private IProcesoUsuarioService procesoUsuarioService;
@@ -71,10 +71,18 @@ public class ProcesoController {
 	@Autowired
 	private IUsuarioService usuarioService;
 	
+	@Autowired
+	private TipoProcesoPropertyEditor tipoProcesoEditor;
 	
 	//private JpaUsuarioDetailsService usuarioService;
 	
 	private Usuario usuario;
+	
+	@InitBinder
+	public void initBinder(WebDataBinder binder)
+	{
+		binder.registerCustomEditor(TipoProceso.class, "tipoProceso", tipoProcesoEditor);
+	}
 	
 	
 	public Long getUserId()
@@ -96,18 +104,18 @@ public class ProcesoController {
 		
 		String radicado = proceso.getRadicado();
 		
-		Long tProceso = Long.parseLong(proceso.gettProceso());
-		TipoProceso tipo = tipoProcesoDao.findOne(tProceso);
+		Long idTipoProceso = proceso.getTipoProceso().getId();
+		TipoProceso tipo = tipoProcesoDao.findOne(idTipoProceso);
 		String tipoProceso = tipo.getNombre();
 		
-		Long juz = Long.parseLong(proceso.getJuz());
-		Juzgado juzgado = juzgadoDao.findOne(juz);
-		String sJuz = juzgado.getNombre();
+		Long idJuzgado = proceso.getJuzgado().getId();
+		Juzgado juzgado = juzgadoService.findOne(idJuzgado);
+		String nombreJuzgado = juzgado.getNombre();
 		
 		
 		model.put("proceso", proceso);
 		model.put("tipoProceso", tipoProceso);
-		model.put("juzgado", sJuz);
+		model.put("juzgado", nombreJuzgado);
 		model.put("titulo", "Detalle de proceso con el Radicado: " + radicado);
 		
 		return "detalleProceso";
@@ -174,7 +182,7 @@ public class ProcesoController {
 		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		UserDetails userDetail = (UserDetails) auth.getPrincipal();
-		usuario = this.usuarioDao.findByUsername(userDetail.getUsername());
+		usuario = this.usuarioService.findByUsername(userDetail.getUsername());
 		
 		Long id = usuario.getJuzgado().getId();
 		System.out.println("id del jusgado: " + id);
@@ -193,7 +201,7 @@ public class ProcesoController {
 		model.put("proceso", proceso);
 		model.put("usuarios", usuarios);
 		model.put("tipoProcesos", tipoProcesoDao.findAll());
-		model.put("juzgados", juzgadoDao.findAll());
+		model.put("juzgados", juzgadoService.findAll());
 		model.put("titulo", "Crear Proceso");
 		return "formProceso";
 	}
@@ -224,7 +232,7 @@ public class ProcesoController {
 		model.put("proceso", proceso);
 		model.put("titulo", "Editar Proceso");
 		model.put("tipoProcesos", tipoProcesoDao.findAll());
-		model.put("juzgados", juzgadoDao.findAll());
+		model.put("juzgados", juzgadoService.findAll());
 		
 		return "formProceso";
 	}
@@ -251,25 +259,26 @@ public class ProcesoController {
 		String mensajeFlash = (proceso.getId() != null) ? "Proceso editado con exito" : "Proceso creado con exito";
 		
 		/* obtenemos el id de tipo string y lo se parsea a Long */
-		Long tProceso = Long.parseLong(proceso.gettProceso());
+		//Long tProceso = Long.parseLong(proceso.gettProceso());
 		/* luego de parseado se busca el objeto y se asigna*/
-		TipoProceso tipoProceso = tipoProcesoDao.findOne(tProceso);
+		//TipoProceso tipoProceso = tipoProcesoDao.findOne(tProceso);
 		/* y se establece la relacion guradando el tipo de proceso*/
-		proceso.setTipoProceso(tipoProceso);
+		//proceso.setTipoProceso(tipoProceso);
 		
 		
-		/*obtenemos el id tipo string del juzgado */
-		Long juz = Long.parseLong(proceso.getJuz());
-		Juzgado juzgado = juzgadoDao.findOne(juz);
+		
+		Usuario usuarioLogeado = usuarioService.findOne(getUserId());
+		Long idJuzgado = usuarioLogeado.getJuzgado().getId();
+		Juzgado juzgado = juzgadoService.findOne(idJuzgado);
 		proceso.setJuzgado(juzgado);
 		
 		Long id = Long.parseLong(usuario);
-		//Usuario usu = new Usuario(); 
+		Usuario usu = new Usuario(); 
 		//String username = usuarioService.findOne(id).getUsername();
 		//usu = usuarioDao.findByUsername(usuario);
-		Usuario usu = usuarioService.findOne(id);
+		usu = usuarioService.findOne(id);
 		
-		/*System.out.println("el id del usuario es " + id);
+		System.out.println("el id del usuario es " + id);
 		System.out.println("el nombre del usuario es" + usu.getNombre());
 		System.out.println("el radicado del proceso es: " + proceso.getRadicado());
 		
@@ -277,7 +286,7 @@ public class ProcesoController {
 		procesoUsuario.setProceso(proceso);
 		procesoUsuario.setUsuario(usu);
 		
-		procesoUsuarioService.save(procesoUsuario);*/
+		procesoUsuarioService.save(procesoUsuario);
 		
 		
 		procesoService.save(proceso);	

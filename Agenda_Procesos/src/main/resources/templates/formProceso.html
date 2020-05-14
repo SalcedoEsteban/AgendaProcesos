@@ -58,7 +58,8 @@
 						<label class="col-sm-2 col-form-label">Fecha Reparto</label>
 						<div class="col-sm-6">
 							<input type="text" th:field="*{fechaReparto}"
-								class="form-control" id="datepicker" th:errorclass="'form-control alert-danger'" />
+								class="form-control" id="datepicker" th:errorclass="'form-control alert-danger'"
+								autocomplete="off" />
 							<small class="form-text text-danger"
 								th:if="${#fields.hasErrors('fechaReparto')}"
 								th:errors="*{fechaReparto}"></small>
@@ -84,7 +85,7 @@
 								th:errors="*{estadoActual}"></small>
 						</div>
 					</div>
-					<div class="form-group row">
+					<!-- <div class="form-group row">
 						<label class="col-sm-2 col-form-label">Estado</label>
 						<div class="col-sm-6">
 							<input type="text" th:field="*{estado}" class="form-control"
@@ -92,7 +93,7 @@
 								class="form-text text-danger"
 								th:if="${#fields.hasErrors('estado')}" th:errors="*{estado}"></small>
 						</div>
-					</div>
+					</div> -->
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label">Tipo proceso</label>
 						<div class="col-sm-6">
@@ -103,19 +104,19 @@
 							<!-- <select th:field="*{tipoProceso}" >
 								<option th:each="tipo: ${tipoProcesos}" th:value="${tipo.id}" th:text="${tipo.nombre}"></option>
 							</select>  -->
-							<select class="form-control" th:field="*{tProceso}" >
+							<select class="form-control" th:field="*{tipoProceso}" >
 								<option th:each="tipo: ${tipoProcesos}" th:value="${tipo.id}" th:text="${tipo.nombre}"></option>
 							</select>
 						</div>
 					</div>
-					<div class="form-group row">
+					<!-- <div class="form-group row">
 						<label class="col-sm-2 col-form-label">Juzgado</label>
 						<div class="col-sm-6">
 							<select class="form-control" th:field="*{juz}" >
 								<option th:each="juzgado: ${juzgados}" th:value="${juzgado.id}" th:text="${juzgado.nombre}"></option>
 							</select>
 						</div>
-					</div>
+					</div> -->
 					<div class="form-group">
 						<input type="submit" value="Guardar" class="btn btn-success" />
 					</div>

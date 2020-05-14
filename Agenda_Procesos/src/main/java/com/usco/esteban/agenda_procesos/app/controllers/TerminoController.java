@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,25 +18,43 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.usco.esteban.agenda_procesos.app.editors.EspecialidadPropertyEditor;
+import com.usco.esteban.agenda_procesos.app.editors.TipoProcesoPropertyEditor;
 import com.usco.esteban.agenda_procesos.app.models.dao.IEspecialidadDao;
 import com.usco.esteban.agenda_procesos.app.models.dao.ITerminoDao;
 import com.usco.esteban.agenda_procesos.app.models.dao.ITipoProcesoDao;
 import com.usco.esteban.agenda_procesos.app.models.entity.Especialidad;
 import com.usco.esteban.agenda_procesos.app.models.entity.Termino;
 import com.usco.esteban.agenda_procesos.app.models.entity.TipoProceso;
+import com.usco.esteban.agenda_procesos.app.models.service.IEspecialidadService;
+import com.usco.esteban.agenda_procesos.app.models.service.ITerminoService;
+import com.usco.esteban.agenda_procesos.app.models.service.ITipoProcesoService;
 
 @Controller
 @SessionAttributes("termino")
 public class TerminoController
 {
 	@Autowired
-	private ITerminoDao terminoDao;
+	private ITerminoService terminoService;
 	
 	@Autowired
-	private ITipoProcesoDao tipoProcesoDao;
+	private ITipoProcesoService tipoProcesoService;
 	
 	@Autowired
-	private IEspecialidadDao especialidadDao;
+	private IEspecialidadService especialidadService;
+	
+	@Autowired
+	private EspecialidadPropertyEditor especialidadEditor;
+	
+	@Autowired
+	private TipoProcesoPropertyEditor tipoProcesoEditor;
+	
+	@InitBinder
+	public void initBinder(WebDataBinder binder)
+	{
+		binder.registerCustomEditor(Especialidad.class, "especialidad", especialidadEditor);
+		binder.registerCustomEditor(TipoProceso.class, "tipoProceso", tipoProcesoEditor);
+	}
 	
 	@GetMapping("/formTermino")
 	public String crear(Map<String, Object> model, RedirectAttributes flash)
@@ -55,8 +75,8 @@ public class TerminoController
 		//termino.setTipoProceso(tipoProceso);
 		
 		model.put("termino", termino);
-		model.put("especialidades", especialidadDao.findAll());
-		model.put("tiposProceso", tipoProcesoDao.findAll());
+		model.put("especialidades", especialidadService.findAll());
+		model.put("tiposProceso", tipoProcesoService.findAll());
 		model.put("titulo", "Formulario de terminos");
 		
 		return "formTermino";
@@ -66,7 +86,7 @@ public class TerminoController
 	public String listar(Model model)
 	{
 		model.addAttribute("titulo", "Listado de Terminos");
-		model.addAttribute("terminos", terminoDao.findAll());
+		model.addAttribute("terminos", terminoService.findAll());
 		
 		return "listarTerminos";
 	}
@@ -84,19 +104,18 @@ public class TerminoController
 	}*/
 	
 	@RequestMapping(value ="/guardarTermino")
-	@Transactional
 	public String guardar(Termino termino, SessionStatus status)
 	{
-		Long esp = Long.parseLong(termino.getEsp());
-		Especialidad especialidad = especialidadDao.findOne(esp);
+		/*Long esp = Long.parseLong(termino.getEsp());
+		Especialidad especialidad = especialidadService.findOne(esp);
 		termino.setEspecialidad(especialidad);
 		
 		Long tipoPro = Long.parseLong(termino.getTipPro());
-		TipoProceso tipoProceso = tipoProcesoDao.findOne(tipoPro);
-		termino.setTipoProceso(tipoProceso);
+		TipoProceso tipoProceso = tipoProcesoService.findOne(tipoPro);
+		termino.setTipoProceso(tipoProceso);*/
 		
 		
-		terminoDao.save(termino);
+		terminoService.save(termino);
 		
 		status.setComplete();
 		
@@ -108,7 +127,7 @@ public class TerminoController
 	{
 		if(id > 0)
 		{
-			terminoDao.delete(id);
+			terminoService.delete(id);
 		}
 		
 		return "redirect:/listarTiposProceso";
@@ -123,7 +142,7 @@ public class TerminoController
 		/* si el id es mayor a cero, se busca en la base de datos */
 		if(id > 0)
 		{
-			termino = terminoDao.findOne(id);
+			termino = terminoService.findOne(id);
 			
 			if(termino == null)
 			{	
@@ -138,8 +157,8 @@ public class TerminoController
 		}
 		
 		model.put("termino", termino);
-		model.put("especialidades", especialidadDao.findAll());
-		model.put("tiposProceso", tipoProcesoDao.findAll());
+		model.put("especialidades", especialidadService.findAll());
+		model.put("tiposProceso", tipoProcesoService.findAll());
 		model.put("titulo", "Editar Termino");
 		
 		

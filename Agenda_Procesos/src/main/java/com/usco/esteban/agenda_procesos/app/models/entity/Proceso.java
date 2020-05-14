@@ -56,7 +56,7 @@ public class Proceso implements Serializable {
 	@Column(name = "pro_fecha_reparto")
 	@Temporal(TemporalType.DATE)
 	@NotNull
-	@DateTimeFormat(pattern = "dd/MM/yyyy")
+	@DateTimeFormat(pattern = "MM/dd/yyyy")
 	private Date fechaReparto;
 
 	@Column(name = "pro_ultima_actuacion")
@@ -69,12 +69,10 @@ public class Proceso implements Serializable {
 	@Column(name = "pro_estado")
 	private boolean estado;
 
-	@Column(name = "pro_tipo_proceso")
-	@NotEmpty
-	private String tProceso;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "tip_pro_id_pro", nullable = false, updatable = false)
+	@NotNull
 	private TipoProceso tipoProceso;
 
 	@OneToMany(mappedBy = "proceso", fetch = FetchType.LAZY, cascade = CascadeType.ALL) /*
@@ -87,8 +85,7 @@ public class Proceso implements Serializable {
 																						 */
 	private List<DetalleTermino> detalleTerminos;
 
-	@Column(name = "pro_juzgado")
-	private String juz;
+	
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "juz_id_pro", nullable = false, updatable = false)
@@ -115,6 +112,7 @@ public class Proceso implements Serializable {
 	public void prePersist()
 	{
 		this.createAt = new Date();
+		this.estado = true;
 	}
 	
 	public Proceso() {
@@ -212,14 +210,6 @@ public class Proceso implements Serializable {
 	 * tipoProceso; }
 	 */
 
-	public String gettProceso() {
-		return tProceso;
-	}
-
-	public void settProceso(String tProceso) {
-		this.tProceso = tProceso;
-	}
-
 	public TipoProceso getTipoProceso() {
 		return tipoProceso;
 	}
@@ -228,13 +218,6 @@ public class Proceso implements Serializable {
 		this.tipoProceso = tipoProceso;
 	}
 
-	public String getJuz() {
-		return juz;
-	}
-
-	public void setJuz(String juz) {
-		this.juz = juz;
-	}
 
 	public Juzgado getJuzgado() {
 		return juzgado;
@@ -298,11 +281,9 @@ public class Proceso implements Serializable {
 		result = prime * result + (estado ? 1231 : 1237);
 		result = prime * result + ((estadoActual == null) ? 0 : estadoActual.hashCode());
 		result = prime * result + ((fechaReparto == null) ? 0 : fechaReparto.hashCode());
-		result = prime * result + ((juz == null) ? 0 : juz.hashCode());
 		result = prime * result + ((juzgado == null) ? 0 : juzgado.hashCode());
 		result = prime * result + ((procesosUsuarios == null) ? 0 : procesosUsuarios.hashCode());
 		result = prime * result + ((radicado == null) ? 0 : radicado.hashCode());
-		result = prime * result + ((tProceso == null) ? 0 : tProceso.hashCode());
 		result = prime * result + ((tipoProceso == null) ? 0 : tipoProceso.hashCode());
 		result = prime * result + ((ultimaActuacion == null) ? 0 : ultimaActuacion.hashCode());
 		return result;
@@ -354,11 +335,6 @@ public class Proceso implements Serializable {
 				return false;
 		} else if (!fechaReparto.equals(other.fechaReparto))
 			return false;
-		if (juz == null) {
-			if (other.juz != null)
-				return false;
-		} else if (!juz.equals(other.juz))
-			return false;
 		if (juzgado == null) {
 			if (other.juzgado != null)
 				return false;
@@ -373,11 +349,6 @@ public class Proceso implements Serializable {
 			if (other.radicado != null)
 				return false;
 		} else if (!radicado.equals(other.radicado))
-			return false;
-		if (tProceso == null) {
-			if (other.tProceso != null)
-				return false;
-		} else if (!tProceso.equals(other.tProceso))
 			return false;
 		if (tipoProceso == null) {
 			if (other.tipoProceso != null)

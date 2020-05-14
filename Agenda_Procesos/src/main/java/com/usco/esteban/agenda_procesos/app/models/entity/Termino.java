@@ -39,11 +39,11 @@ public class Termino implements Serializable {
 	
 	/* ============================================ */
 	
-	@Column(name ="ter_esp")
+	/*@Column(name ="ter_esp")
 	private String esp;
 	
 	@Column(name = "ter_tip")
-	private String tipPro;
+	private String tipPro;*/
 	
 	/* ============================================= */
 	
@@ -107,7 +107,7 @@ public class Termino implements Serializable {
 
 	/* ======================================*/
 	
-	public String getEsp() {
+	/*public String getEsp() {
 		return esp;
 	}
 
@@ -121,7 +121,7 @@ public class Termino implements Serializable {
 
 	public void setTipPro(String tipPro) {
 		this.tipPro = tipPro;
-	}
+	}*/
 	
 	/* =============================================*/
 

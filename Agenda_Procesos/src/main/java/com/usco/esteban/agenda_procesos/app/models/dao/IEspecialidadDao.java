@@ -1,12 +1,12 @@
 package com.usco.esteban.agenda_procesos.app.models.dao;
 
-import java.util.List;
+
+
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.usco.esteban.agenda_procesos.app.models.entity.Especialidad;
 
-public interface IEspecialidadDao {
+public interface IEspecialidadDao extends JpaRepository<Especialidad, Long>{
 	
-	public List<Especialidad> findAll();
 	
-	public Especialidad findOne(Long id);
 }

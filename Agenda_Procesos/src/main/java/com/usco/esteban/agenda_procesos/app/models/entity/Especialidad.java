@@ -34,6 +34,9 @@ public class Especialidad implements Serializable{
 	
 	@OneToMany(mappedBy = "especialidad", fetch = FetchType.LAZY)
 	private List<HistorialUsuario> historialUsuarios;
+	
+	@OneToMany(mappedBy = "especialidad", fetch = FetchType.LAZY)
+	private List<TipoProceso> tiposProceso;
 
 	public Long getId() {
 		return id;
@@ -65,6 +68,23 @@ public class Especialidad implements Serializable{
 
 	public void setTerminos(List<Termino> terminos) {
 		this.terminos = terminos;
+	}
+	
+
+	public List<HistorialUsuario> getHistorialUsuarios() {
+		return historialUsuarios;
+	}
+
+	public void setHistorialUsuarios(List<HistorialUsuario> historialUsuarios) {
+		this.historialUsuarios = historialUsuarios;
+	}
+
+	public List<TipoProceso> getTiposProceso() {
+		return tiposProceso;
+	}
+
+	public void setTiposProceso(List<TipoProceso> tiposProceso) {
+		this.tiposProceso = tiposProceso;
 	}
 	
 	

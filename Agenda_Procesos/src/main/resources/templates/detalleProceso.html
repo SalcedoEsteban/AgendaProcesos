@@ -13,6 +13,12 @@
 						Proceso</a>
 				</h4>
 				<div class="form-group row">
+						<label class="col-sm-4 col-form-label" th:text="'Creado el: '"></label>
+						<div class="col-sm-4">
+							<input th:value="${proceso.createAt}" disabled="disabled" class="form-control"/>
+						</div>
+				</div>
+				<div class="form-group row">
 						<label class="col-sm-4 col-form-label" th:text="'Radicado: '"></label>
 						<div class="col-sm-4">
 							<input th:value="${proceso.radicado}" disabled="disabled" class="form-control"/>
@@ -58,6 +64,12 @@
 						<label class="col-sm-4 col-form-label" th:text="'Juzgado: '"></label>
 						<div class="col-sm-4">
 							<input th:value="${juzgado}" disabled="disabled" class="form-control"/>
+						</div>
+				</div>
+				<div class="form-group row">
+						<label class="col-sm-4 col-form-label" th:text="'Activo: '"></label>
+						<div class="col-sm-4">
+							<input th:value="${proceso.estado == true} ? 'Sí' : 'No'" disabled="disabled" class="form-control"/>
 						</div>
 				</div>
 			</div>
