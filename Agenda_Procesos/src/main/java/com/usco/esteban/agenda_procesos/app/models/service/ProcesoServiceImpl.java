@@ -58,9 +58,9 @@ public class ProcesoServiceImpl implements IProcesoService{
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<Proceso> findByRadicado(String radicado) {
+	public Page<Proceso> findByRadicado(String radicado, Pageable pageable) {
 		
-		return procesoDao.findByRadicado(radicado);
+		return procesoDao.findByRadicado(radicado, pageable);
 	}
 
 

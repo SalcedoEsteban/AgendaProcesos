@@ -24,6 +24,8 @@ public interface IProcesoService {
 	
 	public void delete(Long id);
 	
-	public List<Proceso> findByRadicado(String radicado);
+	public Page<Proceso> findByRadicado(String radicado, Pageable pageable);
+	
+	//public Page<Proceso> findByRadicado(String radicado);
 	
 }

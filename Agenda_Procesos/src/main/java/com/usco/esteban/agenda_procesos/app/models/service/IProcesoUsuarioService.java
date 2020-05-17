@@ -15,4 +15,6 @@ public interface IProcesoUsuarioService {
 	
 	public void delete(Long id);
 	
+	public Page<ProcesoUsuario> findByIdAndRadicado(Long id, Pageable pageable, String radicado);
+	
 }

@@ -1,5 +1,6 @@
 package com.usco.esteban.agenda_procesos.app.controllers;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -56,6 +58,17 @@ public class TerminoController
 		binder.registerCustomEditor(TipoProceso.class, "tipoProceso", tipoProcesoEditor);
 	}
 	
+	/*Metodo REST para select dinamico con ajax y jquery*/
+	@GetMapping(value ="/listarTiposProcesoRest")
+	public @ResponseBody List<TipoProceso> listarTiposProcesoRest(@RequestParam(name = "especialidad", required = true)
+	Long especialidad)
+	{
+		//Long id = Long.parseLong(especialidad);
+		Especialidad especialidad1 = especialidadService.findOne(especialidad);
+		
+		return tipoProcesoService.findByEspecialidad(especialidad1);
+	}
+	
 	@GetMapping("/formTermino")
 	public String crear(Map<String, Object> model, RedirectAttributes flash)
 	{
@@ -74,9 +87,16 @@ public class TerminoController
 		/* esta es la relacion, se asigna un tipoProceso a un término */
 		//termino.setTipoProceso(tipoProceso);
 		
+		Long id = (long) 1;
+		
+		Especialidad especialidad = especialidadService.findOne(id);
+		
+		List<TipoProceso> tiposProceso = tipoProcesoService.findByEspecialidad(especialidad);
+		
 		model.put("termino", termino);
 		model.put("especialidades", especialidadService.findAll());
-		model.put("tiposProceso", tipoProcesoService.findAll());
+		//model.put("tiposProceso", tipoProcesoService.findAll());
+		model.put("tiposProceso", tiposProceso);
 		model.put("titulo", "Formulario de terminos");
 		
 		return "formTermino";

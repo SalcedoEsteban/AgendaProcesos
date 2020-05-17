@@ -2,6 +2,7 @@ package com.usco.esteban.agenda_procesos.app.models.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -18,69 +19,76 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
-@Table(name ="usuario")
-public class Usuario implements Serializable
-{
+@Table(name = "usuario")
+public class Usuario implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name ="usu_id")
+	@Column(name = "usu_id")
 	private Long id;
-	
+
 	@Column(name = "usu_username", unique = true, length = 40)
 	private String username;
-	
+
 	@Column(name = "usu_password", length = 60)
 	private String password;
-	
+
 	@Column(name = "usu_enabled")
 	private boolean enabled;
-	
-	@Column(name ="usu_nombre")
+
+	@Column(name = "usu_nombre")
 	private String nombre;
-	
-	@Column(name ="usu_apellido")
+
+	@Column(name = "usu_apellido")
 	private String apellido;
-	
+
 	@OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	/* llave foranea de la tabla rol*/
-	//@JoinColumn(name = "usu_id_rol")
+	/* llave foranea de la tabla rol */
+	// @JoinColumn(name = "usu_id_rol")
 	private List<Rol> roles;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name ="juz_id_usu", nullable = false, updatable = false)
+	@JoinColumn(name = "juz_id_usu", nullable = false, updatable = false)
 	@NotNull
 	private Juzgado juzgado;
-	
-	private static final long serialVersionUID = 1L;
 
-	/*este metodo se invoca justo antes de insertar en la base de datos*/
-	@PrePersist
-	public void prePersistEnabled()
-	{
-		this.enabled = true;
-	}
-	
-	//de esta forma se puede guardar la fecha en el sistema
-	/*@PrePersist
-	public void prePersistFecha()
-	{
-		//createAt = new Date();
-	}*/
-	
+	@Temporal(TemporalType.DATE)
+	@Column(name="usu_create_at")
+	@DateTimeFormat(pattern = "MM/dd/yyyy")
+	private Date createAt;
+
 	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
 	private List<ProcesoUsuario> listProcesosUsuarios = new ArrayList<>();
+
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+	private List<HistorialUsuario> historialUsuarios;
 	
-	/*@OneToMany
-	(
-		mappedBy = "usuario",
-		orphanRemoval = true,
-		cascade = CascadeType.ALL
-	)
-	private List<ProcesoUsuario> listProcesosUsuarios = new ArrayList<>();*/
+	private static final long serialVersionUID = 1L;
 	
+	/*
+	 * @OneToMany ( mappedBy = "usuario", orphanRemoval = true, cascade =
+	 * CascadeType.ALL ) private List<ProcesoUsuario> listProcesosUsuarios = new
+	 * ArrayList<>();
+	 */
+
+	/* este metodo se invoca justo antes de insertar en la base de datos */
+	@PrePersist
+	public void prePersistEnabled() {
+		this.enabled = true;
+		this.createAt = new Date();
+	}
+
+	// de esta forma se puede guardar la fecha en el sistema
+	/*
+	 * @PrePersist public void prePersistFecha() { //createAt = new Date(); }
+	 */
+
 	public Long getId() {
 		return id;
 	}
@@ -120,7 +128,7 @@ public class Usuario implements Serializable
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
 	}
-	
+
 	public String getApellido() {
 		return apellido;
 	}
@@ -145,12 +153,27 @@ public class Usuario implements Serializable
 		this.juzgado = juzgado;
 	}
 
+	public Date getCreateAt() {
+		return createAt;
+	}
+
+	public void setCreateAt(Date createAt) {
+		this.createAt = createAt;
+	}
+
 	public List<ProcesoUsuario> getListProcesosUsuarios() {
 		return listProcesosUsuarios;
 	}
 
 	public void setListProcesosUsuarios(List<ProcesoUsuario> listProcesosUsuarios) {
 		this.listProcesosUsuarios = listProcesosUsuarios;
+	}
+	public List<HistorialUsuario> getHistorialUsuarios() {
+		return historialUsuarios;
+	}
+
+	public void setHistorialUsuarios(List<HistorialUsuario> historialUsuarios) {
+		this.historialUsuarios = historialUsuarios;
 	}
 
 	@Override
@@ -211,14 +234,10 @@ public class Usuario implements Serializable
 		return true;
 	}
 
-	/* public List<Proceso> getProcesos() {
-		return procesos;
-	}
+	/*
+	 * public List<Proceso> getProcesos() { return procesos; }
+	 * 
+	 * public void setProcesos(List<Proceso> procesos) { this.procesos = procesos; }
+	 */
 
-	public void setProcesos(List<Proceso> procesos) {
-		this.procesos = procesos;
-	}*/
-	
-	
 }
-

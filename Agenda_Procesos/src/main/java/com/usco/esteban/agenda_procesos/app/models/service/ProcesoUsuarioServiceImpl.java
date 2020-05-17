@@ -38,4 +38,11 @@ public class ProcesoUsuarioServiceImpl implements IProcesoUsuarioService {
 
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public Page<ProcesoUsuario> findByIdAndRadicado(Long id, Pageable pageable, String radicado) {
+		
+		return procesoUsuarioDao.findByIdAndRadicado(id, pageable, radicado);
+	}
+
 }

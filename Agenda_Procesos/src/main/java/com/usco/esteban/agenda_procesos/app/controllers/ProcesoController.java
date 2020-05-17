@@ -139,11 +139,20 @@ public class ProcesoController {
 	}
 	
 	@RequestMapping(value="/buscarProceso")
-	public String buscarProceso(@RequestParam(value="radicado") String radicado, Map<String, Object> model)
+	public String buscarProceso(@RequestParam(value="radicado") String radicado,
+			Map<String, Object> model, @RequestParam(name = "page", defaultValue = "0") int page)
 	{
-		List<Proceso> proceso = procesoService.findByRadicado(radicado);
+		Pageable pageRequest = PageRequest.of(page, 3);
 		
-		model.put("procesos", proceso);
+		Long id = getUserId();
+		
+		//List<Proceso> proceso = procesoService.findByRadicado(radicado);
+		Page<ProcesoUsuario> procesoUsuario = procesoUsuarioService.findByIdAndRadicado(id, pageRequest, radicado);
+		
+		PageRender<ProcesoUsuario> pageRender = new PageRender<>("/buscarProceso", procesoUsuario);
+		
+		model.put("procesos", procesoUsuario);
+		model.put("page", pageRender);
 		
 		return "listarProcesos";
 	}
@@ -151,7 +160,7 @@ public class ProcesoController {
 	@RequestMapping(value = "/listarProcesos", method = RequestMethod.GET)
 	public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model)
 	{
-		Pageable pageRequest = PageRequest.of(page, 1);
+		Pageable pageRequest = PageRequest.of(page, 3);
 		
 		Long id = getUserId();
 		//Page<Proceso> procesos = procesoService.findAll(pageRequest);
@@ -160,8 +169,8 @@ public class ProcesoController {
 		
 		PageRender<ProcesoUsuario> pageRender = new PageRender<>("/listarProcesos", procesosUsuario); 
 		
-		System.out.println(procesosUsuario.isEmpty());
-		System.out.println(procesosUsuario.getNumberOfElements());
+		//System.out.println(procesosUsuario.isEmpty());
+		//System.out.println(procesosUsuario.getNumberOfElements());
 		
 		for (ProcesoUsuario procesoUsuario : procesosUsuario) {
 			System.out.println(procesoUsuario.getProceso().getRadicado());
@@ -234,6 +243,8 @@ public class ProcesoController {
 		model.put("tipoProcesos", tipoProcesoDao.findAll());
 		model.put("juzgados", juzgadoService.findAll());
 		
+		
+		
 		return "formProceso";
 	}
 	
@@ -274,23 +285,19 @@ public class ProcesoController {
 		
 		Long id = Long.parseLong(usuario);
 		Usuario usu = new Usuario(); 
-		//String username = usuarioService.findOne(id).getUsername();
-		//usu = usuarioDao.findByUsername(usuario);
 		usu = usuarioService.findOne(id);
 		
 		System.out.println("el id del usuario es " + id);
 		System.out.println("el nombre del usuario es" + usu.getNombre());
 		System.out.println("el radicado del proceso es: " + proceso.getRadicado());
 		
+		procesoService.save(proceso);
+		
 		ProcesoUsuario procesoUsuario = new ProcesoUsuario();
 		procesoUsuario.setProceso(proceso);
 		procesoUsuario.setUsuario(usu);
 		
 		procesoUsuarioService.save(procesoUsuario);
-		
-		
-		procesoService.save(proceso);	
-		
 		
 		/* despues de guardar el objeto, se termina la sesion */
 		status.setComplete();

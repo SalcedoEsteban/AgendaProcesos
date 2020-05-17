@@ -3,6 +3,8 @@ package com.usco.esteban.agenda_procesos.app.models.dao;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 //import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -15,5 +17,5 @@ public interface IProcesoDao extends PagingAndSortingRepository<Proceso, Long>
 	//@Query("select p from Proceso p where p.radicado like %?1%")
 	//public List<Proceso> findByRadicado(String radicado);
 	
-	List<Proceso> findByRadicado(String radicado);
+	Page<Proceso> findByRadicado(String radicado, Pageable pageable);
 }

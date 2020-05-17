@@ -36,21 +36,28 @@ public class HistorialUsuario implements Serializable{
 	private Date fechaIngreso;
 	
 	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "dd-MM-yyyy")
+	@DateTimeFormat(pattern = "MM/dd/yyyy")
 	@Column(name = "his_usu_fecha_salida")
 	private Date fechaSalida;
 	
 	@Column(name ="his_usu_descripcion")
 	private String descripcion; 
 	
-	//Acá falta la relación de OneToMany con usuarios.
-	//Un historial tiene muchos usuarios y un usuario 
-	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name ="esp_id_his_usu", nullable = false, updatable = false)
 	private Especialidad especialidad;
 	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name ="usu_id_his_usu", nullable = false, updatable = false)
+	private Usuario usuario;
+	
 	private static final long serialVersionUID = 1L;
+	
+	@PrePersist
+	public void prePersist()
+	{
+		this.fechaIngreso = new Date();
+	}
 
 	public Long getId() {
 		return id;
@@ -90,6 +97,14 @@ public class HistorialUsuario implements Serializable{
 
 	public void setEspecialidad(Especialidad especialidad) {
 		this.especialidad = especialidad;
+	}
+
+	public Usuario getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Usuario usuario) {
+		this.usuario = usuario;
 	}
 	
 	

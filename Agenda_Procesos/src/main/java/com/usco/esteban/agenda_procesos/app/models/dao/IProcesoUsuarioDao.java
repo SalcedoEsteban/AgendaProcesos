@@ -15,7 +15,8 @@ public interface IProcesoUsuarioDao extends PagingAndSortingRepository<ProcesoUs
 	@Query("select pu from ProcesoUsuario pu join pu.usuario u where u.id=?1 and pu.proceso.estado = true")
 	Page<ProcesoUsuario> findAllById(Long id, Pageable pageable);
 	
-	
+	@Query("select pu from ProcesoUsuario pu join pu.usuario u where u.id=?1 and pu.proceso.estado = true and pu.proceso.radicado=?2")
+	public Page<ProcesoUsuario> findByIdAndRadicado(Long id, Pageable pageable, String radicado);
 	//@Query("select pu from ProcesoUsuario pu where pu.usuario = ?1")
 	//Page<ProcesoUsuario> findAllByUsuario(Usuario usuario, Pageable pageable);
 }
