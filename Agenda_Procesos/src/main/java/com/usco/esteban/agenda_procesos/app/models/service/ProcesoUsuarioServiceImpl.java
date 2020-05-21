@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.usco.esteban.agenda_procesos.app.models.dao.IProcesoUsuarioDao;
+import com.usco.esteban.agenda_procesos.app.models.entity.Juzgado;
 import com.usco.esteban.agenda_procesos.app.models.entity.ProcesoUsuario;
 
 @Service
@@ -18,9 +19,9 @@ public class ProcesoUsuarioServiceImpl implements IProcesoUsuarioService {
 	
 	@Override
 	@Transactional(readOnly = true)
-	public Page<ProcesoUsuario> findAllById(Long id, Pageable pageable) {
+	public Page<ProcesoUsuario> findAllById(Long id, Pageable pageable, Juzgado juzgado) {
 		
-		return procesoUsuarioDao.findAllById(id, pageable);
+		return procesoUsuarioDao.findAllById(id, pageable, juzgado);
 	}
 
 	@Override

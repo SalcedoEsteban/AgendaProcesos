@@ -18,19 +18,20 @@
 			</button>
 			<div class="collapse navbar-collapse">
 				<ul class="navbar-nav mr-auto">
-					<li class="nav-item active"><a class="nav-link" th:href="@{/}">Home
-
+					<li class="nav-item active"><a class="nav-link" th:href="@{/}">Inicio
 					</a></li>
 					<li class="nav-item"><a class="nav-link"
-						th:href="@{/listarProcesos}">Procesos</a></li>
+						th:href="@{/listarProcesos}">Admin. Procesos</a></li>
 					<!-- <li class="nav-item"><a class="nav-link" th:href="@{/listar}">Usuarios</a>
 					</li>  -->
 					<li class="nav-item"><a class="nav-link"
-						th:href="@{/listarTiposProceso}">Tipos Proceso</a></li>
+						th:href="@{/listarTiposProceso}">Admin. Tipo Proceso</a></li>
 					<li class="nav-item"><a class="nav-link"
 						th:href="@{/formTermino}">Crear Terminos</a></li>
 					<li class="nav-item"><a class="nav-link"
-						th:href="@{/formUsuario}">Crear Usuario</a></li>
+						th:href="@{/listarUsuarios}">Admin. Usuario</a></li>
+					<li class="nav-item"><a class="nav-link"
+						th:href="@{/juzgado/verEspecialidad}">Admin. Juzgados</a></li>
 				</ul>
 				<ul class="navbar-nav navbar-right">
 					<li sec:authorize="!isAuthenticated()"><a th:href="@{/login}"

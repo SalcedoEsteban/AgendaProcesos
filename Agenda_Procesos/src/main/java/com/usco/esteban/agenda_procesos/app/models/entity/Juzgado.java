@@ -35,11 +35,11 @@ public class Juzgado implements Serializable
 	@OneToMany(mappedBy = "juzgado", fetch = FetchType.LAZY)
 	private List<Proceso> procesos;
 
-	@Column(name ="juz_esp")
-	private String esp;
+	/*@Column(name ="juz_esp")
+	private String esp;*/
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name ="esp_id_juz", nullable = false, updatable = false)
+	@JoinColumn(name ="esp_id_juz", nullable = false)
 	private Especialidad especialidad;
 	
 	@OneToMany(mappedBy = "juzgado", fetch = FetchType.LAZY)
@@ -70,13 +70,13 @@ public class Juzgado implements Serializable
 		this.procesos = procesos;
 	}
 	
-	public String getEsp() {
+	/*public String getEsp() {
 		return esp;
 	}
 
 	public void setEsp(String esp) {
 		this.esp = esp;
-	}
+	}*/
 
 	public Especialidad getEspecialidad() {
 		return especialidad;

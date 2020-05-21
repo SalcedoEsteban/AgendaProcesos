@@ -54,7 +54,7 @@ public class Usuario implements Serializable {
 	private List<Rol> roles;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "juz_id_usu", nullable = false, updatable = false)
+	@JoinColumn(name = "juz_id_usu", nullable = false)
 	@NotNull
 	private Juzgado juzgado;
 

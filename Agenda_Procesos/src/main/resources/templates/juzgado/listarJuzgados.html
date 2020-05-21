@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head"></head>
+<body>
+	<header th:replace="layout/layout :: header"></header>
+	
+	<div class="container py-4">
+		<div class="card bg-light">
+			<div class="card-header" th:text="${titulo}"></div>
+			<div class="card-body">
+				<h4 class="card-title">
+					<a th:href="@{/juzgado/crear}" class="btn btn-success btn-xs">Crear
+						Juzgado</a>
+				</h4>
+				<table class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Id</th>
+							<th>Nombre</th>
+							<th>Editar</th>
+							<th>Eliminar</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="juzgado: ${juzgados}">
+							<td th:text="${juzgado.id}"></td>
+							<td th:text="${juzgado.nombre}"></td>
+							<td><a th:href="@{/juzgado/editar/} + ${juzgado.id}" class="btn btn-primary">Editar</a></td>
+							<td><a th:href="@{/juzgado/eliminar/} + ${juzgado.id}" class="btn btn-danger"
+							onclick="return confirm('¿Eliminar elemento?')">Elimianr</a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	
+	<footer th:replace="layout/layout :: footer"></footer>
+</body>
+</html>

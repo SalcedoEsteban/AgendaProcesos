@@ -89,7 +89,7 @@ public class TipoProcesoController {
 	
 	
 	@RequestMapping(value ="/formTipoProceso/{id}")
-	public String editar(@PathVariable(value="id") Long id, Map<String, Object> model)
+	public String editar(@PathVariable(value="id") Long id, Map<String, Object> model, RedirectAttributes flash)
 	{
 		
 		TipoProceso tipoProceso = null;
@@ -97,13 +97,20 @@ public class TipoProcesoController {
 		if(id > 0)
 		{
 			tipoProceso = tipoProcesoService.findOne(id);
+			if(tipoProceso == null)
+			{
+				flash.addFlashAttribute("error", "El Tipo Proceso no existe");
+				return "redirect:/listarTiposProceso";
+			}
 		}
 		else
 		{
+			flash.addFlashAttribute("error", "El ID del Tipo Proceso no puede ser cero");
 			return "redirect:/listarTiposProceso";
 		}
 		
 		model.put("tipoProceso", tipoProceso);
+		model.putIfAbsent("especialidades", especialidadService.findAll());
 		model.put("titulo", "Editar Tipo Proceso");
 		return "formTipoProceso";
 	}
@@ -111,10 +118,15 @@ public class TipoProcesoController {
 	@RequestMapping(value ="/guardarTipoProceso",method = RequestMethod.POST)
 	/* aqui se le pasa como parametro el objeto con los datos guardados desde el 
 	 * formulario */
-	public String guardar(TipoProceso tipoProceso, SessionStatus status)
+	public String guardar(TipoProceso tipoProceso, SessionStatus status, RedirectAttributes flash)
 	{
+		
+		String mensajeFlash = (tipoProceso.getId() != null) ? "Tipo Proceso editado con exito" : "Tipo Proceso creado con exito";
+		
+		
 		tipoProcesoService.save(tipoProceso);
 		status.setComplete();
+		flash.addFlashAttribute("success", mensajeFlash);
 		
 		/* se hace el redirect a la url*/
 		return "redirect:listarTiposProceso";

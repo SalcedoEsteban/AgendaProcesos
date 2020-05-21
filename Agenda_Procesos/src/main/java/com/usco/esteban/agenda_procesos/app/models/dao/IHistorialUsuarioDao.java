@@ -1,5 +1,6 @@
 package com.usco.esteban.agenda_procesos.app.models.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,5 +14,7 @@ public interface IHistorialUsuarioDao extends JpaRepository<HistorialUsuario, Lo
 	public List<HistorialUsuario> findByUsuario(Usuario usuario);
 	
 	public List<HistorialUsuario> findByUsuarioAndEspecialidad(Usuario usuario, Especialidad especialidad);
+	
+	public HistorialUsuario findByUsuarioAndFechaIngreso(Usuario usuario, Date FechaIngreso);
 	
 }

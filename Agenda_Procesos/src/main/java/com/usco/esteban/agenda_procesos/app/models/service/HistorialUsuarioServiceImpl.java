@@ -1,5 +1,6 @@
 package com.usco.esteban.agenda_procesos.app.models.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,13 @@ public class HistorialUsuarioServiceImpl implements IHistorialUsuarioService {
 	public List<HistorialUsuario> findByUsuarioAndEspecialidad(Usuario usuario, Especialidad especialidad) {
 		
 		return historialUsuarioDao.findByUsuarioAndEspecialidad(usuario, especialidad);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public HistorialUsuario findByUsuarioAndFechaIngreso(Usuario usuario, Date FechaIngreso) {
+		
+		return historialUsuarioDao.findByUsuarioAndFechaIngreso(usuario, FechaIngreso);
 	}
 
 }

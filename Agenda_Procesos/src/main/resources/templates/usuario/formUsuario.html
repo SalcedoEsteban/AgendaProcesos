@@ -38,7 +38,7 @@
 						<label for="juzgado" class="col-form-label col-sm-2">Juzgado</label>
 						<div class="col-sm-6">
 							<select id="juzgado" th:field="*{juzgado}" class="form-control">
-								<option value="">----------seleccionar------------</option>
+								<!-- <option value="">----------seleccionar------------</option> -->
 								<option th:each="juzgado : ${juzgados}" th:value="${juzgado.id}" th:text="${juzgado.nombre}"></option>
 							</select>
 						</div>

@@ -39,19 +39,19 @@ public class DetalleTermino implements Serializable {
 	
 	@Column(name="detTer_fecha_incial")
 	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "dd-MM-yyyy")
+	@DateTimeFormat(pattern = "MM/dd/yyyy")
 	private Date fechaInicial;
 	
 	@Column(name ="detTer_fecha_final")
 	@Temporal(TemporalType.DATE)
-	@DateTimeFormat(pattern = "dd-MM-yyyy")
+	@DateTimeFormat(pattern = "MM/dd/yyyy")
 	private Date fechaFinal;
 	
 	@Column(name="det_ter_termino")
 	private String ter;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ter_id_det_ter", updatable = false, nullable = false)
+	@JoinColumn(name = "ter_id_det_ter", nullable = false)
 	private Termino termino;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -62,11 +62,11 @@ public class DetalleTermino implements Serializable {
 	private Integer numeroDias;¨*/
 	
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(long id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 

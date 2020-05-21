@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.usco.esteban.agenda_procesos.app.models.dao.IJuzgadoDao;
+import com.usco.esteban.agenda_procesos.app.models.entity.Especialidad;
 import com.usco.esteban.agenda_procesos.app.models.entity.Juzgado;
 
 @Service
@@ -34,7 +35,22 @@ public class JuzgadoServiceImpl implements IJuzgadoService {
 	@Transactional(readOnly = true)
 	public Juzgado findOne(Long id) {
 
-		return juzgadoDao.findOne(id);
+		return juzgadoDao.findById(id).orElse(null);
+	}
+
+	@Override
+	@Transactional
+	public void delete(Long id) {
+		
+		juzgadoDao.deleteById(id);
+		
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Juzgado> findByEspecialidad(Especialidad especialidad) {
+		
+		return juzgadoDao.findByEspecialidad(especialidad);
 	}
 
 }

@@ -43,8 +43,8 @@
 					<div class="form-group row">
 						<label class="col-sm-4 col-form-label">Termino</label>
 						<div class="col-sm-6">
-							<select th:field="*{ter}">
-								<option th:each="ter: ${terminos}" th:value="${ter.id}" th:text="${ter.nombre}"></option>
+							<select th:field="*{termino}">
+								<option th:each="termino: ${terminos}" th:value="${termino.id}" th:text="${termino.nombre}"></option>
 							</select>
 						</div>
 					</div>

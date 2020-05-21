@@ -71,7 +71,7 @@ public class Proceso implements Serializable {
 
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "tip_pro_id_pro", nullable = false, updatable = false)
+	@JoinColumn(name = "tip_pro_id_pro", nullable = false)
 	@NotNull
 	private TipoProceso tipoProceso;
 
@@ -88,7 +88,7 @@ public class Proceso implements Serializable {
 	
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "juz_id_pro", nullable = false, updatable = false)
+	@JoinColumn(name = "juz_id_pro", nullable = false)
 	private Juzgado juzgado;
 
 	@OneToMany(mappedBy = "proceso", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

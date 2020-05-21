@@ -122,8 +122,8 @@ public class ProcesoController {
 	}
 	
 	
-	@GetMapping(value = "/verTerminosProceso/{id}")
-	public String verTerminos(@PathVariable(name ="id") Long id, Map<String, Object> model, RedirectAttributes flash)
+	@GetMapping(value = "/verDetalleTerminosProceso/{id}")
+	public String verDetalleTerminos(@PathVariable(name ="id") Long id, Map<String, Object> model, RedirectAttributes flash)
 	{
 		Proceso proceso = procesoService.findOne(id);
 		if(proceso == null)
@@ -165,7 +165,13 @@ public class ProcesoController {
 		Long id = getUserId();
 		//Page<Proceso> procesos = procesoService.findAll(pageRequest);
 		
-		Page<ProcesoUsuario> procesosUsuario = procesoUsuarioService.findAllById(id, pageRequest);
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetail = (UserDetails) auth.getPrincipal();
+		usuario = this.usuarioService.findByUsername(userDetail.getUsername());
+		
+		Juzgado juzgado = usuario.getJuzgado();
+		
+		Page<ProcesoUsuario> procesosUsuario = procesoUsuarioService.findAllById(id, pageRequest, juzgado);
 		
 		PageRender<ProcesoUsuario> pageRender = new PageRender<>("/listarProcesos", procesosUsuario); 
 		
@@ -238,7 +244,13 @@ public class ProcesoController {
 			/* si no se encuentra se redirige al listado */
 			return "redirect:/listarProcesos";
 		}
+		
+		Juzgado juzgado = proceso.getJuzgado();
+		
+		List<Usuario> usuarios = usuarioService.findByJuzgado(juzgado);
+		
 		model.put("proceso", proceso);
+		model.put("usuarios", usuarios);
 		model.put("titulo", "Editar Proceso");
 		model.put("tipoProcesos", tipoProcesoDao.findAll());
 		model.put("juzgados", juzgadoService.findAll());

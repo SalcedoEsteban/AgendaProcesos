@@ -29,7 +29,7 @@
 						<label class="col-sm-2 col-form-label">Especialidad</label>
 						<div class="col-sm-6">
 							<select th:field="*{especialidad}" class="form-control">
-								<option value="">=========elegir especialidad==========</option>
+								<!-- <option value="">=========elegir especialidad==========</option> -->
 								<option th:each="especialidad: ${especialidades}" th:value="${especialidad.id}" th:text="${especialidad.nombre}"></option>
 							</select>
 							<small

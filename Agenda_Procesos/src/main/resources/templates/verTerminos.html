@@ -18,7 +18,7 @@
 							<th>Nombre</th>
 							<th>Fecha Inicial</th>
 							<th>Fecha Final</th>
-							<th>¿Días hábiles?</th>
+							<th>Â¿DÃ­as hÃ¡biles?</th>
 							<th>Editar</th>
 							<th>Eliminar</th>
 						</tr>
@@ -31,11 +31,11 @@
 							<td th:text="${detalleTermino.fechaInicial}"></td>
 							<td th:text="${detalleTermino.fechaFinal}"></td>
 							<td th:text="${detalleTermino.diasHabiles}"></td>
-							<td><a th:href="@{/formProceso/} + ${proceso.id}"
+							<td><a th:href="@{/editarDetalleTermino/} + ${detalleTermino.id}"
 								class="btn btn-primary btn-xs">Editar</a></td>
-							<td><a th:href="@{/eliminarProceso/} + ${proceso.id}"
+							<td><a th:href="@{/eliminarDetalleTermino/} + ${detalleTermino.id}"
 								class="btn btn-danger btn-xs" id="botonEliminar"
-								onclick="return confirm('¿Eliminar elemento?')">Eliminar</a></td>
+								onclick="return confirm('Â¿Eliminar Elemento?')">Eliminar</a></td>
 						</tr>
 					</tbody>
 				</table>

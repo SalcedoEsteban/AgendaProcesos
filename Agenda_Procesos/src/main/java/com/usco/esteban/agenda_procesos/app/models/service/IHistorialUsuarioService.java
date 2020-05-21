@@ -1,5 +1,6 @@
 package com.usco.esteban.agenda_procesos.app.models.service;
 
+import java.util.Date;
 import java.util.List;
 
 import com.usco.esteban.agenda_procesos.app.models.entity.Especialidad;
@@ -19,4 +20,6 @@ public interface IHistorialUsuarioService {
 	public List<HistorialUsuario> findByUsuario(Usuario usuario);
 	
 	public List<HistorialUsuario> findByUsuarioAndEspecialidad(Usuario usuario, Especialidad especialidad);
+	
+	public HistorialUsuario findByUsuarioAndFechaIngreso(Usuario usuario, Date FechaIngreso);
 }
