@@ -25,14 +25,17 @@ public class AgendaProcesosApplication implements CommandLineRunner
 		
 		/*acá se genera las contraseñas de ejemplo */
 		String password = "12345";
+		String password1 = "123456";
 		
-		for(int i =0; i<2; i++)
+		/*for(int i =0; i<2; i++)
 		{
 			String bcryptPassword = passwordEncoder.encode(password);
 			System.out.println(bcryptPassword);
-		}
+		}*/
 		
 		
+		String bcryptPassword1 = passwordEncoder.encode(password1);
+		System.out.println(bcryptPassword1);
 	}
 
 }

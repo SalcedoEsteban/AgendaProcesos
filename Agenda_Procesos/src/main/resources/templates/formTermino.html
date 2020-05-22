@@ -52,7 +52,7 @@
 						<div class="col-sm-6">
 							<select id="especialidad" name="especialidad" class="form-control" th:field="*{especialidad}"
 								th:errorclass="'form-control alert-danger'">
-								<option value="">===========seleccione===========================</option>
+								<!-- <option value="">===========seleccione===========================</option> -->
 								<option th:each="especialidad: ${especialidades}"
 									th:value="${especialidad.id}" th:text="${especialidad.nombre}"></option>
 							</select> <small class="form-text text-danger"

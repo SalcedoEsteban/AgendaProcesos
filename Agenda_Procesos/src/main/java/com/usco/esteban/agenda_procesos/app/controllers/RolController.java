@@ -58,7 +58,7 @@ public class RolController
 		
 		rol.setUsuario(usuario);
 		
-		model.put("titulo", "Fomulario de Roles");
+		model.put("titulo", "Asignar Rol al usuario: " + usuario.getNombre()+ " " + usuario.getApellido());;
 		model.put("rol", rol);
 		
 		return "rol/formRol";

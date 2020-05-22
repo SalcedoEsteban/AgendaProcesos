@@ -18,20 +18,22 @@
 			</button>
 			<div class="collapse navbar-collapse">
 				<ul class="navbar-nav mr-auto">
-					<li class="nav-item active"><a class="nav-link" th:href="@{/}">Inicio
+					<li sec:authorize="isAuthenticated()" class="nav-item active"><a class="nav-link" th:href="@{/}">Inicio
 					</a></li>
-					<li class="nav-item"><a class="nav-link"
+					<li sec:authorize="isAuthenticated()" class="nav-item"><a class="nav-link"
 						th:href="@{/listarProcesos}">Admin. Procesos</a></li>
 					<!-- <li class="nav-item"><a class="nav-link" th:href="@{/listar}">Usuarios</a>
 					</li>  -->
-					<li class="nav-item"><a class="nav-link"
+					<li class="nav-item" sec:authorize="hasRole('ROLE_SUPER_ADMIN')"><a class="nav-link"
 						th:href="@{/listarTiposProceso}">Admin. Tipo Proceso</a></li>
-					<li class="nav-item"><a class="nav-link"
+					<li class="nav-item" sec:authorize="hasRole('ROLE_SUPER_ADMIN')"><a class="nav-link"
 						th:href="@{/formTermino}">Crear Terminos</a></li>
-					<li class="nav-item"><a class="nav-link"
+					<li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')"><a class="nav-link"
 						th:href="@{/listarUsuarios}">Admin. Usuario</a></li>
-					<li class="nav-item"><a class="nav-link"
+					<li class="nav-item" sec:authorize="hasRole('ROLE_SUPER_ADMIN')"><a class="nav-link"
 						th:href="@{/juzgado/verEspecialidad}">Admin. Juzgados</a></li>
+					<li class="nav-item" sec:authorize="hasRole('ROLE_SUPER_ADMIN')"><a class="nav-link"
+						th:href="@{/especialidad/listar}">Admin. Especialidades</a></li>
 				</ul>
 				<ul class="navbar-nav navbar-right">
 					<li sec:authorize="!isAuthenticated()"><a th:href="@{/login}"
