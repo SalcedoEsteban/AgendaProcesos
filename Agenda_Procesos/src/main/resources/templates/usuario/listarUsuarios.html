@@ -23,6 +23,7 @@
 							<th>Asignar Rol(es)</th>
 							<th>Ver Rol(es)</th>
 							<th>Editar</th>
+							<th>Act/Desac</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -32,9 +33,13 @@
 							<td th:text="${usuario.nombre}"></td>
 							<td th:text="${usuario.apellido}"></td>
 							<td th:text="${usuario.juzgado.nombre}"></td>
-							<td><a th:href="@{'/crearRol/'  + ${usuario.id}}" class="btn btn-primary btn">Asignar</a></td>
-							<td><a th:href="@{/verRoles/}  + ${usuario.id}" class="btn btn-primary btn">Ver</a></td>
+							<td><a th:href="@{'/crearRol/'  + ${usuario.id}}" class="btn btn-primary btn-xs">Asignar</a></td>
+							<td><a th:href="@{/verRoles/}  + ${usuario.id}" class="btn btn-primary btn-xs">Ver</a></td>
 							<td><a th:href="@{/editarUsuario/} + ${usuario.id}" class="btn btn-primary btn-xs">Editar</a></td>
+							<td>
+								<a th:if="${usuario.enabled == true}" th:href="@{/desactiActiUsuario/} + ${usuario.id}" class="btn btn-warning btn-xs">Desact.</a>
+								<a th:if="${usuario.enabled == false}" th:href="@{/desactiActiUsuario/} + ${usuario.id}" class="btn btn-success btn-xs">Activar</a>
+							</td>
 						</tr>
 					</tbody>
 				</table>

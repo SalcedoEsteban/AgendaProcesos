@@ -162,4 +162,43 @@ public class UsuarioController {
 
 		return "redirect:/listarUsuarios";
 	}
+	
+	@RequestMapping(value="/desactiActiUsuario/{id}")
+	public String desactivarUsuario(@PathVariable(value ="id") Long id, RedirectAttributes flash)
+	{
+		Usuario usuario = null;
+		
+		if(id > 0)
+		{
+			usuario = usuarioService.findOne(id);
+			
+			if(usuario == null)
+			{
+				flash.addFlashAttribute("warning", "El usuario no existe");
+				return "redirect:/listarUsuarios";
+			}
+			
+			if(usuario.isEnabled())
+			{
+				usuario.setEnabled(false);
+				usuarioService.save(usuario);
+				flash.addFlashAttribute("success", "El usuario ha sido desactivado con exito");
+				//return "redirect:/listarUsuarios";
+			}
+			else if(!usuario.isEnabled())
+			{
+				usuario.setEnabled(true);
+				usuarioService.save(usuario);
+				flash.addFlashAttribute("success", "El usuario ha sido Activado con exito");
+				//return "redirect:/listarUsuarios";
+			}	
+		}
+		else
+		{
+			flash.addFlashAttribute("error", "El ID del usuario no puede ser cero");
+			return "redirect:/listarUsuarios";
+		}
+		
+		return "redirect:/listarUsuarios";
+	}
 }
