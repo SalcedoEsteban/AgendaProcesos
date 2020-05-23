@@ -21,6 +21,7 @@
 							<th>Apellido</th>
 							<th>Juzgado</th>
 							<th>Asignar Rol(es)</th>
+							<th>Ver Rol(es)</th>
 							<th>Editar</th>
 						</tr>
 					</thead>
@@ -31,7 +32,8 @@
 							<td th:text="${usuario.nombre}"></td>
 							<td th:text="${usuario.apellido}"></td>
 							<td th:text="${usuario.juzgado.nombre}"></td>
-							<td><a th:href="@{'/crearRol/'  + ${usuario.id}}" class="btn btn-primary btn">Asignar Rol</a></td>
+							<td><a th:href="@{'/crearRol/'  + ${usuario.id}}" class="btn btn-primary btn">Asignar</a></td>
+							<td><a th:href="@{/verRoles/}  + ${usuario.id}" class="btn btn-primary btn">Ver</a></td>
 							<td><a th:href="@{/editarUsuario/} + ${usuario.id}" class="btn btn-primary btn-xs">Editar</a></td>
 						</tr>
 					</tbody>

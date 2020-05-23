@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.usco.esteban.agenda_procesos.app.models.entity.Rol;
+import com.usco.esteban.agenda_procesos.app.models.entity.Usuario;
 
 public interface IRolService
 {
@@ -18,4 +19,6 @@ public interface IRolService
 	public Rol findOne(Long id);
 	
 	public void delete(Long id);
+	
+	public List<Rol> findByUsuario(Usuario usuario);
 }

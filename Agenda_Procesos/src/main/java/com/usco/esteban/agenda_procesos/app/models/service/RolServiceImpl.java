@@ -6,9 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.usco.esteban.agenda_procesos.app.models.dao.IRolDao;
 import com.usco.esteban.agenda_procesos.app.models.entity.Rol;
+import com.usco.esteban.agenda_procesos.app.models.entity.Usuario;
 
 @Service
 public class RolServiceImpl implements IRolService {
@@ -41,6 +43,13 @@ public class RolServiceImpl implements IRolService {
 	@Override
 	public void delete(Long id) {
 		rolDao.deleteById(id);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Rol> findByUsuario(Usuario usuario) {
+		
+		return rolDao.findByUsuario(usuario);
 	}
 
 }
