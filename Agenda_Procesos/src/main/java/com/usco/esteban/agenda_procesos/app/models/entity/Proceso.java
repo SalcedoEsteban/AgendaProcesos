@@ -2,6 +2,7 @@ package com.usco.esteban.agenda_procesos.app.models.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -57,7 +58,7 @@ public class Proceso implements Serializable {
 	@Temporal(TemporalType.DATE)
 	@NotNull
 	@DateTimeFormat(pattern = "MM/dd/yyyy")
-	private Date fechaReparto;
+	private Calendar fechaReparto;
 
 	@Column(name = "pro_ultima_actuacion")
 	private String ultimaActuacion;
@@ -111,7 +112,7 @@ public class Proceso implements Serializable {
 	@PrePersist
 	public void prePersist()
 	{
-		this.createAt = new Date();
+		this.createAt = Calendar.getInstance().getTime();
 		this.estado = true;
 	}
 	
@@ -159,11 +160,11 @@ public class Proceso implements Serializable {
 		this.demandado = demandado;
 	}
 
-	public Date getFechaReparto() {
+	public Calendar getFechaReparto() {
 		return fechaReparto;
 	}
 
-	public void setFechaReparto(Date fechaReparto) {
+	public void setFechaReparto(Calendar fechaReparto) {
 		this.fechaReparto = fechaReparto;
 	}
 

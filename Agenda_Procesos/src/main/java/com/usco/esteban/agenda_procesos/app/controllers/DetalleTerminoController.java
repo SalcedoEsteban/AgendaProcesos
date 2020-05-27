@@ -151,7 +151,7 @@ public class DetalleTerminoController {
 		model.addAttribute("procesos", procesosUsuario);
 		model.addAttribute("page", pageRender);
 		
-		return "listarProcesos";
+		return "redirect:/listarProcesos";
 	}
 	
 	@RequestMapping(value ="/editarDetalleTermino/{id}")

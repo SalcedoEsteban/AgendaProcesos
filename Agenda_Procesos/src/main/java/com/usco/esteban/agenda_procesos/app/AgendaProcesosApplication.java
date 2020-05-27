@@ -1,5 +1,7 @@
 package com.usco.esteban.agenda_procesos.app;
 
+import java.util.Calendar;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -36,6 +38,40 @@ public class AgendaProcesosApplication implements CommandLineRunner
 		
 		String bcryptPassword1 = passwordEncoder.encode(password1);
 		System.out.println(bcryptPassword1);
+		
+		
+		Calendar fechaActual = Calendar.getInstance();
+		Calendar fechaFinal = Calendar.getInstance();
+		
+		//Calendar fechaInicial = detalle.getFechaInicial();
+		int dia = 10;
+		int mes = 6;
+		int año = 2020;
+		
+		fechaFinal.set(año, mes-1, dia);
+		
+		fechaActual.set(Calendar.HOUR, 0);
+		fechaActual.set(Calendar.HOUR_OF_DAY, 0);
+		fechaActual.set(Calendar.MINUTE, 0);
+		fechaActual.set(Calendar.SECOND, 0);
+		
+		fechaFinal.set(Calendar.HOUR, 0);
+		fechaFinal.set(Calendar.HOUR_OF_DAY, 0);
+		fechaFinal.set(Calendar.MINUTE, 0);
+		fechaFinal.set(Calendar.SECOND, 0);
+		
+		
+		
+		//long fechaIncialMS = fechaInicial.getTimeInMillis();
+		long fechaFinalMS = fechaFinal.getTimeInMillis();
+		long fechaActualMS = fechaActual.getTimeInMillis();
+		
+		int dias = (int) ((Math.abs(fechaFinalMS - fechaActualMS)) / (1000 * 60 * 60* 24));
+		
+		if(dias == 15)
+		{
+			System.out.println("dias igual a 15");
+		}
 	}
 
 }

@@ -28,8 +28,8 @@
 							<td th:text="${detalleTermino.id}"></td>
 							<td th:text="${detalleTermino.termino.nombre}">
 							<!-- <td th:text="${detalleTermino.diasHabiles}"></td>  -->
-							<td th:text="${detalleTermino.fechaInicial}"></td>
-							<td th:text="${detalleTermino.fechaFinal}"></td>
+							<td th:text="${#dates.format(detalleTermino.fechaInicial, 'dd-MM-yyyy')}"></td>
+							<td th:text="${#dates.format(detalleTermino.fechaFinal, 'dd-MM-yyyy')}"></td>
 							<td th:text="${detalleTermino.diasHabiles}"></td>
 							<td><a th:href="@{/editarDetalleTermino/} + ${detalleTermino.id}"
 								class="btn btn-primary btn-xs">Editar</a></td>

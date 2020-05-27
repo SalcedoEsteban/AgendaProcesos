@@ -1,9 +1,13 @@
 package com.usco.esteban.agenda_procesos.app.controllers;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,15 +20,15 @@ import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.usco.esteban.agenda_procesos.app.editors.JuzgadoPropertyEditor;
-import com.usco.esteban.agenda_procesos.app.models.dao.IJuzgadoDao;
 import com.usco.esteban.agenda_procesos.app.models.entity.Especialidad;
 import com.usco.esteban.agenda_procesos.app.models.entity.HistorialUsuario;
 import com.usco.esteban.agenda_procesos.app.models.entity.Juzgado;
+import com.usco.esteban.agenda_procesos.app.models.entity.Rol;
 import com.usco.esteban.agenda_procesos.app.models.entity.Usuario;
 import com.usco.esteban.agenda_procesos.app.models.service.IHistorialUsuarioService;
 import com.usco.esteban.agenda_procesos.app.models.service.IJuzgadoService;
+import com.usco.esteban.agenda_procesos.app.models.service.IRolService;
 import com.usco.esteban.agenda_procesos.app.models.service.IUsuarioService;
-import com.usco.esteban.agenda_procesos.app.models.service.JpaUsuarioDetailsService;
 
 @Controller
 @SessionAttributes("usuario")
@@ -44,8 +48,13 @@ public class UsuarioController {
 
 	@Autowired
 	private IHistorialUsuarioService historialUsuarioService;
+	
+	@Autowired
+	private IRolService rolService;
 
 	private Juzgado juzgado;
+	
+	private Usuario usuario;
 
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
@@ -54,8 +63,58 @@ public class UsuarioController {
 
 	@RequestMapping(value = "/listarUsuarios")
 	public String listarUsuarios(Map<String, Object> model) {
+		
+		/*Se obtiene el usuario logeado*/
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetail = (UserDetails) auth.getPrincipal();
+		usuario = this.usuarioService.findByUsername(userDetail.getUsername());
+		
+		/* Se obtiene el juzgado del usuario logueado*/
+		Juzgado juzgado = usuario.getJuzgado();
+		
+		/*se obtienen los roles del usuario*/
+		List<Rol> roles = rolService.findByUsuario(usuario);
+		
+		System.out.println("la lista roles es vacia: " + roles.isEmpty());
+		
+		
+		
+		String nombre = null;
+		List<Usuario> usuarios = null; 
+		
+		for (Rol rol : roles) {
+			
+			System.out.println(rol.getRol());
+			
+			//nombre = rol.getRol();
+			
+			if(rol.getRol().contentEquals("ROLE_SUPER_ADMIN"))
+			{
+				System.out.println("rol desde el if por SUPER_ADMIN: " + rol.getRol());
+				nombre = rol.getRol();
+			}else if(rol.getRol().contentEquals("ROLE_ADMIN"))
+			{
+				System.out.println("rol desde el if por ROLE_ADMIN: " + rol.getRol());
+				nombre = rol.getRol();
+			}
+		}
+		
+		System.out.println("el rol es: " + nombre);
+		
+		if(nombre.contentEquals("ROLE_SUPER_ADMIN"))
+		{
+			System.out.println("se hace la consulta de todos los usuarios");
+			usuarios = usuarioService.findAll();
+		}
+		else if(nombre.contentEquals("ROLE_ADMIN"))
+		{
+			System.out.println("se hace la consulta de usuario por juzgado");
+			usuarios = usuarioService.findByJuzgado(juzgado);
+		}
+		 
+		
 		model.put("titulo", "Listado de Usuarios");
-		model.put("usuarios", usuarioService.findAll());
+		model.put("usuarios", usuarios);
 
 		return "usuario/listarUsuarios";
 	}

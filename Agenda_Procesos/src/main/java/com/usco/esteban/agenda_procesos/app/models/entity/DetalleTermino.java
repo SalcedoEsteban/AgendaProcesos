@@ -1,6 +1,7 @@
 package com.usco.esteban.agenda_procesos.app.models.entity;
 
 import java.io.Serializable;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -40,12 +41,12 @@ public class DetalleTermino implements Serializable {
 	@Column(name="detTer_fecha_incial")
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "MM/dd/yyyy")
-	private Date fechaInicial;
+	private Calendar fechaInicial;
 	
 	@Column(name ="detTer_fecha_final")
 	@Temporal(TemporalType.DATE)
 	@DateTimeFormat(pattern = "MM/dd/yyyy")
-	private Date fechaFinal;
+	private Calendar fechaFinal;
 	
 	@Column(name="det_ter_termino")
 	private String ter;
@@ -86,19 +87,19 @@ public class DetalleTermino implements Serializable {
 		this.diasHabiles = diasHabiles;
 	}
 
-	public Date getFechaInicial() {
+	public Calendar getFechaInicial() {
 		return fechaInicial;
 	}
 
-	public void setFechaInicial(Date fechaInicial) {
+	public void setFechaInicial(Calendar fechaInicial) {
 		this.fechaInicial = fechaInicial;
 	}
 
-	public Date getFechaFinal() {
+	public Calendar getFechaFinal() {
 		return fechaFinal;
 	}
 
-	public void setFechaFinal(Date fechaFinal) {
+	public void setFechaFinal(Calendar fechaFinal) {
 		this.fechaFinal = fechaFinal;
 	}
 

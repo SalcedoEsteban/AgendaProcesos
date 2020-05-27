@@ -2,6 +2,8 @@ package com.usco.esteban.agenda_procesos.app.controllers;
 
 
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -30,11 +32,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.usco.esteban.agenda_procesos.app.editors.TipoProcesoPropertyEditor;
 import com.usco.esteban.agenda_procesos.app.models.dao.IUsuarioDao;
+import com.usco.esteban.agenda_procesos.app.models.entity.Alarma;
+import com.usco.esteban.agenda_procesos.app.models.entity.DetalleTermino;
 import com.usco.esteban.agenda_procesos.app.models.entity.Juzgado;
 import com.usco.esteban.agenda_procesos.app.models.entity.Proceso;
 import com.usco.esteban.agenda_procesos.app.models.entity.ProcesoUsuario;
 import com.usco.esteban.agenda_procesos.app.models.entity.TipoProceso;
 import com.usco.esteban.agenda_procesos.app.models.entity.Usuario;
+import com.usco.esteban.agenda_procesos.app.models.service.IAlarmaService;
 import com.usco.esteban.agenda_procesos.app.models.service.IJuzgadoService;
 import com.usco.esteban.agenda_procesos.app.models.service.IProcesoService;
 import com.usco.esteban.agenda_procesos.app.models.service.IProcesoUsuarioService;
@@ -70,6 +75,9 @@ public class ProcesoController {
 	
 	@Autowired
 	private IUsuarioService usuarioService;
+	
+	@Autowired
+	private IAlarmaService alarmaService;
 	
 	@Autowired
 	private TipoProcesoPropertyEditor tipoProcesoEditor;
@@ -132,6 +140,48 @@ public class ProcesoController {
 			return "redirect:/listarProcesos";
 		}
 		
+		/*String nombre = null;
+		List<DetalleTermino> detalleTerminos = proceso.getDetalleTerminos();
+		
+		for(DetalleTermino detalle: detalleTerminos)
+		{
+			if(detalle.getTermino().getNombre().contentEquals("admision"))
+			{
+				Calendar calendar = Calendar.getInstance();
+				
+				Calendar fechaInicial = detalle.getFechaInicial();
+				Calendar fechaFinal = detalle.getFechaFinal();
+				
+				calendar.set(Calendar.HOUR, 0);
+				calendar.set(Calendar.HOUR_OF_DAY, 0);
+				calendar.set(Calendar.MINUTE, 0);
+				calendar.set(Calendar.SECOND, 0);
+				
+				fechaFinal.set(Calendar.HOUR, 0);
+				fechaFinal.set(Calendar.HOUR_OF_DAY, 0);
+				fechaFinal.set(Calendar.MINUTE, 0);
+				fechaFinal.set(Calendar.SECOND, 0);
+				
+				
+				
+				long fechaIncialMS = fechaInicial.getTimeInMillis();
+				long fechaFinalMS = fechaFinal.getTimeInMillis();
+				long fechaActualMS = calendar.getTimeInMillis();
+				
+				int dias = (int) ((Math.abs(fechaFinalMS - fechaActualMS)) / (1000 * 60 * 60* 24));
+				
+				if(dias == 15)
+				{
+					System.out.println("dias igual a 15");
+					flash.addFlashAttribute("error", "el termino " + detalle.getTermino().getNombre() + "está a punto de vencer");
+					return "redirect:/listarProcesos";
+				}
+				
+				
+			}
+		}*/
+		
+		
 		model.put("proceso", proceso);
 		model.put("titulo", "Terminos del proceso con el radicado: " + proceso.getRadicado());
 		
@@ -158,7 +208,7 @@ public class ProcesoController {
 	}
 	
 	@RequestMapping(value = "/listarProcesos", method = RequestMethod.GET)
-	public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model)
+	public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model, RedirectAttributes flash)
 	{
 		Pageable pageRequest = PageRequest.of(page, 3);
 		
@@ -182,6 +232,77 @@ public class ProcesoController {
 			System.out.println(procesoUsuario.getProceso().getRadicado());
 		}
 		
+		
+		/* ====== codigo para probar las notficaciones de vencimiento de terminos =====*/
+		String admision = "admision";
+		String mensajeFlash;
+		
+		for (ProcesoUsuario procesoUsuario : procesosUsuario) {
+			List<DetalleTermino> detallesTermino = procesoUsuario.getProceso().getDetalleTerminos();
+			
+			for(DetalleTermino detalle: detallesTermino)
+			{
+				System.out.println("los terminos del proceso son: "+ detalle.getTermino().getNombre());
+				
+				if(detalle.getTermino().getNombre().contentEquals("admision"))
+				{
+					System.out.println("si contiene admision en el detalle termino");
+					
+					Calendar calendar = Calendar.getInstance();
+					
+					Calendar fechaInicial = detalle.getFechaInicial();
+					Calendar fechaFinal = detalle.getFechaFinal();
+					
+					calendar.set(Calendar.HOUR, 0);
+					calendar.set(Calendar.HOUR_OF_DAY, 0);
+					calendar.set(Calendar.MINUTE, 0);
+					calendar.set(Calendar.SECOND, 0);
+					
+					fechaFinal.set(Calendar.HOUR, 0);
+					fechaFinal.set(Calendar.HOUR_OF_DAY, 0);
+					fechaFinal.set(Calendar.MINUTE, 0);
+					fechaFinal.set(Calendar.SECOND, 0);
+					
+					
+					
+					long fechaIncialMS = fechaInicial.getTimeInMillis();
+					long fechaFinalMS = fechaFinal.getTimeInMillis();
+					long fechaActualMS = calendar.getTimeInMillis();
+					
+					int dias = (int) ((Math.abs(fechaFinalMS - fechaActualMS)) / (1000 * 60 * 60* 24));
+					System.out.println("numero días: " + dias);
+					if(dias == 15)
+					{
+						Alarma alarma = new Alarma();
+						
+						Proceso proceso = procesoUsuario.getProceso();
+						String descripcion = "Alarma de: ".concat(detalle.getTermino().getNombre());
+						
+						alarma.setProceso(proceso);
+						alarma.setDescripcion(descripcion);
+						alarmaService.save(alarma);
+						
+						
+						
+						
+						System.out.println("dias igual a 15");
+						flash.addFlashAttribute("error", "el termino " + detalle.getTermino().getNombre() + " del proceso con radicado: "+ 
+						procesoUsuario.getProceso().getRadicado()+ " está a punto de vencer");
+						model.addAttribute("vence", "el termino " + detalle.getTermino().getNombre() + " del proceso con radicado: "+ 
+								procesoUsuario.getProceso().getRadicado()+ " está a punto de vencer");
+						//return "redirect:/listarProcesos";
+					}
+					
+					
+				}
+			}
+		}
+		
+		//List<DetalleTermino> detalleTerminos = proceso.getDetalleTerminos();
+		
+		
+		
+		/* ============================================================= */
 		
 		
 		model.addAttribute("titulo", "Listado de procesos");

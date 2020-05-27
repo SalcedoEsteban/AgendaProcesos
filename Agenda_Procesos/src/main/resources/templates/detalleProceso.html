@@ -39,7 +39,7 @@
 				<div class="form-group row">
 						<label class="col-sm-4 col-form-label" th:text="'Fecha Reparto: '"></label>
 						<div class="col-sm-4">
-							<input th:value="${proceso.fechaReparto}" disabled="disabled" class="form-control"/>
+							<input th:value="${#dates.format(proceso.fechaReparto, 'dd-MM-yyyy')}" disabled="disabled" class="form-control"/>
 						</div>
 				</div>
 				<div class="form-group row">

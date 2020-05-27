@@ -5,6 +5,13 @@
 	<header th:replace="layout/layout :: header"></header>
 
 	<div class="container py-4">
+	<div class="card bg-danger text-white" th:if="${vence != null}">
+			<div class="card-header">Vencimiento de término</div>
+			<div class="card-body">
+				<h5 class="card-title" th:text="${vence}">
+				</h5>
+			</div>
+	</div>
 		<div class="card bg-light">
 			<div class="card-header" th:text="${titulo}"></div>
 			<div class="card-body">
@@ -57,7 +64,7 @@
 							<td th:text="${proceso.proceso.radicado}"></td>
 							<td th:text="${proceso.proceso.demandante}"></td>
 							<td th:text="${proceso.proceso.demandado}"></td>
-							<td th:text="${proceso.proceso.fechaReparto}"></td>
+							<td th:text="${#dates.format(proceso.proceso.fechaReparto, 'dd-MM-yyyy')}"></td>
 							<td><a th:href="@{'/verDetalleProceso/' + ${proceso.proceso.id}}"
 								th:text="${proceso.proceso.id}" class="btn btn-primary btn-xs"></a></td>
 							<!-- <td th:text="${proceso.ultimaActuacion}"></td>  -->
