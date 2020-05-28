@@ -2,6 +2,7 @@ package com.usco.esteban.agenda_procesos.app.controllers;
 
 
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -85,6 +86,8 @@ public class ProcesoController {
 	//private JpaUsuarioDetailsService usuarioService;
 	
 	private Usuario usuario;
+	
+	private boolean bandera = true;
 	
 	@InitBinder
 	public void initBinder(WebDataBinder binder)
@@ -207,6 +210,10 @@ public class ProcesoController {
 		return "listarProcesos";
 	}
 	
+	
+	
+	
+	
 	@RequestMapping(value = "/listarProcesos", method = RequestMethod.GET)
 	public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model, RedirectAttributes flash)
 	{
@@ -234,8 +241,9 @@ public class ProcesoController {
 		
 		
 		/* ====== codigo para probar las notficaciones de vencimiento de terminos =====*/
-		String admision = "admision";
-		String mensajeFlash;
+	
+		/*lista de procesos */
+		List<Proceso> procesosAVencer = new ArrayList<Proceso>();
 		
 		for (ProcesoUsuario procesoUsuario : procesosUsuario) {
 			List<DetalleTermino> detallesTermino = procesoUsuario.getProceso().getDetalleTerminos();
@@ -271,26 +279,40 @@ public class ProcesoController {
 					
 					int dias = (int) ((Math.abs(fechaFinalMS - fechaActualMS)) / (1000 * 60 * 60* 24));
 					System.out.println("numero días: " + dias);
+					
+					
 					if(dias == 15)
 					{
-						Alarma alarma = new Alarma();
+						Proceso procesoAVencer = procesoUsuario.getProceso();
+						System.out.println(procesoAVencer.getRadicado());
+						procesosAVencer.add(procesoAVencer);
 						
-						Proceso proceso = procesoUsuario.getProceso();
-						String descripcion = "Alarma de: ".concat(detalle.getTermino().getNombre());
-						
-						alarma.setProceso(proceso);
-						alarma.setDescripcion(descripcion);
-						alarmaService.save(alarma);
-						
+						if(bandera == true)
+						{
+							Proceso proceso = procesoUsuario.getProceso();
+							String descripcion = "Alarma de: ".concat(detalle.getTermino().getNombre());
+							
+							Alarma alarma = new Alarma();
+							alarma.setProceso(proceso);
+							alarma.setDescripcion(descripcion);
+							alarmaService.save(alarma);		
+							
+							proceso.setPrioritario(true);
+							procesoService.save(proceso);
+							
+							this.bandera = false;
+						}
 						
 						
 						
 						System.out.println("dias igual a 15");
-						flash.addFlashAttribute("error", "el termino " + detalle.getTermino().getNombre() + " del proceso con radicado: "+ 
-						procesoUsuario.getProceso().getRadicado()+ " está a punto de vencer");
-						model.addAttribute("vence", "el termino " + detalle.getTermino().getNombre() + " del proceso con radicado: "+ 
-								procesoUsuario.getProceso().getRadicado()+ " está a punto de vencer");
-						//return "redirect:/listarProcesos";
+						/*flash.addFlashAttribute("error", "el termino " + detalle.getTermino().getNombre() + " del proceso con radicado: "+ 
+						procesoUsuario.getProceso().getRadicado()+ " está a punto de vencer");*/
+						/*model.addAttribute("vence", "el termino " + detalle.getTermino().getNombre() + " del proceso con radicado: "+ 
+								procesoUsuario.getProceso().getRadicado()+ " está a punto de vencer");*/
+						model.addAttribute("vence", "Listado de procesos Cercanos a Vencer");
+						model.addAttribute("procesosAVencer", procesosAVencer);
+						
 					}
 					
 					

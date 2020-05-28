@@ -18,9 +18,9 @@ insert into tipo_proceso (tip_pro_nombre, esp_id_tip_pro) values ('CUSTODIAAA', 
 
 
 
-insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, tip_pro_id_pro, juz_id_pro) values ('04-03-2019', '2019-00200-01', ' Esteban Salcedo Alvarez', 'Alejandra Lozano', '02-03-2019', 'ADMISION', 'ESPERA DE NOT PER', true, 1, 1);
-insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, tip_pro_id_pro, juz_id_pro) values ('15-12-2019',  '2018-00300-02', ' Angel Roberto', 'Julian Castillo', '04-03-2019', 'ADMISION', 'ESPERA DE NOT PER', true, 2, 1);
-insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, tip_pro_id_pro, juz_id_pro) values ('9-07-2019',  '2018-00300-03', ' Angel Roberto', 'Julian Castillo', '04-03-2019', 'ADMISION', 'ESPERA DE NOT PER', true, 2, 2);
+insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, tip_pro_id_pro, juz_id_pro, pro_prioritario) values ('04-03-2019', '2019-00200-01', ' Esteban Salcedo Alvarez', 'Alejandra Lozano', '02-03-2019', 'ADMISION', 'ESPERA DE NOT PER', true, 1, 1, false);
+insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, tip_pro_id_pro, juz_id_pro, pro_prioritario) values ('15-12-2019',  '2018-00300-02', ' Angel Roberto', 'Julian Castillo', '04-03-2019', 'ADMISION', 'ESPERA DE NOT PER', true, 2, 1, false);
+insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, tip_pro_id_pro, juz_id_pro, pro_prioritario) values ('9-07-2019',  '2018-00300-03', ' Angel Roberto', 'Julian Castillo', '04-03-2019', 'ADMISION', 'ESPERA DE NOT PER', true, 2, 2, false);
 
 
 

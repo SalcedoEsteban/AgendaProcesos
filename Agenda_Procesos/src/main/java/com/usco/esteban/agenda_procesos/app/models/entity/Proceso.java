@@ -70,6 +70,8 @@ public class Proceso implements Serializable {
 	@Column(name = "pro_estado")
 	private boolean estado;
 
+	@Column(name ="pro_prioritario")
+	private boolean prioritario;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "tip_pro_id_pro", nullable = false)
@@ -114,6 +116,7 @@ public class Proceso implements Serializable {
 	{
 		this.createAt = Calendar.getInstance().getTime();
 		this.estado = true;
+		this.prioritario = false;
 	}
 	
 	public Proceso() {
@@ -204,12 +207,28 @@ public class Proceso implements Serializable {
 		detalleTerminos.add(detalleTermino);
 	}
 
+	
+	
+	
+	
+	
+	
 	/*
 	 * public String getTipoProceso() { return tipoProceso; }
 	 * 
 	 * public void setTipoProceso(String tipoProceso) { this.tipoProceso =
 	 * tipoProceso; }
 	 */
+	
+	
+	
+	public boolean isPrioritario() {
+		return prioritario;
+	}
+
+	public void setPrioritario(boolean prioritario) {
+		this.prioritario = prioritario;
+	}
 
 	public TipoProceso getTipoProceso() {
 		return tipoProceso;

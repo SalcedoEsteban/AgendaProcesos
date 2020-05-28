@@ -5,12 +5,31 @@
 	<header th:replace="layout/layout :: header"></header>
 
 	<div class="container py-4">
-	<div class="card bg-danger text-white" th:if="${vence != null}">
-			<div class="card-header">Vencimiento de término</div>
+	
+	<div class="alert alert-danger alert-dismissible" th:if="${vence != null}">
+	<a href="#" class="close" data-dismiss="alert" >&times;</a>
+		<div class="card bg-danger text-white" >
+			<div class="card-header">Vencimiento de tÃ©rminos</div>
 			<div class="card-body">
-				<h5 class="card-title" th:text="${vence}">
+				<h5 class="card-title text-center" th:text="${vence}">
 				</h5>
+				<table class="table table-striped table-bordered text-center">
+					<thead class="thead-dark">
+						<tr>
+							<th>Radicado</th>
+							<th>Ver</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="proceso: ${procesosAVencer}">
+							<td th:text="${proceso.radicado}"></td>
+							<td><a th:href="@{/verDetalleProceso/} + ${proceso.id}" 
+							class="btn btn-warning">Ver</a></td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
+		</div>
 	</div>
 		<div class="card bg-light">
 			<div class="card-header" th:text="${titulo}"></div>
@@ -81,7 +100,7 @@
 									src="/icons/pencil.svg" width="20" height="20"></a></td>
 							<td sec:authorize="hasRole('ROLE_ADMIN')"><a  th:href="@{/eliminarProceso/} + ${proceso.proceso.id}"
 								class="btn btn-danger btn-xs" id="botonEliminar"
-								onclick="return confirm('¿Eliminar elemento?')"><img alt=""
+								onclick="return confirm('ï¿½Eliminar elemento?')"><img alt=""
 									src="/icons/x-square-fill.svg" width="20" height="20"></a></td>
 						</tr>
 					</tbody>
