@@ -20,7 +20,7 @@
 						<label class="col-sm-2 col-form-label">Usuario</label>
 						<div class="col-sm-6">
 							<select name="usuario" id="usuario" class="form-control">
-								<option value=" "></option>
+								<!-- <option value=" "></option>  -->
 								<option th:each="usuario: ${usuarios}" th:value="${usuario.id}" th:text="${usuario.nombre} + ' ' + ${usuario.apellido}"></option>
 							</select>
 						</div>

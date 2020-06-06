@@ -16,5 +16,6 @@ public interface ITerminoDao extends JpaRepository<Termino, Long>{
 	public List<Termino> findByEspecialidadAndTipoProcesoAndBasico(Especialidad especialidad, 
 			TipoProceso tipoProceso, boolean basico);
 	
-	
+	public Termino findByNombreAndEspecialidadAndTipoProceso(String nombre,Especialidad especialidad,
+			 TipoProceso tipoProceso);
 }

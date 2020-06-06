@@ -5,7 +5,8 @@
 	<header th:replace="layout/layout :: header"></header>
 
 	<div class="container py-4">
-	
+	<!-- <div class="alert alert-danger" th:if="${vence == null}"
+			th:text="${'es null'}"></div>  -->
 	<div class="alert alert-danger alert-dismissible" th:if="${vence != null}">
 	<a href="#" class="close" data-dismiss="alert" >&times;</a>
 		<div class="card bg-danger text-white" >
@@ -95,12 +96,12 @@
 							<td><a th:href="@{'/crearDetalleTermino/' + ${proceso.proceso.id}}"
 								class="btn btn-primary btn-xs"><img alt=""
 									src="/icons/bell-fill.svg" width="20" height="20"></a></td>
-							<td sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/formProceso/} + ${proceso.proceso.id}"
+							<td sec:authorize="hasRole('ROLE_ADMIN')"><a th:href="@{/editarProceso/} + ${proceso.proceso.id}"
 								class="btn btn-primary btn-xs"><img alt=""
 									src="/icons/pencil.svg" width="20" height="20"></a></td>
 							<td sec:authorize="hasRole('ROLE_ADMIN')"><a  th:href="@{/eliminarProceso/} + ${proceso.proceso.id}"
 								class="btn btn-danger btn-xs" id="botonEliminar"
-								onclick="return confirm('�Eliminar elemento?')"><img alt=""
+								onclick="return confirm('¿Eliminar elemento?')"><img alt=""
 									src="/icons/x-square-fill.svg" width="20" height="20"></a></td>
 						</tr>
 					</tbody>

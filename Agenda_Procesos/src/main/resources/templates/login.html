@@ -6,11 +6,11 @@
 	<header th:replace="layout/layout :: header"> </header>
 
 	<div class="container py-4">
-		<div class="card border-primary text-center">
+		<div class="card text-center border-primary">
 			<div class="card-header">Inicio de Sesión</div>
 			<div class="card-body">
 				<form th:action="@{/login}" method="post">
-					<div class="form-group col-sm-6 text-center" >
+					<div class="form-group col-sm-6" >
 						<input type="text" name="username" id="username"
 							class="form-control" placeholder="Usuario" autofocus required />
 					</div>

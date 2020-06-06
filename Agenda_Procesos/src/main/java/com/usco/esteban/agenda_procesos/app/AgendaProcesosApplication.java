@@ -44,7 +44,7 @@ public class AgendaProcesosApplication implements CommandLineRunner
 		Calendar fechaFinal = Calendar.getInstance();
 		
 		//Calendar fechaInicial = detalle.getFechaInicial();
-		int dia = 10;
+		int dia = 27;
 		int mes = 6;
 		int año = 2020;
 		
@@ -68,10 +68,23 @@ public class AgendaProcesosApplication implements CommandLineRunner
 		
 		int dias = (int) ((Math.abs(fechaFinalMS - fechaActualMS)) / (1000 * 60 * 60* 24));
 		
-		if(dias == 15)
+		System.out.println("los dias son" + dias);
+		
+		if(dias == 30)
 		{
-			System.out.println("dias igual a 15");
+			System.out.println("dias igual a 30");
 		}
+		
+		String nombre1 = "notificacion demandado";
+		String nombre2 = "notificacion demandado";
+		
+		if(nombre1.equals("notificacion demandado"))
+		{
+			System.out.println("las dos son iguales");
+		}
+		
+		fechaFinal.add(Calendar.DAY_OF_YEAR, 365);
+		System.out.println("la fecha mas 365 es: " + fechaFinal.getTime());
 	}
 
 }

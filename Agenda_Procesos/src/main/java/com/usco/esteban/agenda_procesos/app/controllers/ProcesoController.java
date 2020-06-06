@@ -24,6 +24,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,15 +36,19 @@ import com.usco.esteban.agenda_procesos.app.editors.TipoProcesoPropertyEditor;
 import com.usco.esteban.agenda_procesos.app.models.dao.IUsuarioDao;
 import com.usco.esteban.agenda_procesos.app.models.entity.Alarma;
 import com.usco.esteban.agenda_procesos.app.models.entity.DetalleTermino;
+import com.usco.esteban.agenda_procesos.app.models.entity.Especialidad;
 import com.usco.esteban.agenda_procesos.app.models.entity.Juzgado;
 import com.usco.esteban.agenda_procesos.app.models.entity.Proceso;
 import com.usco.esteban.agenda_procesos.app.models.entity.ProcesoUsuario;
+import com.usco.esteban.agenda_procesos.app.models.entity.Termino;
 import com.usco.esteban.agenda_procesos.app.models.entity.TipoProceso;
 import com.usco.esteban.agenda_procesos.app.models.entity.Usuario;
 import com.usco.esteban.agenda_procesos.app.models.service.IAlarmaService;
+import com.usco.esteban.agenda_procesos.app.models.service.IDetalleTerminoService;
 import com.usco.esteban.agenda_procesos.app.models.service.IJuzgadoService;
 import com.usco.esteban.agenda_procesos.app.models.service.IProcesoService;
 import com.usco.esteban.agenda_procesos.app.models.service.IProcesoUsuarioService;
+import com.usco.esteban.agenda_procesos.app.models.service.ITerminoService;
 import com.usco.esteban.agenda_procesos.app.models.service.ITipoProcesoService;
 import com.usco.esteban.agenda_procesos.app.models.service.IUsuarioService;
 import com.usco.esteban.agenda_procesos.app.util.paginator.PageRender;
@@ -81,13 +86,21 @@ public class ProcesoController {
 	private IAlarmaService alarmaService;
 	
 	@Autowired
+	private IDetalleTerminoService detalleTerminoService;
+	
+	@Autowired
+	private ITerminoService terminoService;
+	
+	@Autowired
 	private TipoProcesoPropertyEditor tipoProcesoEditor;
+	
+	
 	
 	//private JpaUsuarioDetailsService usuarioService;
 	
 	private Usuario usuario;
 	
-	private boolean bandera = true;
+	
 	
 	@InitBinder
 	public void initBinder(WebDataBinder binder)
@@ -211,7 +224,11 @@ public class ProcesoController {
 	}
 	
 	
-	
+	//DetalleTermino detalleTermino = new DetalleTermino();
+	private boolean terminoAnio;
+	private Proceso proceso1 = null;
+	private Calendar fechaActual1;
+	private Calendar fechaFinal1;
 	
 	
 	@RequestMapping(value = "/listarProcesos", method = RequestMethod.GET)
@@ -241,18 +258,52 @@ public class ProcesoController {
 		
 		
 		/* ====== codigo para probar las notficaciones de vencimiento de terminos =====*/
-	
-		/*lista de procesos */
-		List<Proceso> procesosAVencer = new ArrayList<Proceso>();
 		
+		boolean terminoNotificacionDemandado = false;
+		
+		boolean estado = false;
+		int dias1 = 0;
+		//Termino termino1 = new Termino();
+		
+		Alarma alarma = new Alarma();
+		//int dias1 = 0;
+		//Proceso proceso = null;
+		boolean bandera = false;
+		Termino termino = new Termino();
+		
+		
+		
+		/*lista de procesos que estarn cercanos a vencer*/
+		List<Proceso> procesosAVencer = new ArrayList<Proceso>();
 		for (ProcesoUsuario procesoUsuario : procesosUsuario) {
 			List<DetalleTermino> detallesTermino = procesoUsuario.getProceso().getDetalleTerminos();
+			boolean detalleBoolean = false;
 			
+			Proceso proceso = procesoUsuario.getProceso();
+			proceso1 = procesoUsuario.getProceso();
+			List<Alarma> alarmas = proceso.getAlarma();
 			for(DetalleTermino detalle: detallesTermino)
 			{
+				termino = detalle.getTermino();
+				
 				System.out.println("los terminos del proceso son: "+ detalle.getTermino().getNombre());
 				
-				if(detalle.getTermino().getNombre().contentEquals("admision"))
+				/*if(detalle.getTermino().getNombre().contentEquals("notificacion demandado"))
+				{
+					terminoNotificacionDemandado = true;
+					System.out.println("notificacion igual a true");
+				}*/
+				
+				if(termino.getNombre().contentEquals("Termino 121"))
+				{
+					this.terminoAnio = true;
+					System.out.println("contiene el termino 121");
+				}else
+				{
+					this.terminoAnio = false;
+				}
+				
+				if(termino.getNombre().contentEquals("admision"))
 				{
 					System.out.println("si contiene admision en el detalle termino");
 					
@@ -273,53 +324,164 @@ public class ProcesoController {
 					
 					
 					
-					long fechaIncialMS = fechaInicial.getTimeInMillis();
+					//long fechaIncialMS = fechaInicial.getTimeInMillis();
 					long fechaFinalMS = fechaFinal.getTimeInMillis();
 					long fechaActualMS = calendar.getTimeInMillis();
 					
-					int dias = (int) ((Math.abs(fechaFinalMS - fechaActualMS)) / (1000 * 60 * 60* 24));
-					System.out.println("numero días: " + dias);
+					//int dias = (int) ((Math.abs(fechaFinalMS - fechaActualMS)) / (1000 * 60 * 60* 24));
+					int dias = (int) ((fechaFinalMS - fechaActualMS) / (1000 * 60 * 60* 24));
+					System.out.println("numero días de admision: " + dias);
 					
 					
-					if(dias == 15)
-					{
-						Proceso procesoAVencer = procesoUsuario.getProceso();
-						System.out.println(procesoAVencer.getRadicado());
-						procesosAVencer.add(procesoAVencer);
+					if(proceso.getUltimaActuacion().equalsIgnoreCase("admitido")
+							&& dias > 0)
+					{ 
+						System.out.println("ultima actuacion es: Admitido");
+						estado = true;
 						
-						if(bandera == true)
-						{
-							Proceso proceso = procesoUsuario.getProceso();
-							String descripcion = "Alarma de: ".concat(detalle.getTermino().getNombre());
-							
-							Alarma alarma = new Alarma();
-							alarma.setProceso(proceso);
-							alarma.setDescripcion(descripcion);
-							alarmaService.save(alarma);		
-							
-							proceso.setPrioritario(true);
-							procesoService.save(proceso);
-							
-							this.bandera = false;
-						}
-						
-						
-						
-						System.out.println("dias igual a 15");
-						/*flash.addFlashAttribute("error", "el termino " + detalle.getTermino().getNombre() + " del proceso con radicado: "+ 
-						procesoUsuario.getProceso().getRadicado()+ " está a punto de vencer");*/
-						/*model.addAttribute("vence", "el termino " + detalle.getTermino().getNombre() + " del proceso con radicado: "+ 
-								procesoUsuario.getProceso().getRadicado()+ " está a punto de vencer");*/
-						model.addAttribute("vence", "Listado de procesos Cercanos a Vencer");
-						model.addAttribute("procesosAVencer", procesosAVencer);
 						
 					}
+					/*else
+					{
+						estado = false;
+					}*/
+					
+					
+					
+					//System.out.println("los terminos del proceso de nuevo son: "+ detalle.getTermino().getNombre());
+					
+					
+					
+					/*===== aqui va el codigo de dias = 15* ========/
+					
+					
+					/*=================*/
 					
 					
 				}
+					
+				if(termino.getNombre().equalsIgnoreCase("notificacion demandado") && estado == true)
+				{
+					System.out.println("si hay termino de notificacion demandado");
+					
+					//proceso = procesoUsuario.getProceso();
+					
+					Calendar notificacionDemandado = detalle.getFechaFinal();
+					fechaActual1 = Calendar.getInstance();
+					
+					fechaFinal1 = Calendar.getInstance();
+					
+					int dia = 5;
+					int mes = 7;
+					int año = 2020;
+					
+					fechaFinal1.set(año, mes-1, dia);
+					System.out.println("la fecha final establecida para que de 30 es: " + fechaFinal1.getTime());
+					
+					
+					/*Calendar fechaFinal1= notificacionDemandado;
+					System.out.println("fecha final: " + fechaFinal1);
+					fechaFinal1.add(Calendar.DAY_OF_YEAR, 365);
+					System.out.println("fecha final + 365: " + fechaFinal1.getTime());*/
+					
+					//System.out.println("termino año es igual a: " + terminoAnio);
+					
+						//System.out.println("if de termino año igual a true");
+					
+				
+					
+					
+					
+					
+					fechaActual1.set(Calendar.HOUR, 0);
+					fechaActual1.set(Calendar.HOUR_OF_DAY, 0);
+					fechaActual1.set(Calendar.MINUTE, 0);
+					fechaActual1.set(Calendar.SECOND, 0);
+					long fechaActual1MS = fechaActual1.getTimeInMillis();
+					
+					fechaFinal1.set(Calendar.HOUR, 0);
+					fechaFinal1.set(Calendar.HOUR_OF_DAY, 0);
+					fechaFinal1.set(Calendar.MINUTE, 0);
+					fechaFinal1.set(Calendar.SECOND, 0);
+					long fechaFinal1MS = fechaFinal1.getTimeInMillis();
+					
+					dias1 = (int) ((Math.abs(fechaFinal1MS - fechaActual1MS)) / (1000 * 60 * 60* 24));
+					System.out.println("numero de días para el vencimiento del 121 son: " + dias1);
+					
+					
+					
+					
+					//dias1 = 0;
+					
+					//terminoNotificacionDemandado = false;
+				}
+				
+				//boolean bandera1 = false;
+				
+				
+				
+				
+				
+				
+				
+				
 			}
+			System.out.println("dias para el vencimiento 121 son: " + dias1);
+			if(dias1 == 30)
+			{
+				
+				//Proceso proceso1 = procesoUsuario.getProceso();
+				procesosAVencer.add(proceso);
+				bandera = true;
+				System.out.println("el radicado es "+ proceso.getRadicado());
+				
+				/*bloque de codido para crear la alarma del proceso*/
+				/*String descripcion = "Vencimiento año";
+				alarma.setProceso(proceso);
+				alarma.setDescripcion(descripcion);
+				alarmaService.save(alarma);	*/
+						
+					
+				proceso.setPrioritario(true);
+				procesoService.save(proceso);
+					
+					//this.bandera = false;
+				
+				
+				//System.out.println("dias igual a 30");
+				model.addAttribute("vence", "Listado de procesos Cercanos a Vencer");
+				model.addAttribute("procesosAVencer", procesosAVencer);
+				
+			}
+			
+			if(bandera == true)
+			{
+				/*bloque de codido para crear la alarma del proceso*/
+				//Proceso proceso = procesoUsuario.getProceso();
+				//String descripcion = "Alarma de: ".concat("Vencimiento año");
+				String descripcion = "Vencimiento año";
+				System.out.println(alarmas.isEmpty() + " alarmas está vacio");
+			
+				
+				if(alarmas.isEmpty())
+				{
+					System.out.println("el proceso NO contiene el vencimiento año");
+					alarma.setProceso(proceso);
+					alarma.setDescripcion(descripcion);
+					alarmaService.save(alarma);
+						
+				}
+				else
+				{
+					System.out.println("el proceso contiene el vencimiento de año");
+				}
+				guardarDetalleTermino();
+			}
+			bandera = false;
+			dias1 = 0;
+			
 		}
-		
+		//estado = false;
 		//List<DetalleTermino> detalleTerminos = proceso.getDetalleTerminos();
 		
 		
@@ -333,6 +495,39 @@ public class ProcesoController {
 		model.addAttribute("page", pageRender);
 		return "listarProcesos";
 	}
+	
+	public void guardarDetalleTermino()
+	{
+		if(this.terminoAnio == false)
+		{
+			Long idUser = getUserId();
+			Usuario usuario = usuarioService.findOne(idUser);
+			String nombre = "Termino 121";
+			Especialidad especialidad = usuario.getJuzgado().getEspecialidad();
+			TipoProceso tipoProceso = proceso1.getTipoProceso();
+			
+			/*termino1.setBasico(basico); 
+			termino1.setNombre(nombre);
+			termino1.setNumeroDias(numeroDias);
+			termino1.setEspecialidad(especialidad);
+			termino1.setTipoProceso(tipoProceso);
+			terminoService.save(termino1);*/
+			
+			Termino termino1 = terminoService.findByNombreAndEspecialidadAndTipoProceso(nombre, especialidad, tipoProceso);
+			DetalleTermino detalleTermino = new DetalleTermino();
+			
+			detalleTermino.setProceso(proceso1);
+			detalleTermino.setTermino(termino1);
+			detalleTermino.setDiasHabiles(true);
+			detalleTermino.setFechaInicial(fechaActual1);
+			detalleTermino.setFechaFinal(fechaFinal1);
+			detalleTerminoService.save(detalleTermino);
+			System.out.println("SE GUARDO EL DETALLE TERMINO");
+		}
+	}
+	
+	
+
 	
 	@RequestMapping(value ="/formProceso")
 	public String crear(Map<String, Object> model)
@@ -364,7 +559,7 @@ public class ProcesoController {
 		return "formProceso";
 	}
 	
-	@RequestMapping(value="/formProceso/{id}")
+	@RequestMapping(value="/editarProceso/{id}")
 	public String editar(@PathVariable(value="id") Long id, Map<String, Object> model, RedirectAttributes flash)
 	{
 		Proceso proceso = null;
@@ -374,6 +569,7 @@ public class ProcesoController {
 		{
 			/* si lo encuentra se almacena*/
 			proceso = procesoService.findOne(id);
+			System.out.println("se encontró el proceso");
 			
 			if(proceso == null)
 			{
@@ -403,7 +599,7 @@ public class ProcesoController {
 		return "formProceso";
 	}
 	
-	@RequestMapping(value = "/guardarProceso")
+	@PostMapping(value = "/guardarProceso")
 	public String guardar(@RequestParam(value = "usuario") String usuario, @Valid Proceso proceso, BindingResult result, Model model, RedirectAttributes flash, SessionStatus status)
 	{
 		/* si al validar los campos, estos contienen errores se envia al formulario de
@@ -422,7 +618,13 @@ public class ProcesoController {
 			return "formProceso";
 		}
 		
+		System.out.println("el id del proceso a guardar es: " + proceso.getId());
 		String mensajeFlash = (proceso.getId() != null) ? "Proceso editado con exito" : "Proceso creado con exito";
+		boolean bandera = false;
+		if(proceso.getId() == null)
+		{
+			bandera = true;
+		}
 		
 		/* obtenemos el id de tipo string y lo se parsea a Long */
 		//Long tProceso = Long.parseLong(proceso.gettProceso());
@@ -448,11 +650,34 @@ public class ProcesoController {
 		
 		procesoService.save(proceso);
 		
-		ProcesoUsuario procesoUsuario = new ProcesoUsuario();
-		procesoUsuario.setProceso(proceso);
-		procesoUsuario.setUsuario(usu);
+		/*if(proceso.getId() == null)
+		{
+			ProcesoUsuario procesoUsuario = new ProcesoUsuario();
+			procesoUsuario.setProceso(proceso);
+			procesoUsuario.setUsuario(usu);
+			
+			procesoUsuarioService.save(procesoUsuario);
+		}*/
 		
-		procesoUsuarioService.save(procesoUsuario);
+		
+		if(bandera == true)
+		{
+			
+			ProcesoUsuario procesoUsuario = new ProcesoUsuario();
+			
+			List<ProcesoUsuario> listProcesosUsuarios = new ArrayList<ProcesoUsuario>();
+			listProcesosUsuarios.add(procesoUsuario);
+			proceso.setProcesosUsuarios(listProcesosUsuarios);
+			procesoUsuario.setProceso(proceso);
+			procesoUsuario.setUsuario(usu);
+			
+			procesoUsuarioService.save(procesoUsuario);
+		}
+		
+		
+		
+		
+		
 		
 		/* despues de guardar el objeto, se termina la sesion */
 		status.setComplete();

@@ -81,7 +81,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter
 		.antMatchers("/listarTiposProceso").hasAnyRole("SUPER_ADMIN")
 		.antMatchers("/eliminarTipoProceso/**").hasAnyRole("SUPER_ADMIN")
 		.antMatchers("/verTerminosTipoProceso/**").hasAnyRole("SUPER_ADMIN")
-		.antMatchers("/formProceso/**").hasAnyRole("ADMIN")
+		.antMatchers("/editarProceso/**").hasAnyRole("ADMIN")
 		.antMatchers("/eliminarProceso/**").hasAnyRole("ADMIN")
 		.antMatchers("/formTermino/**").hasAnyRole("SUPER_ADMIN")
 		.antMatchers("/listarUsuarios").hasAnyRole("ADMIN")

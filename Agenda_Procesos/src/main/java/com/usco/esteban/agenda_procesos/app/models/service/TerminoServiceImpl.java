@@ -55,4 +55,12 @@ public class TerminoServiceImpl implements ITerminoService {
 		return terminoDao.findByEspecialidadAndTipoProcesoAndBasico(especialidad, tipoProceso, basico);
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public Termino findByNombreAndEspecialidadAndTipoProceso(String nombre, Especialidad especialidad, 
+			TipoProceso tipoProceso) {
+		
+		return terminoDao.findByNombreAndEspecialidadAndTipoProceso(nombre, especialidad, tipoProceso);
+	}
+
 }

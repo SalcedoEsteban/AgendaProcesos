@@ -18,9 +18,9 @@ insert into tipo_proceso (tip_pro_nombre, esp_id_tip_pro) values ('CUSTODIAAA', 
 
 
 
-insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, tip_pro_id_pro, juz_id_pro, pro_prioritario) values ('04-03-2019', '2019-00200-01', ' Esteban Salcedo Alvarez', 'Alejandra Lozano', '02-03-2019', 'ADMISION', 'ESPERA DE NOT PER', true, 1, 1, false);
-insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, tip_pro_id_pro, juz_id_pro, pro_prioritario) values ('15-12-2019',  '2018-00300-02', ' Angel Roberto', 'Julian Castillo', '04-03-2019', 'ADMISION', 'ESPERA DE NOT PER', true, 2, 1, false);
-insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, tip_pro_id_pro, juz_id_pro, pro_prioritario) values ('9-07-2019',  '2018-00300-03', ' Angel Roberto', 'Julian Castillo', '04-03-2019', 'ADMISION', 'ESPERA DE NOT PER', true, 2, 2, false);
+insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, tip_pro_id_pro, juz_id_pro, pro_prioritario) values ('04-03-2019', '2019-00200-01', ' Esteban Salcedo Alvarez', 'Alejandra Lozano', '02-03-2019', '', 'ESPERA DE NOT PER', true, 1, 1, false);
+insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, tip_pro_id_pro, juz_id_pro, pro_prioritario) values ('15-12-2019',  '2018-00300-02', ' Angel Roberto', 'Julian Castillo', '04-03-2019', '', 'ESPERA DE NOT PER', true, 2, 2, false);
+insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, tip_pro_id_pro, juz_id_pro, pro_prioritario) values ('9-07-2019',  '2018-00300-03', ' Angel Roberto', 'Julian Castillo', '04-03-2019', '', 'ESPERA DE NOT PER', true, 2, 2, false);
 
 
 
@@ -31,14 +31,16 @@ insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, es
 insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('admision', 15, true, 2, 1);
 insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('subsanar demanda', 15, true, 2, 1);
 insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('adminion', 15, true, 3, 3);
+insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('notificacion demandado', 15, true, 2, 1);
+insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('Termino 121', 365, false, 2, 1);
+
 
 
 
 insert into detalle_termino (det_ter_dias_habiles, det_ter_fecha_incial, det_ter_fecha_final, ter_id_det_ter, pro_id_det_ter) values (true, '02-03-2019', '02-03-2020', 1, 1);
 insert into detalle_termino (det_ter_dias_habiles, det_ter_fecha_incial, det_ter_fecha_final, ter_id_det_ter, pro_id_det_ter) values (true, '02-03-2019', '02-03-2020', 2, 1);
 insert into detalle_termino (det_ter_dias_habiles, det_ter_fecha_incial, det_ter_fecha_final, ter_id_det_ter, pro_id_det_ter) values (true, '02-03-2019', '02-03-2020', 3, 1);
-insert into detalle_termino (det_ter_dias_habiles, det_ter_fecha_incial, det_ter_fecha_final, ter_id_det_ter, pro_id_det_ter) values (true, '02-03-2019', '02-03-2020', 1, 2);
-insert into detalle_termino (det_ter_dias_habiles, det_ter_fecha_incial, det_ter_fecha_final, ter_id_det_ter, pro_id_det_ter) values (true, '02-03-2019', '02-03-2020', 2, 2);
+
 
 
 insert into usuario (usu_username, usu_create_at, usu_password, usu_enabled, usu_nombre, usu_apellido, juz_id_usu) values ('esteban', '15-12-2019', '$2a$10$H.1m8ANlFM3y.BojAvJ8oe9KA52MF.FCuaDKKE3F9O2YEs.XZ2qlO', true, 'Esteban', 'Salcedo Alvarez', 1);

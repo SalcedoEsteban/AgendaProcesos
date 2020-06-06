@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,11 +30,11 @@ public class ProcesoUsuario implements Serializable
 	@Column(name ="pro_usu_id")
 	private Long id;
  
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name ="pro_id_pro_usu")
 	private Proceso proceso;
  
-	@ManyToOne
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name ="usu_id_pro_usu")
 	private Usuario usuario;
 	

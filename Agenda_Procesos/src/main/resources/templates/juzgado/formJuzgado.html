@@ -22,7 +22,7 @@
 						<label class="col-sm-2 col-form-label">Especialidad</label>
 						<div class="col-sm-6">
 							<select class="form-control" th:field="*{especialidad}">
-								<option value="">========= seleccione ========</option>
+								<!-- <option value="">========= seleccione ========</option>  -->
 								<option th:each="especialidad: ${especialidades}" th:text="${especialidad.nombre}"
 								th:value="${especialidad.id}"></option>
 							</select>
