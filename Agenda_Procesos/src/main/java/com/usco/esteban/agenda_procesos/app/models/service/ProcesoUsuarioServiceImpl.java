@@ -1,5 +1,7 @@
 package com.usco.esteban.agenda_procesos.app.models.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -59,6 +61,13 @@ public class ProcesoUsuarioServiceImpl implements IProcesoUsuarioService {
 	public Page<ProcesoUsuario> findAllBy(Long id, Pageable pageable, Juzgado juzgado) {
 		
 		return procesoUsuarioDao.findAllBy(id, pageable, juzgado);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<ProcesoUsuario> findAll(Juzgado juzgado) {
+		
+		return procesoUsuarioDao.findAll(juzgado);
 	}
 
 }

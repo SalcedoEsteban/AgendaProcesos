@@ -43,6 +43,9 @@
 					<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/formProceso}" class="btn btn-success btn-xs">Crear
 						Proceso</a>
 				</h4>
+				<h4 class="card-title">
+					<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/formAgregarDias}" class="btn btn-primary btn-xs">Agregar Días</a>
+				</h4>
 				<form th:action="@{/buscarProceso}" method="get">
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label"

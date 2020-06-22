@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="layout/layout :: head"></head>
+<body>
+	<header th:replace="layout/layout :: header"></header>
+	<div class="container py-4">
+		<div class="card bg-light">
+			<div class="card-header" th:text="${titulo}"></div>
+			<div class="card-body">
+				<form th:action="@{/agregarDias}" method="POST">
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Numero días</label>
+						<input class="col-sm-3 form-control" type="text" placeholder="Digite el numero de días"
+						name="dias" id="dias">
+						<button type="submit" class="col-sm-1 btn btn-success">Enviar</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

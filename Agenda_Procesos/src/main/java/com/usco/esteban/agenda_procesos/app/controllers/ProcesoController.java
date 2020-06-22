@@ -183,6 +183,48 @@ public class ProcesoController {
 		return "listarProcesos";
 	}
 	
+	@RequestMapping(value ="/formAgregarDias")
+	public String formAgregarDias(Model model)
+	{
+		model.addAttribute("titulo", "Agregar Días a los Procesos");
+		
+		return "formAgregarDias";
+	}
+	
+	
+	@RequestMapping(value="/agregarDias", method = RequestMethod.POST)
+	public String agregarDias(@RequestParam(value="dias") int dias, Map<String, Object> model, RedirectAttributes flash)
+	{
+		//Long id = getUserId();
+		//int diasParaAgregar = dias;
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetail = (UserDetails) auth.getPrincipal();
+		usuario = this.usuarioService.findByUsername(userDetail.getUsername());
+		
+		Juzgado juzgado = usuario.getJuzgado();
+		
+		List<ProcesoUsuario> procesos = procesoUsuarioService.findAll(juzgado);
+		
+		TimeZone timeZone = TimeZone.getDefault();
+		Locale locale = Locale.getDefault();
+		
+		for(ProcesoUsuario proceso : procesos)
+		{
+			List<DetalleTermino> detalles = proceso.getProceso().getDetalleTerminos();
+			
+			for(DetalleTermino detalle: detalles)
+			{
+				Calendar fecha = Calendar.getInstance(timeZone, locale);
+				fecha = detalle.getFechaFinal();
+				fecha.add(Calendar.DAY_OF_YEAR, dias);
+				detalleTerminoService.save(detalle);
+			}
+		}
+		
+		flash.addFlashAttribute("success", "Fueron agregados" + dias +" días correctamente a los terminos de los procesos");
+		return "redirect:/listarProcesos";
+	}
 	
 	//DetalleTermino detalleTermino = new DetalleTermino();
 	private boolean terminoAnio;
@@ -508,6 +550,8 @@ public class ProcesoController {
 		
 		
 	}
+	
+	
 	
 	public void guardarDetalleTermino()
 	{

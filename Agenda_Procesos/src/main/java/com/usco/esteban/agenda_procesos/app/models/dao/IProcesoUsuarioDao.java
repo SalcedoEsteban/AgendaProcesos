@@ -1,6 +1,8 @@
 package com.usco.esteban.agenda_procesos.app.models.dao;
 
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -16,6 +18,9 @@ public interface IProcesoUsuarioDao extends PagingAndSortingRepository<ProcesoUs
 	
 	@Query("select pu from ProcesoUsuario pu join pu.usuario u where u.id=?1 and pu.proceso.estado = true and pu.proceso.juzgado=?2")
 	Page<ProcesoUsuario> findAllById(Long id, Pageable pageable, Juzgado juzgado);
+	
+	@Query("select pu from ProcesoUsuario pu join pu.proceso p where p.estado = true and p.juzgado=?1")
+	List<ProcesoUsuario> findAll(Juzgado juzgado);
 	
 	@Query("select pu from ProcesoUsuario pu join pu.usuario u where u.id=?1 and pu.proceso.juzgado=?2")
 	Page<ProcesoUsuario> findAllBy(Long id, Pageable pageable, Juzgado juzgado);

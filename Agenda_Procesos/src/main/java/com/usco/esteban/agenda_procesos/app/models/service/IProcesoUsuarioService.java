@@ -1,5 +1,7 @@
 package com.usco.esteban.agenda_procesos.app.models.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -21,5 +23,7 @@ public interface IProcesoUsuarioService {
 	public Page<ProcesoUsuario> findByUsuarioAndEstadoAndJuzgadoAndPrioritario(Long id, Pageable pageable, Juzgado juzgado);
 	
 	public Page<ProcesoUsuario> findAllBy(Long id, Pageable pageable, Juzgado juzgado);
+	
+	public List<ProcesoUsuario> findAll(Juzgado juzgado);
 	
 }
