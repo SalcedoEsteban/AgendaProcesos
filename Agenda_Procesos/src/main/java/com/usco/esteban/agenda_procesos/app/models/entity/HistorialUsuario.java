@@ -53,11 +53,11 @@ public class HistorialUsuario implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
-	@PrePersist
+	/*@PrePersist
 	public void prePersist()
 	{
 		this.fechaIngreso = new Date();
-	}
+	}*/
 
 	public Long getId() {
 		return id;

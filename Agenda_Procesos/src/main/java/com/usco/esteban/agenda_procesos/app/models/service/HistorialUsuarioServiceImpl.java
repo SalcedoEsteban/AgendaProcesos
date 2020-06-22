@@ -1,5 +1,6 @@
 package com.usco.esteban.agenda_procesos.app.models.service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -56,9 +57,9 @@ public class HistorialUsuarioServiceImpl implements IHistorialUsuarioService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<HistorialUsuario> findByUsuarioAndEspecialidad(Usuario usuario, Especialidad especialidad) {
+	public HistorialUsuario findByUsuarioAndEspecialidadAndFechaIngreso(Usuario usuario, Especialidad especialidad, Date fechaIngreso) {
 		
-		return historialUsuarioDao.findByUsuarioAndEspecialidad(usuario, especialidad);
+		return historialUsuarioDao.findByUsuarioAndEspecialidadAndFechaIngreso(usuario, especialidad, fechaIngreso);
 	}
 
 	@Override

@@ -7,7 +7,7 @@
 	<div class="container py-4">
 	<!-- <div class="alert alert-danger" th:if="${vence == null}"
 			th:text="${'es null'}"></div>  -->
-	<div class="alert alert-danger alert-dismissible" th:if="${vence != null}">
+	<!-- <div class="alert alert-danger alert-dismissible" th:if="${vence != null}">
 	<button type="button" class="close" data-dismiss="alert" aria-label="Close">
    	<span aria-hidden="true">&times;</span>
   	</button>
@@ -34,8 +34,29 @@
 				<nav th:replace="paginator-nav"></nav>
 			</div>
 		</div>
-	</div>
+	</div>-->
 	<!-- <div class="alert alert-info my-4" th:if="${#lists.isEmpty(proceso.detalleTerminos)}">No hay Terminos asignados para el proceso</div> -->
+	<!-- <div class="alert alert-danger alert-dismissible" th:if="${procesosAdmitir != null}">
+		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    		<span aria-hidden="true">&times;</span>
+  		</button>
+		<h5 class="text-center">Procesos a admitir</h5>
+		<table class="table table-bordered table-striped text-center">
+			<thead class="thead-dark">
+				<tr>
+					<th>Radicado</th>
+					<th>Ver</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:if="${proceso.ultimaActuacion == ''}" th:each="proceso: ${procesosAdmitir}">
+					<td th:text="${proceso.radicado}"></td>
+					<td><a th:href="@{/verDetalleProceso/} + ${proceso.id}" 
+							class="btn btn-warning">Ver</a></td>		
+				</tr>			
+			</tbody>
+		</table>
+	</div> -->
 	<div class="card bg-light ">
 			<div class="card-header tex-center"><h3 th:text="${titulo}" class="text-center"></h3></div>
 			<div class="card-body">
@@ -83,7 +104,7 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr  th:each="proceso: ${procesos}" th:class="${proceso.proceso.prioritario == true} ? table-danger : table-success ">
+						<tr  th:each="proceso: ${procesos}" th:class="${proceso.proceso.estado == true} ? table-success ">
 
 							<td th:text="${proceso.proceso.radicado}"></td>
 							<td th:text="${proceso.proceso.demandante}"></td>
@@ -113,27 +134,6 @@
 				<nav th:replace="paginator-nav"></nav>
 			</div>
 		</div>
-		<div class="alert alert-danger alert-dismissible" th:if="${procesosAdmitir != null}">
-		<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-    		<span aria-hidden="true">&times;</span>
-  		</button>
-		<h5 class="text-center">Procesos a admitir</h5>
-		<table class="table table-bordered table-striped text-center">
-			<thead class="thead-dark">
-				<tr>
-					<th>Radicado</th>
-					<th>Ver</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:if="${proceso.ultimaActuacion == ''}" th:each="proceso: ${procesosAdmitir}">
-					<td th:text="${proceso.radicado}"></td>
-					<td><a th:href="@{/verDetalleProceso/} + ${proceso.id}" 
-							class="btn btn-warning">Ver</a></td>		
-				</tr>			
-			</tbody>
-		</table>
-	</div>
 	</div>
 	<footer th:replace="layout/layout :: footer"></footer>
 </body>

@@ -11,3 +11,17 @@ $(function() {
 		changeYear : true
 	});
 });
+
+$(function() {
+	$("#fechaSalida").datepicker({
+		changeMonth : true,
+		changeYear : true
+	});
+});
+
+$(function() {
+	$("#fechaIngreso").datepicker({
+		changeMonth : true,
+		changeYear : true
+	});
+});

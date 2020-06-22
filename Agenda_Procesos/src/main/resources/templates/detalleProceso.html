@@ -8,65 +8,77 @@
 		<div class="card bg-light">
 			<div class="card-header" th:text="${titulo}"></div>
 			<div class="card-body">
-				<h4 class="card-title">
+				<h4 class="card-title text-center">
 					<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/formProceso}" class="btn btn-success btn-xs">Crear
 						Proceso</a>
+					<a sec:authorize="hasRole('ROLE_USER')" th:href="@{/verAlarmasProceso/} + ${proceso.id}" class="btn btn-primary btn-xs">
+					Ver alarmas</a>
+					<a th:if="${proceso.estado == true}" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/adminEstadoProceso/} + ${proceso.id}" class="btn btn-warning btn-xs">
+					Desactivar Proceso</a>
+					<a th:if="${proceso.estado == false}"sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/adminEstadoProceso/} + ${proceso.id}" class="btn btn-success btn-xs">
+					Activar Proceso</a>
+					<a th:if="${proceso.ultimaActuacion == ''}" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/admitirProceso/} + ${proceso.id}" class="btn btn-success btn-xs">
+					Admitir Proceso</a>
+					
 				</h4>
-				<div class="form-group row">
+				<div class="col-sm-4 ">
+					<h3 th:if="${proceso.ultimaActuacion == 'admitido'}" class="bg-warning text-center">Proceso ADMITIDO</h3>
+				</div>
+				<div class="">
 						<label class="col-sm-4 col-form-label" th:text="'Creado el: '"></label>
 						<div class="col-sm-4">
 							<input th:value="${proceso.createAt}" disabled="disabled" class="form-control"/>
 						</div>
 				</div>
-				<div class="form-group row">
+				<div class="">
 						<label class="col-sm-4 col-form-label" th:text="'Radicado: '"></label>
 						<div class="col-sm-4">
 							<input th:value="${proceso.radicado}" disabled="disabled" class="form-control"/>
 						</div>
 				</div>
-				<div class="form-group row">
+				<div class="">
 						<label class="col-sm-4 col-form-label" th:text="'Demandante: '"></label>
 						<div class="col-sm-4">
 							<input th:value="${proceso.demandante}" disabled="disabled" class="form-control"/>
 						</div>
 				</div>
-				<div class="form-group row">
+				<div class="form-group">
 						<label class="col-sm-4 col-form-label" th:text="'Demandandado: '"></label>
 						<div class="col-sm-4">
 							<input th:value="${proceso.demandado}" disabled="disabled" class="form-control"/>
 						</div>
 				</div>
-				<div class="form-group row">
+				<div class="form-group">
 						<label class="col-sm-4 col-form-label" th:text="'Fecha Reparto: '"></label>
 						<div class="col-sm-4">
 							<input th:value="${#dates.format(proceso.fechaReparto, 'dd-MM-yyyy')}" disabled="disabled" class="form-control"/>
 						</div>
 				</div>
-				<div class="form-group row">
+				<div class="form-group">
 						<label class="col-sm-4 col-form-label" th:text="'Ultima Actuación: '"></label>
 						<div class="col-sm-4">
 							<input th:value="${proceso.ultimaActuacion}" disabled="disabled" class="form-control"/>
 						</div>
 				</div>
-				<div class="form-group row">
+				<div class="form-group">
 						<label class="col-sm-4 col-form-label" th:text="'Estado Actual: '"></label>
 						<div class="col-sm-4">
 							<input th:value="${proceso.estadoActual}" disabled="disabled" class="form-control"/>
 						</div>
 				</div>
-				<div class="form-group row">
+				<div class="form-group">
 						<label class="col-sm-4 col-form-label" th:text="'Tipo Proceso: '"></label>
 						<div class="col-sm-4">
 							<input th:value="${tipoProceso}" disabled="disabled" class="form-control"/>
 						</div>
 				</div>
-				<div class="form-group row">
+				<div class="form-group">
 						<label class="col-sm-4 col-form-label" th:text="'Juzgado: '"></label>
 						<div class="col-sm-4">
 							<input th:value="${juzgado}" disabled="disabled" class="form-control"/>
 						</div>
 				</div>
-				<div class="form-group row">
+				<div class="form-group">
 						<label class="col-sm-4 col-form-label" th:text="'Activo: '"></label>
 						<div class="col-sm-4">
 							<input th:value="${proceso.estado == true} ? 'Sí' : 'No'" disabled="disabled" class="form-control"/>

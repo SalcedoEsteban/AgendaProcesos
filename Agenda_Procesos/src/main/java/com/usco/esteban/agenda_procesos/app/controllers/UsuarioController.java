@@ -1,5 +1,8 @@
 package com.usco.esteban.agenda_procesos.app.controllers;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -10,11 +13,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -140,16 +146,16 @@ public class UsuarioController {
 
 			if (usuario == null) {
 				flash.addFlashAttribute("error", "El usuario no existe");
-				return "redirect:usuario/listarUsuarios";
+				return "redirect:/listarUsuarios";
 			}
 		} else {
 			flash.addFlashAttribute("error", "El id del usuario no puede ser cero");
-			return "redirect:usuario/listarUsuarios";
+			return "redirect:/listarUsuarios";
 		}
 
-		this.juzgado = usuario.getJuzgado();
+		/*this.juzgado = usuario.getJuzgado();
 		
-		System.out.println("el juzgado desde editar es: ".concat(this.juzgado.getNombre()));
+		System.out.println("el juzgado desde editar es: ".concat(this.juzgado.getNombre()));*/
 		
 		
 
@@ -160,8 +166,314 @@ public class UsuarioController {
 		return "usuario/formUsuario";
 	}
 
+	//Usuario usuario1 = null;
+	boolean bandera = false;
+	
+	/*@RequestMapping(value = "/administrarUsuario/{id}")
+	public String editarUsuarioHistorial(@PathVariable(value = "id") Long id, Model model, RedirectAttributes flash) {
+
+		Usuario usuario1 = null;
+
+		if (id > 0) {
+			usuario1 = usuarioService.findOne(id);
+
+			if (usuario1 == null) {
+				flash.addFlashAttribute("error", "El usuario no existe");
+				return "redirect:/listarUsuarios";
+			}
+		} else {
+			flash.addFlashAttribute("error", "El id del usuario no puede ser cero");
+			return "redirect:/listarUsuarios";
+		}
+
+		/*this.juzgado = usuario1.getJuzgado();
+		System.out.println("el juzgado desde editar es: ".concat(this.juzgado.getNombre()));
+		
+		Date fechaIngreso = usuario1.getCreateAt();
+
+		model.addAttribute("usuario", usuario1);
+		model.addAttribute("titulo1", "Salida Usuario");
+		model.addAttribute("titulo", "Historial Usuario");
+		//model.addAttribute("titulo2", "Nuevo Historial");
+		model.addAttribute("fechaIngreso", fechaIngreso);
+		model.addAttribute("bandera", bandera);
+		//model.addAttribute("juzgados", juzgadoService.findAll());
+		//model.addAttribute("juzgados", juzgadoService.findAll());
+
+		return "usuario/adminUsuario";
+	}*/
+	
+	
+	@RequestMapping(value = "/administrarUsuario/{id}")
+	public String adminUsuario(@PathVariable(value = "id") Long id, Model model, RedirectAttributes flash) {
+
+		Usuario usuario = null;
+
+		if (id > 0) {
+			usuario = usuarioService.findOne(id);
+
+			if (usuario == null) {
+				flash.addFlashAttribute("error", "El usuario no existe");
+				return "redirect:usuario/listarUsuarios";
+			}
+		} else {
+			flash.addFlashAttribute("error", "El id del usuario no puede ser cero");
+			return "redirect:usuario/listarUsuarios";
+		}
+
+		/*this.juzgado = usuario1.getJuzgado();
+		System.out.println("el juzgado desde editar es: ".concat(this.juzgado.getNombre()));*/
+		
+		//Date fechaIngreso = usuario.getCreateAt();
+		
+		
+		model.addAttribute("usuario", usuario);
+		//model.addAttribute("fechaIngreso", fechaIngreso);
+		//model.addAttribute("titulo", "Salida Usuario");
+		
+		
+		return "usuario/adminUsuario";
+
+		
+	}
+	
+	private Date fechaIngreso = null;
+	private HistorialUsuario historial = null;
+	
+	@RequestMapping(value="/salidaUsuario/{id}")
+	public String salidaUsuario(@PathVariable(value="id") Long id, Map<String, Object> model, RedirectAttributes flash)
+	{
+		Usuario usuario = null;
+		
+		if(id > 0)
+		{
+			usuario = usuarioService.findOne(id);
+			
+			if(usuario == null)
+			{
+				flash.addFlashAttribute("error", "El usuario no existe en la base de datos");
+				return "redirect:/listarUsuarios";
+			}
+		}
+		else
+		{
+			flash.addFlashAttribute("error", "El ID no puede ser Cero");
+			return "redirect:/listarUsuarios";
+		}
+		
+		Date fechaIngreso = usuario.getCreateAt();
+		Especialidad especialidad = usuario.getJuzgado().getEspecialidad();
+		
+		
+		model.put("usuario", usuario);
+		model.put("fechaIngreso", fechaIngreso);
+		model.put("titulo", "Salida Usuario");
+		
+		
+		return "usuario/salidaUsuario";
+	}
+	
+	@RequestMapping(value="/entradaUsuario/{id}")
+	public String entradaUsuario(@PathVariable(value="id") Long id, Map<String, Object> model, RedirectAttributes flash)
+	{
+		Usuario usuario = null;
+		
+		if(id > 0)
+		{
+			usuario = usuarioService.findOne(id);
+			
+			if(usuario == null)
+			{
+				flash.addFlashAttribute("error", "El usuario no existe en la base de datos");
+				return "redirect:/listarUsuarios";
+			}
+		}
+		else
+		{
+			flash.addFlashAttribute("error", "El ID no puede ser Cero");
+			return "redirect:/listarUsuarios";
+		}
+		
+		Date fechaIngreso = usuario.getCreateAt();
+		Especialidad especialidad = usuario.getJuzgado().getEspecialidad();
+		
+		
+		model.put("usuario", usuario);
+		//model.put("fechaIngreso", fechaIngreso);
+		model.put("juzgados", juzgadoService.findAll());
+		model.put("titulo", "Entrada Usuario");
+		
+		
+		return "usuario/entradaUsuario";
+	}
+	
+	/*@RequestMapping(value="/guardarSalidaUsuario/{id}", method = RequestMethod.POST)
+	public String guardarSalidaHistorial(@PathVariable(value="id") Long id, @RequestParam(name="fechaSalida") Date fechaSalida, Model model)
+	{
+		Usuario usuario = usuarioService.findOne(id);
+		if(this.fechaIngreso == null)
+		{
+			fechaIngreso = usuario.getCreateAt();
+		}
+		
+		System.out.println("la fecha ingreso es: " + fechaIngreso);
+		
+		Especialidad especialidad = usuario.getJuzgado().getEspecialidad();
+		Long idHistorial = (long) 0;
+		List<HistorialUsuario> hist = usuario.getHistorialUsuarios();
+		for(HistorialUsuario historial: hist)
+		{
+			if(historial.getId() == idHistorial)
+			{
+				
+			}
+		}
+		Date fechaSal = fechaSalida;
+		
+		historial = historialUsuarioService.findByUsuarioAndEspecialidadAndFechaIngreso(usuario, especialidad, fechaIngreso);
+		
+		
+		historial.setFechaSalida(fechaSal);
+		historialUsuarioService.save(historial);
+		
+		
+		System.out.println("la fecha salida es: " + fechaSalida);
+		System.out.println("El id del historial es: " + historial.getId());
+		//this.fechaIngreso = null;
+		//idHistorial = historial.getId();
+		//System.out.println("el id del historial es: " + idHistorial);
+		
+		bandera = true;
+		
+		model.addAttribute("fechaIngreso", fechaIngreso);
+		model.addAttribute("titulo1", "Salida Usuario");
+		model.addAttribute("titulo", "Historial Usuario");
+		model.addAttribute("titulo2", "Nuevo Historial");
+		//model.addAttribute("historial", historial);
+		model.addAttribute("bandera", bandera);
+		model.addAttribute("juzgados", juzgadoService.findAll());
+		return "usuario/adminUsuario";
+	}*/
+	
+	@RequestMapping(value="/guardarSalidaUsuario/{id}", method = RequestMethod.POST)
+	public String guardarSalidaHistorial(@PathVariable(value="id") Long id, @RequestParam(name="fechaSalida") Date fechaSalida, Model model, RedirectAttributes flash)
+	{
+		Usuario usuario = usuarioService.findOne(id);
+		
+		if(this.fechaIngreso == null)
+		{
+			fechaIngreso = usuario.getCreateAt();
+		}
+		
+		Especialidad especialidad = usuario.getJuzgado().getEspecialidad();
+		//Date fechaSal = fechaSalida;
+		System.out.println("la fecha ingreso es: " + fechaIngreso);
+		
+		
+		
+		HistorialUsuario historial = historialUsuarioService.findByUsuarioAndEspecialidadAndFechaIngreso(usuario, especialidad, fechaIngreso);
+		
+		historial.setFechaSalida(fechaSalida);
+		historialUsuarioService.save(historial);
+		
+		
+		System.out.println("la fecha salida es: " + fechaSalida);
+		System.out.println("El id del historial es: " + historial.getId());
+		
+		
+		bandera = true;
+		
+		flash.addFlashAttribute("succes", "El usuario ya no pertenece al juzgado, salió el: " + fechaSalida);
+		
+		return "redirect:/listarUsuarios";
+	}
+	
+	/*@RequestMapping(value="/guardarEntradaUsuario/{id}", method = RequestMethod.POST )
+	public String guardarEntradaHistorial(@PathVariable(value="id")Long id, @RequestParam(name="fechaIngreso") Date fechaIngreso, @RequestParam(name="idJuzgado") Long idJuzgado, Model model, RedirectAttributes flash)
+	{
+		Usuario usuario = usuarioService.findOne(id);
+		Juzgado juzgado = juzgadoService.findOne(idJuzgado);
+		Especialidad especialidad = usuario.getJuzgado().getEspecialidad();
+		
+		System.out.println("la especialidad es: " + especialidad.getNombre());
+		String nombreJuzgado = juzgado.getNombre();
+		
+		System.out.println("el juzgado es: "+ nombreJuzgado);
+		
+		usuario.setJuzgado(juzgado);	
+		usuarioService.save(usuario);
+		
+		String descripcion = "Usuario Trasladado el: " + fechaIngreso + ", pertenece a la especialidad "
+				+ especialidad.getNombre() + " y al juzgado: " + nombreJuzgado;
+		
+		this.historial = historialUsuarioService.findByUsuarioAndEspecialidadAndFechaIngreso(usuario, especialidad, fechaIngreso);
+		this.fechaIngreso = fechaIngreso;
+		
+		HistorialUsuario historial = new HistorialUsuario();
+		historial.setUsuario(usuario);
+		historial.setDescripcion(descripcion);
+		historial.setEspecialidad(especialidad);
+		historial.setFechaIngreso(fechaIngreso);
+		
+		historialUsuarioService.save(historial);
+		
+		
+		bandera = false;
+		
+		model.addAttribute("fechaIngreso", this.fechaIngreso);
+		//model.addAttribute("titulo1", "Salida Usuario");
+		//model.addAttribute("titulo", "Historial Usuario");
+		//model.addAttribute("titulo2", "Nuevo Historial");
+		//model.addAttribute("historial", historial);
+		//model.addAttribute("bandera", bandera);
+		flash.addFlashAttribute("success", "El usuario fue trasladado de especialidad con exito");
+		
+		
+		
+		return "redirect:/listarUsuarios";
+	}*/
+	
+	@RequestMapping(value="/guardarEntradaUsuario/{id}", method = RequestMethod.POST )
+	public String guardarEntradaHistorial(@PathVariable(value="id")Long id, @RequestParam(name="fechaIngreso") Date fechaIngreso, @RequestParam(name="idJuzgado") Long idJuzgado, Model model, RedirectAttributes flash)
+	{
+		Usuario usuario = usuarioService.findOne(id);
+		Juzgado juzgado = juzgadoService.findOne(idJuzgado);
+		Especialidad especialidad = usuario.getJuzgado().getEspecialidad();
+		
+		System.out.println("la especialidad es: " + especialidad.getNombre());
+		String nombreJuzgado = juzgado.getNombre();
+		
+		System.out.println("el juzgado es: "+ nombreJuzgado);
+		
+		usuario.setJuzgado(juzgado);	
+		usuarioService.save(usuario);
+		
+		String descripcion = "Usuario Trasladado el: " + fechaIngreso + ", pertenece a la especialidad "
+				+ especialidad.getNombre() + " y al juzgado: " + nombreJuzgado;
+		
+		//HistorialUsuario historial = historialUsuarioService.findByUsuarioAndEspecialidadAndFechaIngreso(usuario, especialidad, fechaIngreso);
+		this.fechaIngreso = fechaIngreso;
+		
+		HistorialUsuario historial = new HistorialUsuario();
+		historial.setUsuario(usuario);
+		historial.setDescripcion(descripcion);
+		historial.setEspecialidad(especialidad);
+		historial.setFechaIngreso(fechaIngreso);
+		historialUsuarioService.save(historial);
+		
+		
+		bandera = false;
+		
+		//model.addAttribute("fechaIngreso", this.fechaIngreso);
+		flash.addFlashAttribute("success", "El usuario fue trasladado de especialidad con exito, ahora pertenece a: " + especialidad.getNombre());
+		
+		
+		
+		return "redirect:/listarUsuarios";
+	}
+	
 	@RequestMapping(value = "/guardarUsuario")
-	public String guardarUsuario(Model model, Usuario usuario, SessionStatus status) {
+	public String guardarUsuario(Model model, Usuario usuario, SessionStatus status, RedirectAttributes flash) {
 
 		String ps = usuario.getPassword();
 		String bycryptPassword = passwordEncoder.encode(ps);
@@ -169,7 +481,10 @@ public class UsuarioController {
 		System.out.println("La contraseña encriptada es: ".concat(bycryptPassword));
 
 		// se guardar el usuario
+		
 		usuarioService.save(usuario);
+		flash.addFlashAttribute("success", "El usuario fue guardado con éxito");
+		
 
 		/* ======================================================================= */
 		/* Bloque de codigo para crear HistorialUsuario */
@@ -179,7 +494,13 @@ public class UsuarioController {
 				+ usuario.getJuzgado().getEspecialidad().getNombre() + " y al juzgado: "
 				+ usuario.getJuzgado().getNombre();
 
+		
+		/*Calendar calendar = Calendar.getInstance();
+		calendar.set(2018, 11, 31);
+		Date fechaIngreso = calendar.getTime();*/
 		Date fechaIngreso = usuario.getCreateAt();
+		System.out.println("la fecha ingreso es: "+ fechaIngreso);
+		// Date fechaIngreso = StringToDate("10-Jan-2016");
 		Especialidad especialidad = usuario.getJuzgado().getEspecialidad();
 
 		historialUsuario.setDescripcion(descripcion);
@@ -188,7 +509,8 @@ public class UsuarioController {
 		historialUsuario.setUsuario(usuario);
 
 		historialUsuarioService.save(historialUsuario);
-		
+		//this.fechaIngreso = historialUsuario.getFechaIngreso();
+		//this.fechaIngreso = null;
 		//this.juzgado = usuario.getJuzgado();
 
 		/* ======================================================================= */
@@ -220,6 +542,22 @@ public class UsuarioController {
 		status.setComplete();
 
 		return "redirect:/listarUsuarios";
+	}
+	
+	
+	public Date StringToDate(String s){
+
+	    Date result = null;
+	    try{
+	        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	        result  = dateFormat.parse(s);
+	    }
+
+	    catch(ParseException e){
+	        e.printStackTrace();
+
+	    }
+	    return result ;
 	}
 	
 	@RequestMapping(value="/desactiActiUsuario/{id}")

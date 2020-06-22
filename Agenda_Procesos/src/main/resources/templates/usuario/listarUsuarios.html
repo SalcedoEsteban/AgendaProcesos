@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head th:replace="layout/layout :: head"></head>
 <body>
 	<header th:replace="layout/layout :: header"></header>
@@ -40,6 +40,7 @@
 								<a th:if="${usuario.enabled == true}" th:href="@{/desactiActiUsuario/} + ${usuario.id}" class="btn btn-warning btn-xs">Desact.</a>
 								<a th:if="${usuario.enabled == false}" th:href="@{/desactiActiUsuario/} + ${usuario.id}" class="btn btn-success btn-xs">Activar</a>
 							</td>
+							<td sec:authorize="hasRole('ROLE_SUPER_ADMIN')"><a th:href="@{/administrarUsuario/} + ${usuario.id}" class="btn btn-warning btn-xs">ADMIN</a></td>
 						</tr>
 					</tbody>
 				</table>

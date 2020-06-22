@@ -46,4 +46,19 @@ public class ProcesoUsuarioServiceImpl implements IProcesoUsuarioService {
 		return procesoUsuarioDao.findByIdAndRadicado(id, pageable, radicado);
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public Page<ProcesoUsuario> findByUsuarioAndEstadoAndJuzgadoAndPrioritario(Long id, Pageable pageable,
+			Juzgado juzgado) {
+		
+		return procesoUsuarioDao.findByUsuarioAndEstadoAndJuzgadoAndPrioritario(id, pageable, juzgado);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Page<ProcesoUsuario> findAllBy(Long id, Pageable pageable, Juzgado juzgado) {
+		
+		return procesoUsuarioDao.findAllBy(id, pageable, juzgado);
+	}
+
 }

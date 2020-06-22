@@ -53,4 +53,11 @@ public class AlarmaServiceImpl implements IAlarmaService {
 		return alarmaDao.findByProceso(proceso);
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public Alarma findByDescripcionAndProceso(String descripcion, Proceso proceso) {
+		
+		return alarmaDao.findByDescripcionAndProceso(descripcion, proceso);
+	}
+
 }

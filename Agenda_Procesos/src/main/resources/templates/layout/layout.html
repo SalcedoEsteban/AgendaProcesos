@@ -34,6 +34,10 @@
 						th:href="@{/juzgado/verEspecialidad}">Admin. Juzgados</a></li>
 					<li class="nav-item" sec:authorize="hasRole('ROLE_SUPER_ADMIN')"><a class="nav-link"
 						th:href="@{/especialidad/listar}">Admin. Especialidades</a></li>
+					<li class="nav-item" sec:authorize="hasRole('ROLE_USER')"><a class="nav-link"
+						th:href="@{/verProcesosPrioritarios}">Procesos Prioritarios</a></li>
+					<li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')"><a class="nav-link"
+						th:href="@{/verProcesos}">Ver Procesos</a></li>
 				</ul>
 				<ul class="navbar-nav navbar-right">
 					<li sec:authorize="!isAuthenticated()"><a th:href="@{/login}"
@@ -49,7 +53,7 @@
 							<form th:action="@{/logout}" method="post" id="logoutForm">
 								<button class="dropdown-item"
 									onclick="document.getElementById('logoutForm').submit();"
-									type="submit">Cerrar Sesión</button>
+									type="submit">Salir</button>
 							</form>
 						</div></li>
 				</ul>

@@ -17,4 +17,6 @@ public interface IAlarmaService {
 	public void delete(Long id);
 	
 	public List<Alarma> findByProceso(Proceso proceso);
+	
+	public Alarma findByDescripcionAndProceso(String descripcion, Proceso proceso);
 }

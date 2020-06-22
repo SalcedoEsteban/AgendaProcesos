@@ -2,6 +2,7 @@ package com.usco.esteban.agenda_procesos.app.models.entity;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -80,8 +81,12 @@ public class Usuario implements Serializable {
 	/* este metodo se invoca justo antes de insertar en la base de datos */
 	@PrePersist
 	public void prePersistEnabled() {
+		
+		/*se establece en true el estado del usuario para poder inciar sesion*/
 		this.enabled = true;
-		this.createAt = new Date();
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(2019, 4, 12);
+		this.createAt = calendar.getTime();
 	}
 
 	// de esta forma se puede guardar la fecha en el sistema

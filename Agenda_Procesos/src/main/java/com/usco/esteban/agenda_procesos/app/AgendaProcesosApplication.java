@@ -1,6 +1,9 @@
 package com.usco.esteban.agenda_procesos.app;
 
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -39,16 +42,27 @@ public class AgendaProcesosApplication implements CommandLineRunner
 		String bcryptPassword1 = passwordEncoder.encode(password1);
 		System.out.println(bcryptPassword1);
 		
+		Locale locale = Locale.getDefault();
+		TimeZone timeZone = TimeZone.getDefault();
 		
-		Calendar fechaActual = Calendar.getInstance();
-		Calendar fechaFinal = Calendar.getInstance();
+		Calendar fechaActual = Calendar.getInstance(timeZone, locale);
+		Calendar fechaFinal = Calendar.getInstance(timeZone, locale);
+		
+		System.out.println("La localidad es: "+ Locale.getDefault());
+		System.out.println("El time zone es: "+ TimeZone.getDefault());
+		
+		//String [] timeZones = TimeZone.getAvailableIDs();
+	    //System.out.println("Available Timezones "+Arrays.toString(timeZones));
 		
 		//Calendar fechaInicial = detalle.getFechaInicial();
-		int dia = 27;
+		int dia = 19;
 		int mes = 6;
 		int año = 2020;
 		
-		fechaFinal.set(año, mes-1, dia);
+		fechaFinal.set(año, mes, dia);
+		/*fechaFinal.set(Calendar.YEAR, 2020);
+		fechaFinal.set(Calendar.MONTH, Calendar.JULY);
+		fechaFinal.set(Calendar.DAY_OF_MONTH, 19);*/
 		
 		fechaActual.set(Calendar.HOUR, 0);
 		fechaActual.set(Calendar.HOUR_OF_DAY, 0);
@@ -84,7 +98,10 @@ public class AgendaProcesosApplication implements CommandLineRunner
 		}
 		
 		fechaFinal.add(Calendar.DAY_OF_YEAR, 365);
-		System.out.println("la fecha mas 365 es: " + fechaFinal.getTime());
+		System.out.println("la fecha mas 365 con DAY OF YEAR es: " + fechaFinal.getTime());
+		
+		fechaFinal.add(Calendar.DAY_OF_MONTH, 365);
+		System.out.println("la fecha mas 365 con DAY OF MONTH es: " + fechaFinal.getTime());
 	}
 
 }

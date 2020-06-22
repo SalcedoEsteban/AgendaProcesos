@@ -18,4 +18,8 @@ public interface IProcesoUsuarioService {
 	
 	public Page<ProcesoUsuario> findByIdAndRadicado(Long id, Pageable pageable, String radicado);
 	
+	public Page<ProcesoUsuario> findByUsuarioAndEstadoAndJuzgadoAndPrioritario(Long id, Pageable pageable, Juzgado juzgado);
+	
+	public Page<ProcesoUsuario> findAllBy(Long id, Pageable pageable, Juzgado juzgado);
+	
 }
