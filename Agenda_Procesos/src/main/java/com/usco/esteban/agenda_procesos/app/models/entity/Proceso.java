@@ -73,6 +73,18 @@ public class Proceso implements Serializable {
 	@Column(name ="pro_prioritario")
 	private boolean prioritario;
 
+	@Column(name="pro_prorroga", columnDefinition = "boolean default false")
+	private boolean prorroga;
+	
+	@Column(name = "pro_sentencia", columnDefinition = "boolean default false")
+	private boolean sentencia;
+	
+//	@Column(name ="pro_sentencia_bandera", columnDefinition = "boolean default false")
+//	private boolean sentenciaBandera;
+	
+	@Column(name ="pro_sentencia_bandera", columnDefinition = "boolean default false")
+	private boolean sentenciaBandera;
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "tip_pro_id_pro", nullable = false)
 	@NotNull
@@ -117,6 +129,8 @@ public class Proceso implements Serializable {
 		this.createAt = Calendar.getInstance().getTime();
 		this.estado = true;
 		this.prioritario = false;
+		this.prorroga = false;
+		//this.sentenciaBandera = false;
 	}
 	
 	public Proceso() {
@@ -222,12 +236,40 @@ public class Proceso implements Serializable {
 	
 	
 	
+	
+
+	
+
 	public boolean isPrioritario() {
 		return prioritario;
 	}
 
 	public void setPrioritario(boolean prioritario) {
 		this.prioritario = prioritario;
+	}
+
+	public boolean isProrroga() {
+		return prorroga;
+	}
+
+	public void setProrroga(boolean prorroga) {
+		this.prorroga = prorroga;
+	}
+	
+	public boolean isSentencia() {
+		return sentencia;
+	}
+
+	public void setSentencia(boolean sentencia) {
+		this.sentencia = sentencia;
+	}
+
+	public boolean isSentenciaBandera() {
+		return sentenciaBandera;
+	}
+
+	public void setSentenciaBandera(boolean sentenciaBandera) {
+		this.sentenciaBandera = sentenciaBandera;
 	}
 
 	public TipoProceso getTipoProceso() {
@@ -302,8 +344,12 @@ public class Proceso implements Serializable {
 		result = prime * result + ((estadoActual == null) ? 0 : estadoActual.hashCode());
 		result = prime * result + ((fechaReparto == null) ? 0 : fechaReparto.hashCode());
 		result = prime * result + ((juzgado == null) ? 0 : juzgado.hashCode());
+		result = prime * result + (prioritario ? 1231 : 1237);
 		result = prime * result + ((procesosUsuarios == null) ? 0 : procesosUsuarios.hashCode());
+		result = prime * result + (prorroga ? 1231 : 1237);
 		result = prime * result + ((radicado == null) ? 0 : radicado.hashCode());
+		result = prime * result + (sentencia ? 1231 : 1237);
+		result = prime * result + (sentenciaBandera ? 1231 : 1237);
 		result = prime * result + ((tipoProceso == null) ? 0 : tipoProceso.hashCode());
 		result = prime * result + ((ultimaActuacion == null) ? 0 : ultimaActuacion.hashCode());
 		return result;
@@ -360,15 +406,23 @@ public class Proceso implements Serializable {
 				return false;
 		} else if (!juzgado.equals(other.juzgado))
 			return false;
+		if (prioritario != other.prioritario)
+			return false;
 		if (procesosUsuarios == null) {
 			if (other.procesosUsuarios != null)
 				return false;
 		} else if (!procesosUsuarios.equals(other.procesosUsuarios))
 			return false;
+		if (prorroga != other.prorroga)
+			return false;
 		if (radicado == null) {
 			if (other.radicado != null)
 				return false;
 		} else if (!radicado.equals(other.radicado))
+			return false;
+		if (sentencia != other.sentencia)
+			return false;
+		if (sentenciaBandera != other.sentenciaBandera)
 			return false;
 		if (tipoProceso == null) {
 			if (other.tipoProceso != null)
@@ -383,41 +437,6 @@ public class Proceso implements Serializable {
 		return true;
 	}
 
-	
-
-	
-	
-	
-	/*@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj)
-		{
-			return true;
-		}
-		
-		if(obj == null || getClass() != obj.getClass())
-		{
-			return false;
-		}
-		
-		Proceso proceso =(Proceso) obj;
-		
-		return Objects.equals(radicado, proceso.radicado)
-				&& Objects.equals(demandante, proceso.demandante)
-				&& Objects.equals(demandado, proceso.demandado)
-				&& Objects.equals(fechaReparto, proceso.fechaReparto)
-				&& Objects.equals(ultimaActuacion, proceso.ultimaActuacion)
-				&& Objects.equals(estadoActual, proceso.estadoActual)
-				&& Objects.equals(estado, proceso.estado)
-				&& Objects.equals(tProceso, proceso.tProceso)
-				&& Objects.equals(tipoProceso, proceso.tipoProceso)
-				&& Objects.equals(detalleTerminos, proceso.detalleTerminos)
-				&& Objects.equals(juz, proceso.juz)
-				&& Objects.equals(juzgado, proceso.juzgado)
-				&& Objects.equals(alarma, proceso.alarma);
-	}*/
-	
 	
 
 }

@@ -128,6 +128,29 @@ public class ProcesoController {
 	{
 		Proceso proceso = procesoService.findOne(id);
 		
+		List<Alarma>alarmas = proceso.getAlarma();
+		boolean alarmaAdmision = false;
+		
+		for(Alarma alarma: alarmas)
+		{
+			if(alarma.getDescripcion().contentEquals("Admision"))
+			{
+				alarmaAdmision = true;
+			}
+		}
+		
+		List<DetalleTermino> detalleTerminos = proceso.getDetalleTerminos();
+		boolean terminoAdmision = false;
+		
+		for(DetalleTermino detalle: detalleTerminos)
+		{
+			if(detalle.getTermino().getNombre().equalsIgnoreCase("admision"))
+			{	
+				terminoAdmision = true;
+				model.put("terminoAdmision", terminoAdmision);
+			}
+		}
+		
 		String radicado = proceso.getRadicado();
 		
 		Long idTipoProceso = proceso.getTipoProceso().getId();
@@ -139,6 +162,7 @@ public class ProcesoController {
 		String nombreJuzgado = juzgado.getNombre();
 		
 		
+		model.put("alarmaAdmision", alarmaAdmision);
 		model.put("proceso", proceso);
 		model.put("tipoProceso", tipoProceso);
 		model.put("juzgado", nombreJuzgado);
@@ -222,7 +246,78 @@ public class ProcesoController {
 			}
 		}
 		
-		flash.addFlashAttribute("success", "Fueron agregados" + dias +" días correctamente a los terminos de los procesos");
+		flash.addFlashAttribute("success", "Fueron agregados " + dias +" días correctamente a los terminos de los procesos");
+		return "redirect:/listarProcesos";
+	}
+	
+	@RequestMapping(value="/agregarProrroga/{id}")
+	public String agregarProrroga(@PathVariable(value ="id")Long id, Map<String, Object> model, RedirectAttributes flash)
+	{
+		//Long id = getUserId();
+		//int diasParaAgregar = dias;
+		Proceso proceso = procesoService.findOne(id);
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetail = (UserDetails) auth.getPrincipal();
+		usuario = this.usuarioService.findByUsername(userDetail.getUsername());
+		
+		Juzgado juzgado = usuario.getJuzgado();
+		
+		//List<ProcesoUsuario> procesos = procesoUsuarioService.findAllByPrioritario(juzgado);
+		
+		TimeZone timeZone = TimeZone.getDefault();
+		Locale locale = Locale.getDefault();
+		
+		List<DetalleTermino> detalles = proceso.getDetalleTerminos();
+			
+		for(DetalleTermino detalle: detalles)
+		{
+			String nombre = detalle.getTermino().getNombre();
+				
+			if(nombre.contentEquals("Termino 121"))
+			{
+				Calendar fecha = Calendar.getInstance(timeZone, locale);
+				fecha = detalle.getFechaFinal();
+				fecha.add(Calendar.MONTH, 5);
+				detalleTerminoService.save(detalle);
+			}	
+				
+		}
+		
+		flash.addFlashAttribute("success", "Fueron agregado la Prorroga correctamente a los terminos del proceso");
+		return "redirect:/listarProcesos";
+	}
+	
+	@RequestMapping(value="/dictarSentencia/{id}")
+	public String dictarSentencia(@PathVariable(value ="id") Long id, RedirectAttributes flash)
+	{
+		
+		
+		Proceso proceso = null;
+		
+		if(id > 0)
+		{
+			proceso = procesoService.findOne(id);
+			
+			if(proceso == null)
+			{
+				flash.addFlashAttribute("error", "El proceso no existe");
+				return "redirect:/listarProcesos";
+			}
+		}
+		else
+		{
+			flash.addFlashAttribute("error", "El id del proceso no puede ser cero");
+			return "redirect:/listarProcesos";
+		}
+		String strSentencia = "Se hizo la sentencia";
+		
+		proceso.setSentencia(true);
+		proceso.setEstado(false);
+		procesoService.save(proceso);
+		
+		flash.addFlashAttribute("success", "Ha sido dicatada la sentencia del proceso con radicado".concat(proceso.getRadicado()));
+		
 		return "redirect:/listarProcesos";
 	}
 	
@@ -279,13 +374,19 @@ public class ProcesoController {
 		Termino termino = new Termino();
 		boolean bandera1 = false;
 		int dias = 0;
-		
-		
+		int diasSubsanarDemanda = 0;
+		int procesosAdmitidos =0;
+		int procesosConSentencia = 0;
 		
 		
 		/*lista de procesos que estarn cercanos a vencer*/
 		List<Proceso> procesosAVencer = new ArrayList<Proceso>();
 		List<Proceso> procesosAdmitir = new ArrayList<Proceso>();
+		
+		
+		
+		
+		
 		for (ProcesoUsuario procesoUsuario : procesosUsuario)
 		{
 			List<DetalleTermino> detallesTermino = procesoUsuario.getProceso().getDetalleTerminos();
@@ -359,41 +460,66 @@ public class ProcesoController {
 					}	
 					//System.out.println("los terminos del proceso de nuevo son: "+ detalle.getTermino().getNombre());	
 				}
-					
-				if(termino.getNombre().equalsIgnoreCase("notificacion demandado") && estado == true)
+				
+				if(termino.getNombre().equalsIgnoreCase("subsanar demanda"))
 				{
-					flash.addFlashAttribute("warning", "Para el termino 121, Se está tomando desde la fecha de"
-							+ "notificación al demandado");
+					Calendar fechaActual = Calendar.getInstance(timeZone, locale);
+					Calendar fechaFinal = detalle.getFechaFinal();
+					
+					fechaActual.set(Calendar.HOUR, 0);
+					fechaActual.set(Calendar.HOUR_OF_DAY, 0);
+					fechaActual.set(Calendar.MINUTE, 0);
+					fechaActual.set(Calendar.SECOND, 0);
+					long fechaActualMS = fechaActual.getTimeInMillis();
+					
+					fechaFinal.set(Calendar.HOUR, 0);
+					fechaFinal.set(Calendar.HOUR_OF_DAY, 0);
+					fechaFinal.set(Calendar.MINUTE, 0);
+					fechaFinal.set(Calendar.SECOND, 0);
+					long fechaFinalMS = fechaFinal.getTimeInMillis();
+					
+					diasSubsanarDemanda = (int) ((fechaFinalMS - fechaActualMS) / (1000 * 60 * 60* 24));
+					System.out.println("los numero de días para subsana demanda son: " + diasSubsanarDemanda);
+					
+					
+				}
+					
+				if(termino.getNombre().equalsIgnoreCase("notificacion demandado") && estado == true ) // && dias1 != 0 && dias1 == 30
+				{
 					System.out.println("si hay termino de notificacion demandado");
 					
-					//proceso = procesoUsuario.getProceso();
+					
 					
 					/*la fecha final cuando esté en producción la aplicación será esta, más 365
-					 * días que es el año del 121  <<REVISAR COMO FUNCIONA LA ZONA HORARIA, SI SE 
-					 * PUEDE CAMBIAR A A COLOMBIA PARA TENER EN CUENTA LOS FESTIVOS >>*/
-					notificacionDemandado = detalle.getFechaFinal();
+					 * días que es el año del 121  */
+//					Calendar notificacionDemandado = Calendar.getInstance();
+//					notificacionDemandado = detalle.getFechaFinal();
+//					int mes = notificacionDemandado.get(Calendar.MONTH);
+//					int dia = notificacionDemandado.get(Calendar.DATE);
+//					int anio = notificacionDemandado.get(Calendar.YEAR);
 					
-					/*la fecha actual si está bien, los calculos se hacen con la fecha final que 'es la de notificacion
+					/*la fecha actual si está bien (es decir, zona horaria de colombia y zona local de bogotá, lo cual si es asi porqe por defecto trae esas zona horaria y zona local), 
+					 * los calculos se hacen con la fecha final que 'es la de notificacion
 					 * demandado + los 365 días' menos la fecha actual */
-					fechaActual1 = Calendar.getInstance();
+					fechaActual1 = Calendar.getInstance(timeZone, locale);
 					
 					/*para efectos de las pruebas, se establecio la fecha final de esta forma
 					 * para que los días den 30 para que asi se pueda ejecutar la alarma y notificacion
 					 * de 30 días antes del vencimiento de términos */
-					fechaFinal1 = Calendar.getInstance();
+					fechaFinal1 = Calendar.getInstance(timeZone, locale);
 					
-					int dia = 19;
-					int mes = 6;
-					int año = 2020;
+					int dia = 8;
+					int mes = 7;
+					int anio = 2020;
 					
-					fechaFinal1.set(año, mes, dia);
+					fechaFinal1.set(anio, mes, dia);
 					System.out.println("la fecha final establecida para que de 30 es: " + fechaFinal1.getTime());
 					
 					System.out.println("Para el termino 121, Se está tomando desde la fecha de notificación al demandado");
-					/*Calendar fechaFinal1= notificacionDemandado;
-					System.out.println("fecha final: " + fechaFinal1);
-					fechaFinal1.add(Calendar.DAY_OF_YEAR, 365);
-					System.out.println("fecha final + 365: " + fechaFinal1.getTime());*/
+
+
+//					fechaFinal1.add(Calendar.DAY_OF_YEAR, 365);
+//					System.out.println("fecha final + 365: " + fechaFinal1.getTime());
 					
 					//System.out.println("termino año es igual a: " + terminoAnio);
 					
@@ -417,24 +543,25 @@ public class ProcesoController {
 					
 				}
 				
-				if(termino.getNombre().equalsIgnoreCase("notificacion demandado") && estado == false)
+				else if(termino.getNombre().equalsIgnoreCase("notificacion demandado") && estado == false)
 				{
-					flash.addFlashAttribute("warning", "Para el termino 121, Se está tomando desde la fecha de"
-							+ "reparto");
 					System.out.println("Para el termino 121, Se está tomando desde la fecha de REPARTO");
 					
-					Calendar fechaReparto = proceso.getFechaReparto();
+					Calendar fechaReparto = Calendar.getInstance(timeZone, locale);
+					fechaReparto = proceso.getFechaReparto();
+					int dia = fechaReparto.get(Calendar.DATE);
+					int mes = fechaReparto.get(Calendar.MONTH);
+					int anio = fechaReparto.get(Calendar.YEAR);
 					
 					fechaActual1 = Calendar.getInstance(timeZone, locale);
 					fechaFinal1 = Calendar.getInstance(timeZone, locale);
-					/*fechaFinal1 = fechaReparto;
-					fechaReparto.add(Calendar.DAY_OF_YEAR, 365);*/
 					
-					int dia = 19;
-					int mes = 6;
-					int año = 2020;
+//					int dia = 29;
+//					int mes = 6;
+//					int año = 2020;
 					
-					fechaFinal1.set(año, mes, dia);
+					fechaFinal1.set(anio, mes, dia);
+					fechaFinal1.add(Calendar.DAY_OF_YEAR, 365);
 					
 					fechaActual1.set(Calendar.HOUR, 0);
 					fechaActual1.set(Calendar.HOUR_OF_DAY, 0);
@@ -454,9 +581,7 @@ public class ProcesoController {
 				}
 			}
 			
-			
-			
-			
+			System.out.println("LA BANDERA1 ES: " + bandera1);
 			
 			if(terminoAnio == false && bandera1 == true)
 			{
@@ -496,8 +621,9 @@ public class ProcesoController {
 			if(dias1 == 30)
 			{
 				procesosAVencer.add(proceso);
-				//bandera = true;
+				proceso.setSentenciaBandera(true);
 				System.out.println("el radicado es "+ proceso.getRadicado());
+				
 				
 				
 				String descripcion = "Vencimiento anio";
@@ -516,24 +642,101 @@ public class ProcesoController {
 				
 				
 				//System.out.println("dias igual a 30");
-				model.addAttribute("vence", "Listado de procesos Cercanos a Vencer en " +
-				dias1 + " días.");
+//				model.addAttribute("vence", "Listado de procesos Cercanos a Vencer en " +
+//				dias1 + " días.");
 				model.addAttribute("procesosAVencer", procesosAVencer);
+				model.addAttribute("bandera", bandera);
+				
 				
 			}
+			if(dias1 <= 30 && dias1 > 1)
+			{
+				proceso.setProrroga(true);
+				procesoService.save(proceso);
+				//model.addAttribute("bandera", bandera);
+			}
 			
-			//bandera = false;
+			//
 			dias1 = 0;
 			
-			/*============== codigo de alarma de 30 dias para el vencimiento de terminos ======*/
+			/*============== fin de codigo de alarma de 30 dias para el vencimiento de terminos ======*/
+			
+			/*========= CODIGO PARA LOS DIAS DE SUBSANAR DEMANDA ============= */
+			
+			if(diasSubsanarDemanda < 0)
+			{
+				
+				proceso.setUltimaActuacion("inadmitido");
+				proceso.setEstado(false);
+				procesoService.save(proceso);
+				flash.addFlashAttribute("error", "El proceso con radicado: ".concat(proceso.getRadicado()) + " se ha inadmitido " +
+				"porque no se subsanó la demanda");
+				return "redirect:/listarProcesos";
+			}
+			diasSubsanarDemanda = 0;
+			/*========= FIN DE CODIGO PARA SUBSANAR DEMANDA =====================*/
 			
 		}
+		
 		//estado = false;
 		//List<DetalleTermino> detalleTerminos = proceso.getDetalleTerminos();
 		
+		/*========== Bloque de codigo para vaciar la lista ProcesosAdmitir y asi no mostrar
+		 * en la vista de listar procesos =================*/
+		int procesoAAdmitir = procesosAdmitir.size();
+		System.out.println("numero procesos a admitir: " + procesoAAdmitir);
+		
+		for(Proceso proceso: procesosAdmitir)
+		{	System.out.println("admitir proceso: " + proceso.getUltimaActuacion());
+			
+			if(proceso.getUltimaActuacion().contentEquals("admitido"))
+			{
+				procesosAdmitidos++;
+			}
+		}
+		System.out.println("Numero de procesos admitidos: " + procesosAdmitidos);
+		
+		if(procesoAAdmitir == procesosAdmitidos)
+		{
+			System.out.println("son iguales");
+			procesosAdmitir.clear();
+			model.addAttribute("procesosAdmitir", procesosAdmitir);
+		}
+		
+		/* ======================= fin de bloque de codigo ====================================== */
+		
+		/*========== Bloque de codigo para vaciar la lista ProcesosAVencer y asi no mostrar
+		 * en la vista de listar procesos =================*/
+		
+		int procesoASentencia = procesosAVencer.size();
+		System.out.println("numero procesos a vencer: " + procesoASentencia);
 		
 		
-		/* ============================================================= */
+		 /*
+		  * se puede dejar solo un boton para dictar sentencia, y que este guarde en 
+		  * el campo sentencia la palabra 'sentencia', luego se puede validar si el proceso
+		  * contiene en el campo sentencia, la palabra sentencia para sumarle al contador
+		  */
+		
+		for(Proceso proceso: procesosAVencer)
+		{
+			System.out.println("sentencia proceso: " + proceso.isSentencia());
+			if(proceso.isSentencia())
+			{
+				procesosConSentencia++;
+			}
+		}
+		System.out.println("Numero de procesos con sentencia: " + procesosConSentencia);
+		
+		if(procesoASentencia == procesosConSentencia)
+		{
+			System.out.println("son iguales");
+			procesosAVencer.clear();	
+			model.addAttribute("procesosAVencer", procesosAVencer);
+		}
+		
+		/* ======================= fin de bloque de codigo ====================================== */
+		
 		if(this.terminoAnio == false)
 		{
 			System.out.println("TERMINO AÑO FALSE");
@@ -714,6 +917,39 @@ public class ProcesoController {
 			proceso.setUltimaActuacion("admitido");
 			procesoService.save(proceso);
 			flash.addFlashAttribute("success", "El proceso con el radiaco: "+ radicado+ " fue ADMITIDO");
+			return "redirect:/listarProcesos";
+		}
+		else if(admitido.contentEquals("admitido"))
+		{
+			flash.addFlashAttribute("warning", "El proceso con el radiaco: "+ radicado+ " YA FUE ADMITIDO");
+		}
+		
+		return "redirect:/listarProcesos";
+	}
+	
+	@RequestMapping(value="/inadmitirProceso/{id}")
+	public String inadmitirProceso(@PathVariable(value="id") Long id, RedirectAttributes flash)
+	{
+		Proceso proceso = null;
+		if(id>0)
+		{
+			proceso = procesoService.findOne(id);
+			
+			if(proceso == null)
+			{
+				flash.addFlashAttribute("error", "El proceso no existe");
+				return "redirect:/listarProcesos";
+			}
+		}
+		String radicado = proceso.getRadicado();
+		String admitido = proceso.getUltimaActuacion();
+		if(admitido.isEmpty())
+		{
+			
+			proceso.setUltimaActuacion("inadmitido");
+			proceso.setEstado(false);
+			procesoService.save(proceso);
+			flash.addFlashAttribute("success", "El proceso con el radiaco: "+ radicado+ " fue INADMITIDO y DESACTIVADO");
 			return "redirect:/listarProcesos";
 		}
 		else if(admitido.contentEquals("admitido"))

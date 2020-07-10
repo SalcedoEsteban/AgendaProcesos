@@ -26,4 +26,6 @@ public interface IProcesoUsuarioService {
 	
 	public List<ProcesoUsuario> findAll(Juzgado juzgado);
 	
+	public List<ProcesoUsuario> findAllByPrioritario(Juzgado juzgado);
+	
 }

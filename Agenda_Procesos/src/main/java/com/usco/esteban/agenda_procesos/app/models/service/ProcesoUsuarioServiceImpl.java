@@ -65,9 +65,16 @@ public class ProcesoUsuarioServiceImpl implements IProcesoUsuarioService {
 
 	@Override
 	@Transactional(readOnly = true)
-	public List<ProcesoUsuario> findAll(Juzgado juzgado) {
-		
+	public List<ProcesoUsuario> findAll(Juzgado juzgado)
+	{	
 		return procesoUsuarioDao.findAll(juzgado);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<ProcesoUsuario> findAllByPrioritario(Juzgado juzgado)
+	{	
+		return procesoUsuarioDao.findAllByPrioritario(juzgado);
 	}
 
 }

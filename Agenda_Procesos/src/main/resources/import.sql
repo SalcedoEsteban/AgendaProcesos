@@ -27,7 +27,7 @@ insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado
 
 insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('Perdida competencia', 365, true, 1, 1);
 insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('admision', 30, true, 1, 1);
-insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('indamision', 15, true, 1, 1);
+insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('subsanar demanda', 15, true, 1, 1);
 insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('admision', 15, true, 2, 1);
 insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('subsanar demanda', 15, true, 2, 1);
 insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('adminion', 15, true, 3, 3);

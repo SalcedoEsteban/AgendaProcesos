@@ -16,8 +16,8 @@
 				</div>
 				<form th:action="@{/guardarDetalleTermino}" th:object="${detalleTermino}" method="post">
 					<div class="form-group row">
-						<label class="col-sm-4  col-form-label">Fecha Inicial</label>
-						<div class="col-sm-6 ">
+						<label class="col-sm-2 col-form-label">Fecha Inicial</label>
+						<div class="col-sm-3 ">
 							<input id="datepicker" autocomplete="off" type="text" th:field="*{fechaInicial}" class="form-control" th:errorclass="'form-control alert-danger'"/>
 							<small
 								class="form-text text-danger"
@@ -25,8 +25,8 @@
 						</div>
 					</div>
 					<div class="form-group row">
-						<label class="col-sm-4  col-form-label">Fecha Final</label>
-						<div class="col-sm-6 ">
+						<label class="col-sm-2 col-form-label">Fecha Final</label>
+						<div class="col-sm-3 ">
 							<input id="datepicker1" autocomplete="off" type="text" th:field="*{fechaFinal}" class="form-control" th:errorclass="'form-control alert-danger'"/>
 							<small
 								class="form-text text-danger"
@@ -34,16 +34,18 @@
 						</div>
 					</div>
 					<div class="form-group row">
-						<label class="col-sm-6 col-form-label">¿Días hábiles?</label>
-						<select th:field="*{diasHabiles}">
-							<option th:value="true" th:text="Si"></option>
-							<option th:value="false" th:text="No"></option>
-						</select>
+						<label class="col-sm-2 col-form-label">¿Días hábiles?</label>
+						<div class="col-sm-3">
+							<select th:field="*{diasHabiles}" class="form-control">
+								<option th:value="true" th:text="Si"></option>
+								<option th:value="false" th:text="No"></option>
+							</select>
+						</div>
 					</div>
 					<div class="form-group row">
-						<label class="col-sm-4 col-form-label">Termino</label>
-						<div class="col-sm-6">
-							<select th:field="*{termino}">
+						<label class="col-sm-2 col-form-label">Termino</label>
+						<div class="col-sm-3">
+							<select th:field="*{termino}" class="form-control">
 								<option th:each="termino: ${terminos}" th:value="${termino.id}" th:text="${termino.nombre}"></option>
 							</select>
 						</div>
