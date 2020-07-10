@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,12 +32,14 @@ import com.usco.esteban.agenda_procesos.app.editors.JuzgadoPropertyEditor;
 import com.usco.esteban.agenda_procesos.app.models.entity.Especialidad;
 import com.usco.esteban.agenda_procesos.app.models.entity.HistorialUsuario;
 import com.usco.esteban.agenda_procesos.app.models.entity.Juzgado;
+import com.usco.esteban.agenda_procesos.app.models.entity.ProcesoUsuario;
 import com.usco.esteban.agenda_procesos.app.models.entity.Rol;
 import com.usco.esteban.agenda_procesos.app.models.entity.Usuario;
 import com.usco.esteban.agenda_procesos.app.models.service.IHistorialUsuarioService;
 import com.usco.esteban.agenda_procesos.app.models.service.IJuzgadoService;
 import com.usco.esteban.agenda_procesos.app.models.service.IRolService;
 import com.usco.esteban.agenda_procesos.app.models.service.IUsuarioService;
+import com.usco.esteban.agenda_procesos.app.util.paginator.PageRender;
 
 @Controller
 @SessionAttributes("usuario")
@@ -68,7 +73,9 @@ public class UsuarioController {
 	}
 
 	@RequestMapping(value = "/listarUsuarios")
-	public String listarUsuarios(Map<String, Object> model) {
+	public String listarUsuarios(@RequestParam(name = "page", defaultValue = "0") int page, Map<String, Object> model) {
+		
+		Pageable pageRequest = PageRequest.of(page, 1);
 		
 		/*Se obtiene el usuario logeado*/
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -86,7 +93,7 @@ public class UsuarioController {
 		
 		
 		String nombre = null;
-		List<Usuario> usuarios = null; 
+		Page<Usuario> usuarios = null; 
 		
 		for (Rol rol : roles) {
 			
@@ -110,15 +117,17 @@ public class UsuarioController {
 		if(nombre.contentEquals("ROLE_SUPER_ADMIN"))
 		{
 			System.out.println("se hace la consulta de todos los usuarios");
-			usuarios = usuarioService.findAll();
+			usuarios = usuarioService.findAll(pageRequest);
 		}
 		else if(nombre.contentEquals("ROLE_ADMIN"))
 		{
 			System.out.println("se hace la consulta de usuario por juzgado");
-			usuarios = usuarioService.findByJuzgado(juzgado);
+			usuarios = usuarioService.findByJuzgadoPageable(juzgado, pageRequest);
 		}
-		 
 		
+		PageRender<Usuario> pageRender = new PageRender<>("/listarUsuarios", usuarios);
+		
+		model.put("page", pageRender);
 		model.put("titulo", "Listado de Usuarios");
 		model.put("usuarios", usuarios);
 
