@@ -9,6 +9,8 @@
 		<div class="card bg-light">
 			<div class="card-header" th:text="${titulo}"></div>
 			<div class="card-body">
+				<a sec:authorize="hasRole('ROLE_USER')" th:href="@{/listarProcesos}"
+						class="btn btn-success btn-xs">Volver al inicio</a>
 				<form th:action="@{/guardarTermino}" th:object="${termino}"
 					method="post">
 					<div class="form-group row">

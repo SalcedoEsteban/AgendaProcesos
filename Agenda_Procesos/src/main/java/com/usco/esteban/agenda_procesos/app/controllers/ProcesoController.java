@@ -14,6 +14,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
@@ -42,6 +43,7 @@ import com.usco.esteban.agenda_procesos.app.models.entity.Especialidad;
 import com.usco.esteban.agenda_procesos.app.models.entity.Juzgado;
 import com.usco.esteban.agenda_procesos.app.models.entity.Proceso;
 import com.usco.esteban.agenda_procesos.app.models.entity.ProcesoUsuario;
+import com.usco.esteban.agenda_procesos.app.models.entity.Rol;
 import com.usco.esteban.agenda_procesos.app.models.entity.Termino;
 import com.usco.esteban.agenda_procesos.app.models.entity.TipoProceso;
 import com.usco.esteban.agenda_procesos.app.models.entity.Usuario;
@@ -50,10 +52,12 @@ import com.usco.esteban.agenda_procesos.app.models.service.IDetalleTerminoServic
 import com.usco.esteban.agenda_procesos.app.models.service.IJuzgadoService;
 import com.usco.esteban.agenda_procesos.app.models.service.IProcesoService;
 import com.usco.esteban.agenda_procesos.app.models.service.IProcesoUsuarioService;
+import com.usco.esteban.agenda_procesos.app.models.service.IRolService;
 import com.usco.esteban.agenda_procesos.app.models.service.ITerminoService;
 import com.usco.esteban.agenda_procesos.app.models.service.ITipoProcesoService;
 import com.usco.esteban.agenda_procesos.app.models.service.IUsuarioService;
 import com.usco.esteban.agenda_procesos.app.util.paginator.PageRender;
+import com.usco.esteban.agenda_procesos.app.validation.CalculaDiasHabiles;
 
 @Controller
 /* con este atributo se pasa el objeto (y sus datos) mapeado al formulario a la sesion
@@ -92,6 +96,9 @@ public class ProcesoController {
 	
 	@Autowired
 	private ITerminoService terminoService;
+	
+	@Autowired
+	private IRolService rolService;
 	
 	@Autowired
 	private TipoProcesoPropertyEditor tipoProcesoEditor;
@@ -192,7 +199,11 @@ public class ProcesoController {
 	public String buscarProceso(@RequestParam(value="radicado") String radicado,
 			Map<String, Object> model, @RequestParam(name = "page", defaultValue = "0") int page)
 	{
-		Pageable pageRequest = PageRequest.of(page, 3);
+		
+		List<Proceso> procesosAVencer = new ArrayList<Proceso>();
+		List<Proceso> procesosAdmitir = new ArrayList<Proceso>();
+		
+		Pageable pageRequest = PageRequest.of(page, 5);
 		
 		Long id = getUserId();
 		
@@ -201,37 +212,52 @@ public class ProcesoController {
 		
 		PageRender<ProcesoUsuario> pageRender = new PageRender<>("/buscarProceso", procesoUsuario);
 		
+		model.put("procesosAVencer", procesosAVencer);
+		model.put("procesosAdmitir", procesosAdmitir);
 		model.put("procesos", procesoUsuario);
 		model.put("page", pageRender);
+		model.put("titulo", "Proceso(s) encontrado(s)"); 
 		
 		return "listarProcesos";
 	}
 	
-	@RequestMapping(value ="/formAgregarDias")
-	public String formAgregarDias(Model model)
+	@RequestMapping(value ="/formAgregarDiasHabiles")
+	public String formAgregarDiasHabiles(Model model)
 	{
-		model.addAttribute("titulo", "Agregar Días a los Procesos");
+		model.addAttribute("titulo", "Agregar Días Calendario a los Procesos");
 		
-		return "formAgregarDias";
+		return "formAgregarDiasHabiles";
 	}
 	
-	
-	@RequestMapping(value="/agregarDias", method = RequestMethod.POST)
-	public String agregarDias(@RequestParam(value="dias") int dias, Map<String, Object> model, RedirectAttributes flash)
+	@RequestMapping(value="/agregarDiasHabiles", method = RequestMethod.POST)
+	public String agregarDiasHabiles(@RequestParam(value="fecha") Calendar fecha, Map<String, Object> model, RedirectAttributes flash)
 	{
-		//Long id = getUserId();
-		//int diasParaAgregar = dias;
-		
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		UserDetails userDetail = (UserDetails) auth.getPrincipal();
 		usuario = this.usuarioService.findByUsername(userDetail.getUsername());
-		
 		Juzgado juzgado = usuario.getJuzgado();
 		
-		List<ProcesoUsuario> procesos = procesoUsuarioService.findAll(juzgado);
+		Calendar fechaInicial = Calendar.getInstance(timeZone, locale);
+		fechaInicial.set(Calendar.HOUR, 0);
+		fechaInicial.set(Calendar.HOUR_OF_DAY, 0);
+		fechaInicial.set(Calendar.MINUTE, 0);
+		fechaInicial.set(Calendar.SECOND, 0);
+		//long fechaInicialMS = fechaInicial.getTimeInMillis();
 		
-		TimeZone timeZone = TimeZone.getDefault();
-		Locale locale = Locale.getDefault();
+		Calendar fechaFinal = Calendar.getInstance(timeZone, locale);
+		fechaFinal.set(Calendar.YEAR, fecha.get(Calendar.YEAR));
+		fechaFinal.set(Calendar.MONTH, fecha.get(Calendar.MONTH));
+		fechaFinal.set(Calendar.DATE, fecha.get(Calendar.DATE));
+		
+		fechaFinal.set(Calendar.HOUR, 0);
+		fechaFinal.set(Calendar.HOUR_OF_DAY, 0);
+		fechaFinal.set(Calendar.MINUTE, 0);
+		fechaFinal.set(Calendar.SECOND, 0);
+		//long fechaFinalMS = fechaFinal.getTimeInMillis();
+		
+		int diasHabiles = CalculaDiasHabiles.diasHabiles(fechaInicial, fechaFinal);
+		
+		List<ProcesoUsuario> procesos = procesoUsuarioService.findAll(juzgado);
 		
 		for(ProcesoUsuario proceso : procesos)
 		{
@@ -239,16 +265,76 @@ public class ProcesoController {
 			
 			for(DetalleTermino detalle: detalles)
 			{
-				Calendar fecha = Calendar.getInstance(timeZone, locale);
-				fecha = detalle.getFechaFinal();
-				fecha.add(Calendar.DAY_OF_YEAR, dias);
-				detalleTerminoService.save(detalle);
+				if(detalle.getTermino().getNombre().equalsIgnoreCase("admision"))
+				{
+					Calendar fechaFinalAdmision = Calendar.getInstance(timeZone, locale);
+					fechaFinalAdmision = detalle.getFechaFinal();
+					fechaFinalAdmision.set(Calendar.DAY_OF_YEAR, diasHabiles);
+					detalleTerminoService.save(detalle);
+				}
+				else if(detalle.getTermino().getNombre().equalsIgnoreCase("subsanar demanda"))
+				{
+					Calendar fechaFinalSubsanarDemanda = Calendar.getInstance(timeZone, locale);
+					fechaFinalSubsanarDemanda = detalle.getFechaFinal();
+					fechaFinalSubsanarDemanda.set(Calendar.DAY_OF_YEAR, diasHabiles);
+					detalleTerminoService.save(detalle);
+				}
+				
 			}
 		}
 		
-		flash.addFlashAttribute("success", "Fueron agregados " + dias +" días correctamente a los terminos de los procesos");
+		//flash.addFlashAttribute("success", "Fueron agregados " + dias +" días correctamente a los terminos de los procesos");
 		return "redirect:/listarProcesos";
 	}
+	
+	//===========================================
+	@RequestMapping(value ="/formAgregarDiasCalendario")
+	public String formAgregarDias(Model model)
+	{
+		model.addAttribute("titulo", "Agregar Días Calendario a los Procesos");
+		
+		return "formAgregarDiasCalendario";
+	}
+	
+	
+	@RequestMapping(value="/agregarDiasCalendario", method = RequestMethod.POST)
+	public String agregarDiasCalendario(@RequestParam(value="dias") int dias, Map<String, Object> model, RedirectAttributes flash)
+	{
+			//Long id = getUserId();
+			//int diasParaAgregar = dias;
+			
+			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+			UserDetails userDetail = (UserDetails) auth.getPrincipal();
+			usuario = this.usuarioService.findByUsername(userDetail.getUsername());
+			
+			Juzgado juzgado = usuario.getJuzgado();
+			
+			List<ProcesoUsuario> procesos = procesoUsuarioService.findAll(juzgado);
+			
+			TimeZone timeZone = TimeZone.getDefault();
+			Locale locale = Locale.getDefault();
+			
+			for(ProcesoUsuario proceso : procesos)
+			{
+				List<DetalleTermino> detalles = proceso.getProceso().getDetalleTerminos();
+				
+				for(DetalleTermino detalle: detalles)
+				{
+					
+					if(detalle.getTermino().getNombre().equalsIgnoreCase("Termino 121"))
+					{
+						Calendar fechaFinal = Calendar.getInstance(timeZone, locale);
+						fechaFinal = detalle.getFechaFinal();
+						fechaFinal.add(Calendar.DAY_OF_YEAR, dias);
+						detalleTerminoService.save(detalle);
+					} 
+					
+				}
+			}
+			
+			flash.addFlashAttribute("success", "Fueron agregados " + dias +" días correctamente a los terminos de los procesos");
+			return "redirect:/listarProcesos";
+		}
 	
 	@RequestMapping(value="/agregarProrroga/{id}")
 	public String agregarProrroga(@PathVariable(value ="id")Long id, Map<String, Object> model, RedirectAttributes flash)
@@ -321,6 +407,146 @@ public class ProcesoController {
 		return "redirect:/listarProcesos";
 	}
 	
+
+//	private int page;
+//	private Pageable pageRequest = PageRequest.of(page, 3);
+//	private List<ProcesoUsuario> list = new ArrayList<ProcesoUsuario>();
+//	private Page<ProcesoUsuario> procesosUsuarioListar = new PageImpl<>(list, pageRequest, list.size());
+	private Usuario usuarioListar;
+	private Page<ProcesoUsuario> procesosUsuarioListar;
+	private Long idUsuario;
+//	private Page<ProcesoUsuario> procesosUsuarioListarAsignar;
+	
+	@RequestMapping(value="/listarProcesosPorUsuario")
+	public String listarProcesosPorUsuario(@RequestParam(value="idUsuario", required = false, defaultValue = "0")  Long idUsuario, @RequestParam(value="page", defaultValue = "0") int page, Model model, RedirectAttributes flash)
+	{
+		
+		Pageable pageRequest = PageRequest.of(page, 3);
+		Long id = getUserId();
+		
+		if(idUsuario > 0)
+		{
+			this.idUsuario = idUsuario;
+		}
+		
+		boolean botonBandera = true;
+		
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetail = (UserDetails) auth.getPrincipal();
+		usuario = this.usuarioService.findByUsername(userDetail.getUsername());
+		
+		Juzgado juzgado = usuario.getJuzgado();
+		//Usuario usuario = usuarioService.findOne(idUsuario);
+		
+//		if(idUsuario == null)
+//		{
+//			model.addAttribute("titulo", )
+//		}
+		
+		System.out.println("EL ID DESDE EL ARGUMENTO ES: " + idUsuario);
+		System.out.println("EL ID DESDE LA VARIABLE DE INSTANCIA ES: " + this.idUsuario);
+		
+		if(usuarioListar == null)
+		{
+			if(idUsuario.toString().contentEquals("0")) {
+				System.out.println("EL DEFAULT VALUE ES CERO");
+				usuarioListar = usuarioService.findOne(this.idUsuario);
+			}
+			else
+			{
+				System.out.println("EL DEFAULT VALUE NO ES CERO");
+				usuarioListar = usuarioService.findOne(idUsuario);
+			}
+				
+		}
+		
+		
+		List<Usuario> usuarios = usuarioService.findByJuzgado(juzgado);
+		List<Proceso> procesosAVencer = new ArrayList<Proceso>();
+		List<Proceso> procesosAdmitir = new ArrayList<Proceso>();
+		
+//		if(procesosUsuarioListar.isEmpty()) {
+//			procesosUsuarioListar = procesoUsuarioService.findAllById(idUsuario, pageRequest, juzgado);
+//		}
+		
+		//System.out.println("procesosUsuarioListar está vacio?: " + procesosUsuarioListar.isEmpty());
+		
+//		if(procesosUsuarioListar == null)
+//		{
+//			System.out.println("SE HIZO LA CONSULTA DE PROCESOUSUARIOLISTAR PORQUE ES NULL");
+//			procesosUsuarioListar = procesoUsuarioService.findAllById(idUsuario, pageRequest, juzgado);
+//		}
+		
+		
+		
+		procesosUsuarioListar = procesoUsuarioService.findAllById(this.idUsuario, pageRequest, juzgado);
+		
+		
+		
+		PageRender<ProcesoUsuario> pageRender = new PageRender<>("/listarProcesosPorUsuario", procesosUsuarioListar);
+		
+		model.addAttribute("procesosAVencer", procesosAVencer);
+		model.addAttribute("procesosAdmitir", procesosAdmitir);
+		//model.addAttribute("usuario", usuario);
+		model.addAttribute("usuarios", usuarios);
+		model.addAttribute("botonBandera", botonBandera);
+		model.addAttribute("procesos", procesosUsuarioListar);
+		model.addAttribute("page", pageRender);
+		model.addAttribute("titulo", "Listado de procesos del Usuario: ".concat(usuarioListar.getNombre().concat(usuarioListar.getApellido())));
+		
+		usuarioListar = null;
+		
+//		procesosUsuarioListarAsignar = procesosUsuarioListar;
+		
+//		procesosUsuarioListar = null;
+		
+		botonBandera = false;
+		
+		return "listarProcesos";
+	}
+	
+
+	
+	@RequestMapping(value="/formAsignarProcesos")
+	public String formAsignarProceso(Model model)
+	{
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetail = (UserDetails) auth.getPrincipal();
+		usuario = this.usuarioService.findByUsername(userDetail.getUsername());
+		Juzgado juzgado = usuario.getJuzgado();
+		
+		List<Usuario> usuarios = usuarioService.findByJuzgado(juzgado);
+		
+		model.addAttribute("titulo", "Asignar procesos a usuario");
+		model.addAttribute("usuarios", usuarios);
+		
+		return "formAsignarProceso";
+	}
+	
+	@PostMapping(value="/asignarProcesos")
+	public String asignarProcesos(@RequestParam(value="idUsuario") String idUsuario, RedirectAttributes flash)
+	{
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetail = (UserDetails) auth.getPrincipal();
+		usuario = this.usuarioService.findByUsername(userDetail.getUsername());
+		
+		Long id = Long.parseLong(idUsuario);
+		Usuario usuario = usuarioService.findOne(id);
+		
+		for(ProcesoUsuario proceso: procesosUsuarioListar)
+		{
+			proceso.setUsuario(usuario);
+			procesoUsuarioService.save(proceso);
+		}
+		
+		procesosUsuarioListar = null;
+		
+		flash.addFlashAttribute("success", "Los procesos fueron asignados al uuario: ".concat(usuario.getNombre().concat(usuario.getApellido())));
+		
+		
+		return "redirect:/listarProcesos";
+	}
+	
 	//DetalleTermino detalleTermino = new DetalleTermino();
 	private boolean terminoAnio;
 	private Proceso proceso1 = null;
@@ -337,7 +563,6 @@ public class ProcesoController {
 	public String listar(@RequestParam(name = "page", defaultValue = "0") int page, Model model, RedirectAttributes flash)
 	{
 		Pageable pageRequest = PageRequest.of(page, 3);
-		
 		Long id = getUserId();
 		//Page<Proceso> procesos = procesoService.findAll(pageRequest);
 		
@@ -347,7 +572,71 @@ public class ProcesoController {
 		
 		Juzgado juzgado = usuario.getJuzgado();
 		
-		Page<ProcesoUsuario> procesosUsuario = procesoUsuarioService.findAllById(id, pageRequest, juzgado);
+//		Page<ProcesoUsuario> procesosUsuario = procesoUsuarioService.findAllById(id, pageRequest, juzgado);
+		
+		
+		List<Usuario> usuarios = usuarioService.findByJuzgado(juzgado);
+		model.addAttribute("usuarios", usuarios);
+		
+		
+		Page<ProcesoUsuario> procesosUsuario = null;
+		
+		
+		/* ========== bloque de codigo que valida los procesos que se listaran 
+		 * dependiendo del tipo de usuario ====================================*/
+		List<Rol> roles = rolService.findByUsuario(usuario);
+		System.out.println("la lista roles es vacia: " + roles.isEmpty());
+		
+		String nombre = null; 
+		
+		for (Rol rol : roles)
+		{
+			
+			System.out.println(rol.getRol());
+			
+			//nombre = rol.getRol();
+			
+			if(rol.getRol().contentEquals("ROLE_USER"))
+			{
+				System.out.println("rol desde el if por SUPER_USER: " + rol.getRol());
+				nombre = rol.getRol();
+				break;
+			}
+			else if(rol.getRol().contentEquals("ROLE_ADMIN"))
+			{
+				System.out.println("rol desde el if por ROLE_ADMIN: " + rol.getRol());
+				nombre = rol.getRol();
+				break;
+			}
+			else if(rol.getRol().contentEquals("ROLE_SUPER_ADMIN"))
+			{
+				System.out.println("rol desde el if por ROLE_SUPER_ADMIN: " + rol.getRol());
+				nombre = rol.getRol();
+				break;
+			}
+		}
+		
+		System.out.println("el rol es: " + nombre);
+		
+		if(nombre.contentEquals("ROLE_SUPER_ADMIN"))
+		{
+			System.out.println("se hace la consulta de todos los procesos activos de todos los juzgados");
+			procesosUsuario = procesoUsuarioService.findAllBySuperAdmin(pageRequest);
+		}
+		else if(nombre.contentEquals("ROLE_ADMIN"))
+		{
+			System.out.println("se hace la consulta de los procesos por juzgado");
+			/*se ejecuta la consulta de proceos por id y juzgado para que el admin tenga la opcion
+			 * de filtrar los procesos por usuario */
+			procesosUsuario = procesoUsuarioService.findAllById(id, pageRequest, juzgado);
+		}
+		else if(nombre.contentEquals("ROLE_USER"))
+		{
+			System.out.println("se hace la consulta de los proceos por usuario");
+			procesosUsuario = procesoUsuarioService.findAllById(id, pageRequest, juzgado);
+		}
+		
+		/*====== fin de bloque de codigo de validacion de los procesos que si listaran*/
 		
 		PageRender<ProcesoUsuario> pageRender = new PageRender<>("/listarProcesos", procesosUsuario); 
 		
@@ -373,19 +662,18 @@ public class ProcesoController {
 		boolean bandera = false;
 		Termino termino = new Termino();
 		boolean bandera1 = false;
+		boolean subsanaDemanda = false;
 		int dias = 0;
 		int diasSubsanarDemanda = 0;
+		boolean banderaSubsanaDemanda = false;
 		int procesosAdmitidos =0;
 		int procesosConSentencia = 0;
-		
+		String radicado = null;
+		Long idProceso = null;
 		
 		/*lista de procesos que estarn cercanos a vencer*/
 		List<Proceso> procesosAVencer = new ArrayList<Proceso>();
 		List<Proceso> procesosAdmitir = new ArrayList<Proceso>();
-		
-		
-		
-		
 		
 		for (ProcesoUsuario procesoUsuario : procesosUsuario)
 		{
@@ -424,7 +712,7 @@ public class ProcesoController {
 					
 					Calendar fechaActual = Calendar.getInstance();
 					
-					Calendar fechaInicial = detalle.getFechaInicial();
+					//Calendar fechaInicial = detalle.getFechaInicial();
 					Calendar fechaFinal = detalle.getFechaFinal();
 					
 					fechaActual.set(Calendar.HOUR, 0);
@@ -439,14 +727,18 @@ public class ProcesoController {
 					
 					
 					
-					//long fechaIncialMS = fechaInicial.getTimeInMillis();
+					
 					long fechaFinalMS = fechaFinal.getTimeInMillis();
 					long fechaActualMS = fechaActual.getTimeInMillis();
 					
 					//int dias = (int) ((Math.abs(fechaFinalMS - fechaActualMS)) / (1000 * 60 * 60* 24));
-					dias = (int) ((fechaFinalMS - fechaActualMS) / (1000 * 60 * 60* 24));
-					System.out.println("numero días de admision: " + dias);
+//					dias = (int) ((fechaFinalMS - fechaActualMS) / (1000 * 60 * 60* 24));
 					
+					
+					dias = CalculaDiasHabiles.diasHabiles(fechaActual, fechaFinal);
+					System.out.println("============= fecha inicial: " + fechaActual.getTime());
+					System.out.println("============= fecha final: " + fechaFinal.getTime());
+					System.out.println("============= numero días de admision: " + dias);
 					
 					if(proceso.getUltimaActuacion().equalsIgnoreCase("admitido")
 							&& dias > 0)
@@ -454,7 +746,7 @@ public class ProcesoController {
 						System.out.println("ultima actuacion es: Admitido");
 						estado = true;	
 					}
-					else if(proceso.getUltimaActuacion().equalsIgnoreCase("admitido") && dias < 0)
+					else if(proceso.getUltimaActuacion().equalsIgnoreCase("admitido") && dias == 0)
 					{
 						estado = false;
 					}	
@@ -470,24 +762,29 @@ public class ProcesoController {
 					fechaActual.set(Calendar.HOUR_OF_DAY, 0);
 					fechaActual.set(Calendar.MINUTE, 0);
 					fechaActual.set(Calendar.SECOND, 0);
-					long fechaActualMS = fechaActual.getTimeInMillis();
+					//long fechaActualMS = fechaActual.getTimeInMillis();
 					
 					fechaFinal.set(Calendar.HOUR, 0);
 					fechaFinal.set(Calendar.HOUR_OF_DAY, 0);
 					fechaFinal.set(Calendar.MINUTE, 0);
 					fechaFinal.set(Calendar.SECOND, 0);
-					long fechaFinalMS = fechaFinal.getTimeInMillis();
+					//long fechaFinalMS = fechaFinal.getTimeInMillis();
 					
-					diasSubsanarDemanda = (int) ((fechaFinalMS - fechaActualMS) / (1000 * 60 * 60* 24));
+//					diasSubsanarDemanda = (int) ((fechaFinalMS - fechaActualMS) / (1000 * 60 * 60* 24));
+					diasSubsanarDemanda = CalculaDiasHabiles.diasHabiles(fechaActual, fechaFinal);
 					System.out.println("los numero de días para subsana demanda son: " + diasSubsanarDemanda);
 					
+					if(diasSubsanarDemanda > 0)
+					{
+						banderaSubsanaDemanda = true;
+					}
 					
 				}
 					
 				if(termino.getNombre().equalsIgnoreCase("notificacion demandado") && estado == true ) // && dias1 != 0 && dias1 == 30
 				{
 					System.out.println("si hay termino de notificacion demandado");
-					
+					System.out.println("Para el termino 121, Se está tomando desde la fecha de notificación al demandado");
 					
 					
 					/*la fecha final cuando esté en producción la aplicación será esta, más 365
@@ -508,14 +805,14 @@ public class ProcesoController {
 					 * de 30 días antes del vencimiento de términos */
 					fechaFinal1 = Calendar.getInstance(timeZone, locale);
 					
-					int dia = 8;
+					int dia = 28;
 					int mes = 7;
 					int anio = 2020;
 					
 					fechaFinal1.set(anio, mes, dia);
 					System.out.println("la fecha final establecida para que de 30 es: " + fechaFinal1.getTime());
 					
-					System.out.println("Para el termino 121, Se está tomando desde la fecha de notificación al demandado");
+					
 
 
 //					fechaFinal1.add(Calendar.DAY_OF_YEAR, 365);
@@ -594,6 +891,7 @@ public class ProcesoController {
 			{
 				this.bandera2 = true;
 				procesosAdmitir.add(proceso);
+				proceso.setEstadoActual("Por admitir");
 				/*bloque de codido para crear la alarma del proceso*/
 				
 				String descripcion = "Admision";
@@ -663,21 +961,51 @@ public class ProcesoController {
 			
 			/*========= CODIGO PARA LOS DIAS DE SUBSANAR DEMANDA ============= */
 			
-			if(diasSubsanarDemanda < 0)
+//			if(diasSubsanarDemanda =< 0)
+//			{
+//				proceso.setUltimaActuacion("inadmitido");
+//				proceso.setEstado(false);
+//				procesoService.save(proceso);
+//				flash.addFlashAttribute("error", "El proceso con radicado: ".concat(proceso.getRadicado()) + " se ha inadmitido " +
+//				"porque no se subsanó la demanda");
+//				return "redirect:/listarProcesos";
+//			}
+//			diasSubsanarDemanda = 0;
+			
+			if(diasSubsanarDemanda <= 15 && diasSubsanarDemanda > 0)
 			{
+				radicado = proceso.getRadicado();
+				idProceso = proceso.getId();
+				subsanaDemanda = true;
+				if(!proceso.getUltimaActuacion().equalsIgnoreCase("admitido"))
+				{
+					proceso.setEstadoActual("Por subsanar demanda");
+				}
 				
-				proceso.setUltimaActuacion("inadmitido");
-				proceso.setEstado(false);
 				procesoService.save(proceso);
-				flash.addFlashAttribute("error", "El proceso con radicado: ".concat(proceso.getRadicado()) + " se ha inadmitido " +
-				"porque no se subsanó la demanda");
-				return "redirect:/listarProcesos";
+				
 			}
+			
+//			if(diasSubsanarDemanda == 0 && banderaSubsanaDemanda == true)
+//			{
+//				proceso.setUltimaActuacion("inadmitido");
+//				proceso.setEstado(false);
+//				procesoService.save(proceso);
+//				flash.addFlashAttribute("error", "El proceso con radicado: ".concat(proceso.getRadicado()) + " se ha inadmitido " +
+//				"porque no se subsanó la demanda");
+//				return "redirect:/listarProcesos";
+//			}
 			diasSubsanarDemanda = 0;
 			/*========= FIN DE CODIGO PARA SUBSANAR DEMANDA =====================*/
 			
 		}
 		
+		if(subsanaDemanda)
+		{
+			flash.addFlashAttribute("warning", "El demandante del proceso numero: " + idProceso + " con radicado: " + radicado + " debe subsanar la demanda");
+//			return "redirect:/listarProcesos";
+		}
+		subsanaDemanda = false;
 		//estado = false;
 		//List<DetalleTermino> detalleTerminos = proceso.getDetalleTerminos();
 		
@@ -754,7 +1082,18 @@ public class ProcesoController {
 		
 	}
 	
-	
+	@RequestMapping(value ="/subsanarDemanda/{id}")
+	public String subsanarDemanda(@PathVariable(value="id") Long id, RedirectAttributes flash, Model model)
+	{
+		Proceso proceso = procesoService.findOne(id);
+		proceso.setEstadoActual("demanda subsanada");
+		proceso.setUltimaActuacion("admitido");
+		procesoService.save(proceso);
+		
+		flash.addFlashAttribute("success", "El proceso con radicado: ".concat(proceso.getRadicado()+  " y ID #" + proceso.getId() +" subsanó la demanda y fue admitido con éxito"));
+		
+		return "redirect:/listarProcesos";
+	}
 	
 	public void guardarDetalleTermino()
 	{
@@ -915,6 +1254,7 @@ public class ProcesoController {
 		{
 			
 			proceso.setUltimaActuacion("admitido");
+			proceso.setEstadoActual("");
 			procesoService.save(proceso);
 			flash.addFlashAttribute("success", "El proceso con el radiaco: "+ radicado+ " fue ADMITIDO");
 			return "redirect:/listarProcesos";
@@ -1044,8 +1384,14 @@ public class ProcesoController {
 	}
 	
 	@PostMapping(value = "/guardarProceso")
-	public String guardar(@RequestParam(value = "usuario") String usuario, @Valid Proceso proceso, BindingResult result, Model model, RedirectAttributes flash, SessionStatus status)
+	public String guardar(@Valid Proceso proceso, BindingResult result, @RequestParam(value = "usuario") String usuario,  Model model, RedirectAttributes flash, SessionStatus status)
 	{
+		Usuario usuarioLogeado = usuarioService.findOne(getUserId());
+		Long idJuzgado = usuarioLogeado.getJuzgado().getId();
+		Juzgado juzgado = juzgadoService.findOne(idJuzgado);
+		
+		List<Usuario> usuarios = usuarioService.findByJuzgado(juzgado);
+		
 		/* si al validar los campos, estos contienen errores se envia al formulario de
 		 * crear proceso de nuevo para que se corrijan los errores*/
 		/* por eso se agrega otro parametro al metodo guardar llamado BindingResult, este
@@ -1055,7 +1401,7 @@ public class ProcesoController {
 		{
 			/* se debe pasar nuevamente el titulo a la vista*/
 			model.addAttribute("titulo", "Crear Proceso");
-			
+			model.addAttribute("usuarios", usuarios);
 			model.addAttribute("tipoProcesos", tipoProcesoDao.findAll());
 			
 			/* se retorna el formulario con los errores*/
@@ -1079,9 +1425,8 @@ public class ProcesoController {
 		
 		
 		
-		Usuario usuarioLogeado = usuarioService.findOne(getUserId());
-		Long idJuzgado = usuarioLogeado.getJuzgado().getId();
-		Juzgado juzgado = juzgadoService.findOne(idJuzgado);
+		
+		
 		proceso.setJuzgado(juzgado);
 		
 		Long id = Long.parseLong(usuario);

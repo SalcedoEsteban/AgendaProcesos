@@ -18,21 +18,23 @@ insert into tipo_proceso (tip_pro_nombre, esp_id_tip_pro) values ('CUSTODIAAA', 
 
 
 
-insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, tip_pro_id_pro, juz_id_pro, pro_prioritario) values ('04-03-2019', '2019-00200-01', ' Esteban Salcedo Alvarez', 'Alejandra Lozano', '02-03-2019', '', 'ESPERA DE NOT PER', true, 1, 2, false);
-insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, tip_pro_id_pro, juz_id_pro, pro_prioritario) values ('15-12-2019',  '2018-00300-02', ' Angel Roberto', 'Doris Stella Alvarez', '04-03-2019', '', 'ESPERA DE NOT PER', true, 2, 2, false);
-insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, tip_pro_id_pro, juz_id_pro, pro_prioritario) values ('9-07-2019',  '2018-00300-03', ' Angel Roberto', 'Julian Castillo', '04-03-2019', '', 'ESPERA DE NOT PER', true, 2, 2, false);
+insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, tip_pro_id_pro, juz_id_pro, pro_prioritario) values ('04-03-2019', '20190020001123456789012', ' Esteban Salcedo Alvarez', 'Alejandra Lozano', '02-03-2019', '', '', true, 1, 2, false);
+insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, tip_pro_id_pro, juz_id_pro, pro_prioritario) values ('15-12-2019',  '20180030002123456789012', ' Angel Roberto', 'Doris Stella Alvarez', '04-03-2019', '', '', true, 2, 2, false);
+insert into proceso ( pro_create_at, pro_radicado, pro_demandante, pro_demandado, pro_fecha_reparto, pro_ultima_actuacion, pro_estado_actual, pro_estado, tip_pro_id_pro, juz_id_pro, pro_prioritario) values ('9-07-2019',  '20180030003123456789012', ' Angel Roberto', 'Julian Castillo', '04-03-2019', '', '', true, 2, 2, false);
 
 
 
 
-insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('Perdida competencia', 365, true, 1, 1);
+
 insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('admision', 30, true, 1, 1);
 insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('subsanar demanda', 15, true, 1, 1);
 insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('admision', 15, true, 2, 1);
 insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('subsanar demanda', 15, true, 2, 1);
 insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('adminion', 15, true, 3, 3);
 insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('notificacion demandado', 15, true, 2, 1);
+insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('notificacion demandado', 15, true, 1, 1);
 insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('Termino 121', 365, false, 2, 1);
+insert into termino (ter_nombre, ter_numero_dias, ter_basico, tip_pro_id_ter, esp_id_ter) values ('Termino 121', 365, false, 1, 1);
 
 
 
@@ -43,16 +45,17 @@ insert into detalle_termino (det_ter_dias_habiles, det_ter_fecha_incial, det_ter
 
 
 
-insert into usuario (usu_username, usu_create_at, usu_password, usu_enabled, usu_nombre, usu_apellido, juz_id_usu) values ('esteban', '15-12-2019', '$2a$10$H.1m8ANlFM3y.BojAvJ8oe9KA52MF.FCuaDKKE3F9O2YEs.XZ2qlO', true, 'Esteban', 'Salcedo Alvarez', 1);
-insert into usuario (usu_username, usu_create_at, usu_password, usu_enabled, usu_nombre, usu_apellido, juz_id_usu) values ('admin', '13-12-2019', '$2a$10$aAJMf3apCrhKeK04wo2LHuMAXWGXMzc95y.DZkQPYFfp1XXikKDIC', true, 'Paula Alejandra', 'Lozano Suarez', 2);
-insert into usuario (usu_username, usu_create_at, usu_password, usu_enabled, usu_nombre, usu_apellido, juz_id_usu) values ('super_admin', '22-05-2020', '$2a$10$Dm2BcCYxx0J2SpJb9fU7ee5DH4Z1dY5GJXCw4ecfDmlimc/dSAhti', true, 'Roberto', 'Salcedo Alvarez', 3);
+insert into usuario (usu_username, usu_create_at, usu_password, usu_enabled, usu_nombre, usu_apellido, usu_cargo, juz_id_usu) values ('esteban', '15-12-2019', '$2a$10$hEnhf4Izc3ids1mnQcmd/O6gsJG7WMs8LSCd8J7PmU7/bs1HNGqsO', true, 'Esteban', 'Salcedo Álvarez', 'Escribiente', 2);
+insert into usuario (usu_username, usu_create_at, usu_password, usu_enabled, usu_nombre, usu_apellido, usu_cargo, juz_id_usu) values ('admin', '13-12-2019', '$2a$10$aAJMf3apCrhKeK04wo2LHuMAXWGXMzc95y.DZkQPYFfp1XXikKDIC', true, 'Paula Alejandra', 'Lozano Suarez', 'Jueza', 2);
+insert into usuario (usu_username, usu_create_at, usu_password, usu_enabled, usu_nombre, usu_apellido, usu_cargo, juz_id_usu) values ('alejandra', '13-12-2019', '$2a$10$aAJMf3apCrhKeK04wo2LHuMAXWGXMzc95y.DZkQPYFfp1XXikKDIC', true, 'Jazmin ', 'Carrascal Bermúdez', 'Servidor', 2);
+insert into usuario (usu_username, usu_create_at, usu_password, usu_enabled, usu_nombre, usu_apellido, usu_cargo, juz_id_usu) values ('super_admin', '22-05-2020', '$2a$10$Dm2BcCYxx0J2SpJb9fU7ee5DH4Z1dY5GJXCw4ecfDmlimc/dSAhti', true, 'Roberto', 'Salcedo Álvarez', 'Super Admin', 2);
 
 insert into rol (rol_nombre, usu_id_rol) values ('ROLE_USER', 1);
 insert into rol (rol_nombre, usu_id_rol) values ('ROLE_USER', 2);
 insert into rol (rol_nombre, usu_id_rol) values ('ROLE_ADMIN', 2);
-insert into rol (rol_nombre, usu_id_rol) values ('ROLE_USER', 3);
-insert into rol (rol_nombre, usu_id_rol) values ('ROLE_ADMIN', 3);
-insert into rol (rol_nombre, usu_id_rol) values ('ROLE_SUPER_ADMIN', 3);
+insert into rol (rol_nombre, usu_id_rol) values ('ROLE_USER', 4);
+insert into rol (rol_nombre, usu_id_rol) values ('ROLE_ADMIN', 4);
+insert into rol (rol_nombre, usu_id_rol) values ('ROLE_SUPER_ADMIN', 4);
 
 insert into proceso_usuario (pro_id_pro_usu, usu_id_pro_usu) values (1, 2);
 insert into proceso_usuario (pro_id_pro_usu, usu_id_pro_usu) values (2, 2);

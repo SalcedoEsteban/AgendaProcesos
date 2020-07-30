@@ -15,12 +15,24 @@ public class TerminoPropertyEditor extends PropertyEditorSupport{
 	private ITerminoService terminoService;
 	
 	@Override
-	public void setAsText(String idString) throws IllegalArgumentException {
+	public void setAsText(String idString) throws IllegalArgumentException
+	{
 		
-		Long id = Long.parseLong(idString);
-		
-		this.setValue(terminoService.findOne(id));
-	}
-	
-	
+		if(idString != null && idString.length() > 0)
+		{
+			try
+			{
+				Long id = Long.parseLong(idString);
+				this.setValue(terminoService.findOne(id));
+			}
+			catch(NumberFormatException e)
+			{
+				setValue(null);
+			}
+		}
+		else
+		{
+			setValue(null);
+		}
+	}	
 }

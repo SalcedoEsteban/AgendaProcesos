@@ -16,7 +16,7 @@
 			</button>
 			<div class="card bg-danger text-white">
 				<div class="card-header text-center">
-					<h3>Vencimiento de términos</h3>
+					<h3>Perdida de Competencia 121 C.G.P</h3>
 				</div>
 				<div class="card-body">
 					<h5 class="card-title text-center" th:text="${vence}"></h5>
@@ -58,10 +58,11 @@
 						th:each="proceso: ${procesosAdmitir}">
 						<td th:text="${proceso.radicado}"></td>
 						<td><a th:href="@{/verDetalleProceso/} + ${proceso.id}"
-							class="btn btn-warning">Ver</a></td>
+							class="btn btn-warning" th:text="${proceso.id}"></a></td>
 					</tr>
 				</tbody>
 			</table>
+			<nav th:replace="paginator-nav"></nav>
 		</div>
 		<!-- <div class="alert alert-info my-4" th:if="${#lists.isEmpty(proceso.detalleTerminos)}">No hay Terminos asignados para el proceso</div> -->
 		<div class="card bg-light ">
@@ -71,10 +72,12 @@
 			<div class="card-body">
 				<h4 class="card-title">
 					<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/formProceso}"
-						class="btn btn-success btn-xs">Crear Proceso</a> <a
-						sec:authorize="hasRole('ROLE_ADMIN')"
-						th:href="@{/formAgregarDias}" class="btn btn-primary btn-xs">Agregar
-						Días</a>
+						class="btn btn-success btn-xs">Crear Proceso</a>
+					<a sec:authorize="hasRole('ROLE_ADMIN')"
+						th:href="@{/formAgregarDiasCalendario}" class="btn btn-primary btn-xs">Agregar
+						Días Calendario</a>
+					<a th:if="${botonBandera != null and botonBandera == true}" sec:authorize="hasRole('ROLE_ADMIN')"
+						th:href="@{/formAsignarProcesos}" class="btn btn-primary btn-xs">Asignar Procesos</a>
 				</h4>
 
 
@@ -83,9 +86,19 @@
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label" th:text="'Buscar Proceso'"></label>
 						<input type="text" placeholder="Buscar por radicado"
-							name="radicado" id="radicado" class="form-control col-sm-6">
-						<button class="btn btn-success col-sm-2" type="submit">Buscar</button>
+							name="radicado" id="radicado" class="form-control col-sm-3">
+						<button class="btn btn-success col-sm-1" type="submit">Buscar</button>
 
+					</div>
+				</form>
+				<form sec:authorize="hasRole('ROLE_ADMIN')" th:action="@{/listarProcesosPorUsuario}" method="post">
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label">Buscar por usuario</label>
+						<select class="form-control col-sm-3" name="idUsuario" id="idUsuario">
+							<option th:each="usuario: ${usuarios}" th:value="${usuario.id}" th:text="${usuario.nombre} + ' ' + ${usuario.apellido}">
+							</option>
+						</select>
+						<button class="btn btn-success col-sm-1" type="submit">Buscar</button>
 					</div>
 				</form>
 				<!-- <div class="form-group row">
@@ -119,7 +132,11 @@
 					</thead>
 					<tbody>
 						<tr th:each="proceso: ${procesos}"
-							th:class="${proceso.proceso.prioritario == true} ? table-danger : table-success ">
+							th:classappend="|${proceso.proceso.prioritario == true ? 'table-danger' : 'table-success'}  
+							${proceso.proceso.estadoActual == 'Por subsanar demanda' ? 'table-warning' : 'table-success'}|">
+						<!-- otra forma de establecer un color a un registro  
+						<tr th:each="proceso: ${procesos}"
+						 th:class="${proceso.proceso.prioritario == true} ? table-danger : table-success "></tr>-->
 
 							<td th:text="${proceso.proceso.radicado}"></td>
 							<td th:text="${proceso.proceso.demandante}"></td>

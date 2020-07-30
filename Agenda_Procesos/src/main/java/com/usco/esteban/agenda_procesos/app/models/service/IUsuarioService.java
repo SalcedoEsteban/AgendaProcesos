@@ -28,4 +28,8 @@ public interface IUsuarioService {
 	public Page<Usuario> findByJuzgadoPageable(Juzgado juzgado, Pageable pageable);
 	
 	public Page<Usuario> findAll(Pageable pageable);
+	
+	public Page<Usuario> findByNombreAndJuzgado(Juzgado juzgado, Pageable pageable, String nombre);
+	
+	public Page<Usuario> findByNombre(String nombre, Pageable pageable);
 }

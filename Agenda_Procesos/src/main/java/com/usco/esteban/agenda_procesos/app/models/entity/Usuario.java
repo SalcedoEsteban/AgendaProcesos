@@ -48,6 +48,9 @@ public class Usuario implements Serializable {
 
 	@Column(name = "usu_apellido")
 	private String apellido;
+	
+	@Column(name="usu_cargo")
+	private String cargo;
 
 	@OneToMany(mappedBy = "usuario", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	/* llave foranea de la tabla rol */
@@ -140,6 +143,14 @@ public class Usuario implements Serializable {
 
 	public void setApellido(String apellido) {
 		this.apellido = apellido;
+	}
+	
+	public String getCargo() {
+		return cargo;
+	}
+
+	public void setCargo(String cargo) {
+		this.cargo = cargo;
 	}
 
 	public List<Rol> getRoles() {

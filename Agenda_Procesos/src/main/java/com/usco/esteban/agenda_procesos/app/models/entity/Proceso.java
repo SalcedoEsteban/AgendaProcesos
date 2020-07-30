@@ -24,6 +24,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -44,7 +45,8 @@ public class Proceso implements Serializable {
 	private Date createAt;
 	
 	@Column(name = "pro_radicado")
-	@NotEmpty
+//	@NotEmpty
+	@Pattern(regexp = "[0-9]{23}")
 	private String radicado;
 
 	@Column(name = "pro_demandante")
@@ -220,12 +222,6 @@ public class Proceso implements Serializable {
 	public void addDetalleTermino(DetalleTermino detalleTermino) {
 		detalleTerminos.add(detalleTermino);
 	}
-
-	
-	
-	
-	
-	
 	
 	/*
 	 * public String getTipoProceso() { return tipoProceso; }

@@ -72,6 +72,72 @@ public class UsuarioController {
 		binder.registerCustomEditor(Juzgado.class, "juzgado", juzgadoEditor);
 	}
 
+	
+	@RequestMapping(value="/buscarUsuarioPorNombre")
+	public String buscarUsuarioPorNombre(@RequestParam(value="nombreUsuario") String nombreUsuario, 
+			@RequestParam(value="page", defaultValue = "0") int page, Model model)
+	{
+		Pageable pageRequest = PageRequest.of(page, 3);
+		
+		/*Se obtiene el usuario logeado*/
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		UserDetails userDetail = (UserDetails) auth.getPrincipal();
+		usuario = this.usuarioService.findByUsername(userDetail.getUsername());
+		
+		List<Rol> roles = rolService.findByUsuario(usuario);
+		
+		/* Se obtiene el juzgado del usuario logueado*/
+		Juzgado juzgado = usuario.getJuzgado();
+		
+		System.out.println("la lista roles es vacia: " + roles.isEmpty());
+		String nombre = null;
+		
+		Page<Usuario> usuarios = null; 
+		
+		for (Rol rol : roles) {
+			
+			System.out.println(rol.getRol());
+			
+			//nombre = rol.getRol();
+				
+			if(rol.getRol().contentEquals("ROLE_SUPER_ADMIN"))
+			{
+				System.out.println("rol desde el if por ROL_SUPER_ADMIN: " + rol.getRol());
+				nombre = rol.getRol();
+				break;
+			}else if(rol.getRol().contentEquals("ROLE_ADMIN"))
+			{
+				System.out.println("rol desde el if por ROLE_ADMIN: " + rol.getRol());
+				nombre = rol.getRol();
+				break;
+			}
+		}
+		
+		System.out.println("el rol es: " + nombre);
+		
+		if(nombre.contentEquals("ROLE_SUPER_ADMIN"))
+		{
+			System.out.println("se hace la consulta de todos los usuarios");
+			usuarios = usuarioService.findByNombre(nombreUsuario, pageRequest);
+		}
+		else if(nombre.contentEquals("ROLE_ADMIN"))
+		{
+			System.out.println("se hace la consulta de usuario por juzgado");
+			usuarios = usuarioService.findByNombreAndJuzgado(juzgado, pageRequest, nombreUsuario);
+		}
+		
+//		usuarios = usuarioService.findByNombreAndJuzgado(juzgado, pageRequest,  nombreUsuario);
+		PageRender<Usuario> pageRender = new PageRender<>("/buscarUsuarioPorNombre", usuarios);
+		
+		System.out.println(usuarios.isEmpty());
+		
+		model.addAttribute("page", pageRender);
+		model.addAttribute("usuarios", usuarios);
+		model.addAttribute("titulo", "Listado de Usuario(s)");
+		
+		return "usuario/listarUsuarios";
+	}
+	
 	@RequestMapping(value = "/listarUsuarios")
 	public String listarUsuarios(@RequestParam(name = "page", defaultValue = "0") int page, Map<String, Object> model) {
 		

@@ -14,11 +14,26 @@ public class JuzgadoPropertyEditor extends PropertyEditorSupport
 	private IJuzgadoService juzgadoService;
 
 	@Override
-	public void setAsText(String idString) throws IllegalArgumentException {
+	public void setAsText(String idString) throws IllegalArgumentException
+	{
+		if(idString != null && idString.length() > 0)
+		{
+			try
+			{
+				Long id = Long.parseLong(idString);
+				this.setValue(juzgadoService.findOne(id));
+			}
+			catch(NumberFormatException e)
+			{
+				setValue(null);
+			}
+		}
+		else
+		{
+			setValue(null);
+		}
 		
-		Long id = Long.parseLong(idString);
 		
-		this.setValue(juzgadoService.findOne(id));
 	}
 	
 }

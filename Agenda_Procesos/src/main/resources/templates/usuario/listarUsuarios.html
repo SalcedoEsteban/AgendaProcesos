@@ -9,9 +9,19 @@
 			<div class="card-header" th:text="${titulo}"></div>
 			<div class="card-body">
 			<h4 class="card-title">
-				<a th:href="@{/formUsuario}" class="btn btn-success btn-xs">Crear
+				<a sec:authorize="hasRole('ROLE_SUPER_ADMIN')" th:href="@{/formUsuario}" class="btn btn-success btn-xs">Crear
 						Usuario</a>
-				</h4>
+				<a sec:authorize="hasRole('ROLE_USER')" th:href="@{/listarProcesos}"
+						class="btn btn-success btn-xs">Volver al inicio</a>
+			</h4>
+			<form th:action="@{/buscarUsuarioPorNombre}" method="get">
+				<div class="form-group row">
+					<label class="col-form-label col-sm-2">Buscar por nombre</label>
+					<input type="text" name="nombreUsuario" id="nombreUsuario" class="form-control col-sm-2">
+					<button type="submit" class="btn btn-success btn-xs col-sm-1">Buscar</button>
+				</div>			
+			</form>
+			
 				<table class="table table-striped table-bordered">
 					<thead>
 						<tr>
@@ -19,6 +29,7 @@
 							<th>Usuario</th>
 							<th>Nombre</th>
 							<th>Apellido</th>
+							<th>Cargo</th>
 							<th>Juzgado</th>
 							<th>Asignar Rol(es)</th>
 							<th>Ver Rol(es)</th>
@@ -32,6 +43,7 @@
 							<td th:text="${usuario.username}"></td>
 							<td th:text="${usuario.nombre}"></td>
 							<td th:text="${usuario.apellido}"></td>
+							<td th:text="${usuario.cargo}"></td>
 							<td th:text="${usuario.juzgado.nombre}"></td>
 							<td><a th:href="@{'/crearRol/'  + ${usuario.id}}" class="btn btn-primary btn-xs">Asignar</a></td>
 							<td><a th:href="@{/verRoles/}  + ${usuario.id}" class="btn btn-primary btn-xs">Ver</a></td>

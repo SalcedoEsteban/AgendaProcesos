@@ -8,6 +8,8 @@
 		<div class="card bg-light">
 			<div class="card-header" th:text="${titulo}"></div>
 			<div class="card-body">
+				<a sec:authorize="hasRole('ROLE_USER')" th:href="@{/listarProcesos}"
+						class="btn btn-success btn-xs">Volver al inicio</a>
 				<h4 class="card-title text-center">
 					<a sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/formProceso}" class="btn btn-success btn-xs">Crear
 						Proceso</a>
@@ -21,8 +23,10 @@
 					Admitir Proceso</a>
 					<a th:if="${terminoAdmision == true}" sec:authorize="hasRole('ROLE_USER')" th:href="@{/inadmitirProceso/} + ${proceso.id}" class="btn btn-danger btn-xs">
 					Inadmitir Proceso</a>
-					<a th:if="${proceso.prorroga == true}" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/agregarProrroga/} + ${proceso.id}" class="btn btn-primary btn-xs">
+					<a th:if="${proceso.prorroga == true}" sec:authorize="hasRole('ROLE_USER')" th:href="@{/agregarProrroga/} + ${proceso.id}" class="btn btn-primary btn-xs">
 					Agregar Prorroga</a>
+					<a th:if="${proceso.estadoActual == 'Por subsanar demanda'}" sec:authorize="hasRole('ROLE_ADMIN')" th:href="@{/subsanarDemanda/} + ${proceso.id}" class="btn btn-success btn-xs">
+					Subsanar demanda</a>
 					
 				</h4>
 					
@@ -47,7 +51,13 @@
 						</form>--->
 					</div>
 				<div class="form-group row py-3">
-				
+					
+					<!-- <label class="col-sm-3 col-form-label" th:text="'Usuario: '"></label>
+					<input th:value="${proceso.proceso.usuario.nombre}" disabled="disabled" class="form-control col-sm-3"/> -->
+					
+					<label class="col-sm-3 col-form-label" th:text="'Tipo Proceso: '"></label>
+					<input th:value="${proceso.tipoProceso.nombre}" disabled="disabled" class="form-control col-sm-3"/>
+					
 					<label class="col-sm-3 col-form-label" th:text="'Creado el: '"></label>
 					<input th:value="${proceso.createAt}" disabled="disabled" class="form-control col-sm-3"/>
 			

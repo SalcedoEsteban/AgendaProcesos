@@ -87,11 +87,12 @@ public class TerminoController
 		/* esta es la relacion, se asigna un tipoProceso a un término */
 		//termino.setTipoProceso(tipoProceso);
 		
-		Long id = (long) 1;
+		//Long id = (long) 1;
 		
-		Especialidad especialidad = especialidadService.findOne(id);
+		//Especialidad especialidad = especialidadService.findOne(id);
 		
-		List<TipoProceso> tiposProceso = tipoProcesoService.findByEspecialidad(especialidad);
+		//List<TipoProceso> tiposProceso = tipoProcesoService.findByEspecialidad(especialidad);
+		List<TipoProceso> tiposProceso = tipoProcesoService.findAll();
 		
 		model.put("termino", termino);
 		model.put("especialidades", especialidadService.findAll());
@@ -123,7 +124,7 @@ public class TerminoController
 		return "formTermino";
 	}*/
 	
-	@RequestMapping(value ="/guardarTermino")
+	@PostMapping(value ="/guardarTermino")
 	public String guardar(Termino termino, SessionStatus status)
 	{
 		/*Long esp = Long.parseLong(termino.getEsp());

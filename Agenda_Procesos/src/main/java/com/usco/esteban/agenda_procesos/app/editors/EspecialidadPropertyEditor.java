@@ -16,9 +16,23 @@ public class EspecialidadPropertyEditor extends PropertyEditorSupport {
 	@Override
 	public void setAsText(String idString) throws IllegalArgumentException {
 		
-		Long id = Long.parseLong(idString);
+		if(idString != null && idString.length() > 0)
+		{
+			try
+			{
+				Long id = Long.parseLong(idString);
+				this.setValue(especialidadService.findOne(id));
+			}
+			catch(NumberFormatException e)
+			{
+				setValue(null);
+			}
+		}
+		else
+		{
+			setValue(null);
+		}
 		
-		this.setValue(especialidadService.findOne(id));
 		
 	}
 

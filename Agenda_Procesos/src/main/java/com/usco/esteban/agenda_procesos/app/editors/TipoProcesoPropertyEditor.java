@@ -14,10 +14,24 @@ public class TipoProcesoPropertyEditor extends PropertyEditorSupport{
 	private ITipoProcesoService tipoProcesoService;
 	
 	@Override
-	public void setAsText(String idString) throws IllegalArgumentException {
-		Long id = Long.parseLong(idString);
-		
-		this.setValue(tipoProcesoService.findOne(id));
+	public void setAsText(String idString) throws IllegalArgumentException
+	{
+		if(idString != null && idString.length() > 0)
+		{
+			try
+			{
+				Long id = Long.parseLong(idString);
+				this.setValue(tipoProcesoService.findOne(id));
+			}
+			catch(NumberFormatException e)
+			{
+				setValue(null);
+			}
+		}
+		else
+		{
+			setValue(null);
+		}
 	}
 
 	

@@ -14,6 +14,8 @@ public interface IProcesoUsuarioService {
 	public Page<ProcesoUsuario> findAllById(Long id, Pageable pageable, Juzgado juzgado);
 	//public Page<ProcesoUsuario> findAllByUsuario(Usuario usuario, Pageable pageable);
 	
+	public List<ProcesoUsuario> findAllById(Long id, Juzgado juzgado);
+	
 	public void save(ProcesoUsuario procesoUsuario);
 	
 	public void delete(Long id);
@@ -24,8 +26,14 @@ public interface IProcesoUsuarioService {
 	
 	public Page<ProcesoUsuario> findAllBy(Long id, Pageable pageable, Juzgado juzgado);
 	
+	
+	
 	public List<ProcesoUsuario> findAll(Juzgado juzgado);
 	
-	public List<ProcesoUsuario> findAllByPrioritario(Juzgado juzgado);
+	public Page<ProcesoUsuario> findAllByPrioritario(Juzgado juzgado, Pageable pageable);
+	
+	public Page<ProcesoUsuario> findAllByJuzgado(Juzgado juzgado, Pageable pageable);
+	
+	public Page<ProcesoUsuario> findAllBySuperAdmin(Pageable pageable);
 	
 }

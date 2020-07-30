@@ -84,20 +84,33 @@ public class DetalleTerminoController {
 	}
 	
 	@RequestMapping(value="/crearDetalleTermino/{procesoId}")
-	public String crear(@PathVariable(value="procesoId") Long procesoId, Model model)
+	public String crear(@PathVariable(value="procesoId") Long procesoId, Model model, RedirectAttributes flash)
 	{
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 		UserDetails userDetail = (UserDetails) auth.getPrincipal();
 		usuario = this.usuarioService.findByUsername(userDetail.getUsername());
 		
 		Especialidad especialidad = usuario.getJuzgado().getEspecialidad();
-		Proceso proceso = procesoService.findOne(procesoId);
+		Proceso proceso = null;
 		boolean basico = true;
 		
-		if(proceso == null)
+		if(procesoId > 0)
 		{
+			proceso = procesoService.findOne(procesoId);
+			
+			if(proceso == null)
+			{
+				flash.addFlashAttribute("error", "El proceso no existe");
+				return "redirect:/listarProcesos";
+			}
+		}
+		else
+		{
+			flash.addFlashAttribute("error", "El ID del proceso no puede ser cero");
 			return "redirect:/listarProcesos";
 		}
+		
+		
 		
 		TipoProceso tipoProceso = proceso.getTipoProceso();
 		
@@ -107,7 +120,7 @@ public class DetalleTerminoController {
 		
 		detalleTermino.setProceso(proceso);
 		
-		model.addAttribute("titulo", "Formulario Detalle Termino");
+		model.addAttribute("titulo", "Formulario Detalle Termino para el proceso numero: " + proceso.getId() + " Con radicado: " + proceso.getRadicado());
 		model.addAttribute("terminos", terminos);
 		model.addAttribute("detalleTermino", detalleTermino);
 		
@@ -116,14 +129,17 @@ public class DetalleTerminoController {
 	}
 	
 	@RequestMapping(value ="/guardarDetalleTermino", method = RequestMethod.POST)
-	public String guardar(@RequestParam(name = "page", defaultValue = "0") int page, DetalleTermino detalleTermino, Model model, SessionStatus status)
+	public String guardar(@RequestParam(name = "page", defaultValue = "0") int page, DetalleTermino detalleTermino, Model model, SessionStatus status, RedirectAttributes flash)
 	{
 		
 		/*Long idTermino = Long.parseLong(detalleTermino.getTer());
 		Termino termino = terminoService.findOne(idTermino);*/
 		detalleTermino.setTermino(detalleTermino.getTermino());
-		
 		detalleTerminoService.save(detalleTermino);
+		
+		Proceso proceso = detalleTermino.getProceso();
+		String radicado = proceso.getRadicado();
+		Long idProceso = proceso.getId();
 		
 		// ======= bloque de código para listar procesos desde DetalleTerminoControler =========
 		//List<Proceso> procesos = procesoService.findAll();
@@ -148,6 +164,7 @@ public class DetalleTerminoController {
 		
 		/* ===============================================*/
 		status.setComplete();
+		flash.addFlashAttribute("success", "Se creo el Detalle termino para el proceso numero: "+ idProceso + " Con radicado: " + radicado);
 		model.addAttribute("procesos", procesosUsuario);
 		model.addAttribute("page", pageRender);
 		

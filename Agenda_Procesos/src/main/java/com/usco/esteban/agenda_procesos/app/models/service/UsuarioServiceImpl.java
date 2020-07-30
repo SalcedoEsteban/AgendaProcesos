@@ -77,4 +77,18 @@ public class UsuarioServiceImpl implements IUsuarioService {
 		return usuarioDao.findAll(pageable);
 	}
 
+	@Override
+	@Transactional(readOnly = true)
+	public Page<Usuario> findByNombreAndJuzgado(Juzgado juzgado, Pageable pageable,  String nombre) {
+		
+		return usuarioDao.findByNombreAndJuzgado(juzgado, pageable, nombre);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public Page<Usuario> findByNombre(String nombre, Pageable pageable) {
+		
+		return usuarioDao.findByNombre(nombre, pageable);
+	}
+
 }

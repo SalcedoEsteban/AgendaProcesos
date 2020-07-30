@@ -40,7 +40,7 @@ public class AgendaProcesosApplication implements CommandLineRunner
 		
 		
 		String bcryptPassword1 = passwordEncoder.encode(password1);
-		System.out.println(bcryptPassword1);
+		System.out.println("la clave es: " + bcryptPassword1);
 		
 		Locale locale = Locale.getDefault();
 		TimeZone timeZone = TimeZone.getDefault();
